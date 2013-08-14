@@ -68,29 +68,33 @@ endif()
 # Sources
 # --------------------------------------------------------------------------
 set(SlicerApp_SRCS
-  qSlicerAppAboutDialog.cxx
-  qSlicerAppAboutDialog.h
-  qSlicerAppMainWindow.cxx
-  qSlicerAppMainWindow.h
-  qSlicerAppMainWindowCore.cxx
-  qSlicerAppMainWindowCore.h
-  qSlicerAppMainWindowCore_p.h
+  qAppAboutDialog.cxx
+  qAppAboutDialog.h
+  qAppMainWindow.cxx
+  qAppMainWindow.h
+  ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppAboutDialog.cxx
+  ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppAboutDialog.h
+  ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppMainWindow.cxx
+  ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppMainWindow.h
+  ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppMainWindow_p.h
   )
 
 set(SlicerApp_MOC_SRCS
-  qSlicerAppAboutDialog.h
-  qSlicerAppMainWindow.h
-  qSlicerAppMainWindowCore.h
-  qSlicerAppMainWindowCore_p.h
+  qAppAboutDialog.h
+  qAppMainWindow.h
+  ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppAboutDialog.h
+  ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppMainWindow.h
   )
 
 set(SlicerApp_UI_SRCS
-  Resources/UI/qSlicerAppAboutDialog.ui
-  Resources/UI/qSlicerAppMainWindow.ui
+  Resources/UI/qAppAboutDialog.ui
+  ${Slicer_SOURCE_DIR}/Applications/SlicerApp/Resources/UI/qSlicerAppAboutDialog.ui
+  ${Slicer_SOURCE_DIR}/Applications/SlicerApp/Resources/UI/qSlicerAppMainWindow.ui
   )
 
 set(SlicerApp_RESOURCES
   Resources/App.qrc
+  ${Slicer_SOURCE_DIR}/Applications/SlicerApp/Resources/SlicerApp.qrc
   ${qSlicerBaseQTGUI_SOURCE_DIR}/Resources/qSlicerBaseQTGUI.qrc
   ${qSlicerModulesCore_SOURCE_DIR}/Resources/qSlicerModulesCore.qrc
   ${${APPLICATION_NAME}_SOURCE_DIR}/Utilities/Qt/Resources.qrc
@@ -103,6 +107,8 @@ QT4_ADD_RESOURCES(SlicerApp_QRC_SRCS ${SlicerApp_RESOURCES})
 set(SlicerApp_INCLUDE_DIRECTORIES
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}
+  ${Slicer_SOURCE_DIR}/Applications/SlicerApp
+  ${Slicer_BINARY_DIR}/Applications/SlicerApp
   ${Slicer_Base_INCLUDE_DIRS}
   ${MRMLCore_INCLUDE_DIRS}
   ${MRMLLogic_INCLUDE_DIRS}

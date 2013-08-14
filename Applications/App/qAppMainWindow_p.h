@@ -11,43 +11,31 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  This file was originally developed by Jean-Christophe Fillion-Robin, Kitware Inc.
+  This file was originally developed by Julien Finet, Kitware Inc.
   and was partially funded by NIH grant 3P41RR013218-12S1
 
 ==============================================================================*/
 
-#ifndef __qSlicerAppMainWindowCorePrivate_p_h
-#define __qSlicerAppMainWindowCorePrivate_p_h
-
-// Qt includes
-#include <QObject>
-#include <QPointer>
-
-// CTK includes
-class ctkErrorLogWidget;
-class ctkPythonConsole;
+#ifndef __qAppMainWindow_p_h
+#define __qAppMainWindow_p_h
 
 // SlicerApp includes
-#include "qSlicerAppMainWindowCore.h"
-#include "qSlicerAppMainWindow.h"
-
-class qSlicerAbstractModule;
+#include "qAppMainWindow.h"
+#include "qSlicerAppMainWindow_p.h"
 
 //-----------------------------------------------------------------------------
-class qSlicerAppMainWindowCorePrivate: public QObject
+class Q_SLICER_APP_EXPORT qAppMainWindowPrivate
+  : public qSlicerAppMainWindowPrivate
 {
-  Q_OBJECT
-
+  Q_DECLARE_PUBLIC(qAppMainWindow);
 public:
-  explicit qSlicerAppMainWindowCorePrivate();
-  virtual ~qSlicerAppMainWindowCorePrivate();
+  typedef qSlicerAppMainWindowPrivate Superclass;
+  qAppMainWindowPrivate(qAppMainWindow& object);
+  virtual ~qAppMainWindowPrivate();
 
-public:
-  QPointer<qSlicerAppMainWindow> ParentWidget;
-#ifdef Slicer_USE_PYTHONQT
-  ctkPythonConsole*           PythonConsole;
-#endif
-  ctkErrorLogWidget*          ErrorLogWidget;
+  virtual void init();
+  /// Reimplemented for custom behavior
+  virtual void setupUi(QMainWindow * mainWindow);
 };
 
 #endif
