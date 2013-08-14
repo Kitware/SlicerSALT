@@ -16,35 +16,31 @@
 
 ==============================================================================*/
 
-#ifndef __qSlicerAppAboutDialog_h
-#define __qSlicerAppAboutDialog_h
+#ifndef __qAppMainWindow_h
+#define __qAppMainWindow_h
 
-// Qt includes
-#include <QDialog>
-
-// CTK includes
-#include <ctkPimpl.h>
-
-// SlicerApp includes
+// Slicer includes
 #include "qSlicerAppExport.h"
+#include "qSlicerAppMainWindow.h"
+class qAppMainWindowPrivate;
 
-class qSlicerAppAboutDialogPrivate;
-
-/// Pre-request that a qSlicerApplication has been instanced
-class Q_SLICER_APP_EXPORT qSlicerAppAboutDialog :
-  public QDialog
+class Q_SLICER_APP_EXPORT qAppMainWindow
+  : public qSlicerAppMainWindow
 {
   Q_OBJECT
 public:
-  qSlicerAppAboutDialog(QWidget *parentWidget = 0);
-  virtual ~qSlicerAppAboutDialog();
 
-protected:
-  QScopedPointer<qSlicerAppAboutDialogPrivate> d_ptr;
+  typedef qSlicerAppMainWindow Superclass;
+  qAppMainWindow(QWidget *parent=0);
+  virtual ~qAppMainWindow();
+
+public:
+  /// Reimplemented to use qAppAboutDialog instead of qSlicerAppAboutDialog.
+  virtual void on_HelpAboutSlicerAppAction_triggered();
 
 private:
-  Q_DECLARE_PRIVATE(qSlicerAppAboutDialog);
-  Q_DISABLE_COPY(qSlicerAppAboutDialog);
+  Q_DECLARE_PRIVATE(qAppMainWindow);
+  Q_DISABLE_COPY(qAppMainWindow);
 };
 
 #endif

@@ -42,7 +42,7 @@
 # include "qSlicerCLIExecutableModuleFactory.h"
 # include "qSlicerCLILoadableModuleFactory.h"
 #endif
-#include "qSlicerAppMainWindow.h"
+#include "qAppMainWindow.h"
 #include "qSlicerCommandOptions.h"
 #include "qSlicerModuleFactoryManager.h"
 #include "qSlicerModuleManager.h"
@@ -150,10 +150,10 @@ int SlicerAppMain(int argc, char* argv[])
            << moduleFactoryManager->instantiatedModuleNames().count();
   // Create main window
   splashMessage(splashScreen, "Initializing user interface...");
-  QScopedPointer<qSlicerAppMainWindow> window;
+  QScopedPointer<qAppMainWindow> window;
   if (enableMainWindow)
     {
-    window.reset(new qSlicerAppMainWindow);
+    window.reset(new qAppMainWindow);
     QString windowTitle = "%1 %2";
     window->setWindowTitle(
       windowTitle.arg(Slicer_MAIN_PROJECT_APPLICATION_NAME).arg(qSlicerApp_VERSION));

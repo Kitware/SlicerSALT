@@ -16,32 +16,31 @@
 
 ==============================================================================*/
 
-// Qt includes
+#include <QDebug>
 
 // SlicerApp includes
-#include "qSlicerAppAboutDialog.h"
+#include "qAppAboutDialog.h"
 #include "qSlicerApplication.h"
-#include "ui_qSlicerAppAboutDialog.h"
+#include "ui_qAppAboutDialog.h"
 
 //-----------------------------------------------------------------------------
-class qSlicerAppAboutDialogPrivate: public Ui_qSlicerAppAboutDialog
+class qAppAboutDialogPrivate: public Ui_qAppAboutDialog
 {
 public:
 };
 
 //-----------------------------------------------------------------------------
-// qSlicerAppAboutDialogPrivate methods
+// qAppAboutDialogPrivate methods
 
 
 //-----------------------------------------------------------------------------
-// qSlicerAppAboutDialog methods
-qSlicerAppAboutDialog::qSlicerAppAboutDialog(QWidget* parentWidget)
- :QDialog(parentWidget)
-  , d_ptr(new qSlicerAppAboutDialogPrivate)
+// qAppAboutDialog methods
+qAppAboutDialog::qAppAboutDialog(QWidget* parentWidget)
+  : QDialog(parentWidget)
+  , d_ptr(new qAppAboutDialogPrivate)
 {
-  Q_D(qSlicerAppAboutDialog);
+  Q_D(qAppAboutDialog);
   d->setupUi(this);
-
   qSlicerApplication* slicer = qSlicerApplication::application();
   d->CreditsTextBrowser->setFontPointSize(25);
   d->CreditsTextBrowser->append(slicer->applicationName());
@@ -62,6 +61,6 @@ qSlicerAppAboutDialog::qSlicerAppAboutDialog(QWidget* parentWidget)
 }
 
 //-----------------------------------------------------------------------------
-qSlicerAppAboutDialog::~qSlicerAppAboutDialog()
+qAppAboutDialog::~qAppAboutDialog()
 {
 }

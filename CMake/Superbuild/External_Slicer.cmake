@@ -84,7 +84,7 @@ if(NOT DEFINED ${proj}_DIR)
     BINARY_DIR ${${proj}_DIR}
     PREFIX ${proj}${ep_suffix}
     GIT_REPOSITORY "git://kwsource.kitwarein.com/slicer/slicer.git"
-    GIT_TAG "1f6dc3bcc4ac3964f27a5721ee3e5420b5d96d90"
+    GIT_TAG "741055078503a05d0a2c42706e08e22aa05853c7"
     ${${APPLICATION_NAME}_external_update}
     INSTALL_COMMAND ""
     CMAKE_GENERATOR ${gen}
