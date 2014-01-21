@@ -16,40 +16,29 @@
 #
 #============================================================================
 
-set(APPLICATION_NAME Ninja)
-
 cmake_minimum_required(VERSION 2.8.10)
 
-#-----------------------------------------------------------------------------
-# Must be called before "project"
-include(CMake/OSXVariables.cmake)
+set(APPLICATION_NAME Ninja)
 
 #-----------------------------------------------------------------------------
 set(kit ${APPLICATION_NAME})
-project(${kit})
-
-#-----------------------------------------------------------------------------
-# See http://cmake.org/cmake/help/cmake-2-8-docs.html#section_Policies for details
-#-----------------------------------------------------------------------------
-if(POLICY CMP0016)
-  cmake_policy(SET CMP0016 NEW)
-endif()
-if(POLICY CMP0017)
-  cmake_policy(SET CMP0017 OLD)
-endif()
-
-#-----------------------------------------------------------------------------
-# Update CMake module path
-# Note: FindXXX.cmake script specific to utility should be copied into Utilities/CMake
-#
-set(${kit}_CMAKE_SOURCE_DIR "${${kit}_SOURCE_DIR}/CMake")
-set(${kit}_CMAKE_BINARY_DIR "${${kit}_BINARY_DIR}/CMake")
+set(${kit}_CMAKE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
+set(${kit}_CMAKE_BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/CMake")
 set(${kit}_SUPERBUILD_DIR ${${kit}_CMAKE_SOURCE_DIR}/Superbuild)
 list(APPEND ${kit}_CMAKE_DIRS ${${kit}_CMAKE_SOURCE_DIR} ${${kit}_CMAKE_BINARY_DIR})
 set(CMAKE_MODULE_PATH ${${kit}_CMAKE_DIRS} ${CMAKE_MODULE_PATH})
 
 #-----------------------------------------------------------------------------
-# Configure necessaries cmakes
+set(EXTERNAL_PROJECT_DIR ${${kit}_SUPERBUILD_DIR})
+include(ExternalProject)
+include(ExternalProjectDependency)
+include(OSXVariables) # Must be called before "project"
+
+#-----------------------------------------------------------------------------
+project(${kit})
+
+#-----------------------------------------------------------------------------
+# Configure necessary cmakes
 #
 
 # Configure Use${kit}.cmake
@@ -66,16 +55,7 @@ configure_file(
   @ONLY
   )
 
-# Configure External_${kit}Libs.cmake
-configure_file(
-  ${${kit}_CMAKE_SOURCE_DIR}/External_ApplicationLibs.cmake.in
- ${${kit}_CMAKE_BINARY_DIR}/Superbuild/External_${kit}Libs.cmake
-  @ONLY
-  )
-
 #-----------------------------------------------------------------------------
-# Testing
-enable_testing()
 include(CTest)
 
 #-----------------------------------------------------------------------------
@@ -100,21 +80,35 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${${kit}_BINARY_DIR}/${${kit}_INSTALL_LIB_DIR
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   message(STATUS "Setting build type to 'Debug' as none was specified.")
   set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build." FORCE)
+  mark_as_advanced(CMAKE_BUILD_TYPE)
   # Set the possible values of build type for cmake-gui
   set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release"
     "MinSizeRel" "RelWithDebInfo")
+endif()
+if(NOT CMAKE_CONFIGURATION_TYPES)
+  mark_as_superbuild(VARS CMAKE_BUILD_TYPE ALL_PROJECTS)
 endif()
 
 #-----------------------------------------------------------------------------
 # Superbuild Option - Enabled by default
 #
-option(${kit}_SUPERBUILD "Build ${kit} and the projects it depends on via SuperBuild.cmake." ON)
+option(${kit}_SUPERBUILD "Build ${kit} and the projects it depends on." ON)
 mark_as_advanced(${kit}_SUPERBUILD)
 
 #-----------------------------------------------------------------------------
 # Prerequisites
 #-----------------------------------------------------------------------------
-find_package(Git REQUIRED)
+find_package(Subversion)
+if(NOT Subversion_FOUND)
+  message(FATAL_ERROR "error: Install SVN and try to re-configure")
+endif()
+mark_as_superbuild(VARS Subversion_SVN_EXECUTABLE PROJECTS Slicer)
+
+find_package(Git)
+if(NOT GIT_FOUND)
+  message(FATAL_ERROR "error: Install Git and try to re-configure")
+endif()
+mark_as_superbuild(VARS GIT_EXECUTABLE PROJECTS Slicer)
 
 #-----------------------------------------------------------------------------
 # Project version number.
@@ -129,7 +123,7 @@ set(${kit}_VERSION_PATCH 0)
 include(ExtractRepositoryInfo)
 extract_repository_info(VAR_PREFIX ${kit}) # Used to configure ${kit}VersionConfigure.h.in
 
-if (${kit}_WC_LAST_CHANGED_DATE)
+if(${kit}_WC_LAST_CHANGED_DATE)
   string(REGEX REPLACE ".*([0-9][0-9][0-9][0-9]\\-[0-9][0-9]\\-[0-9][0-9]).*" "\\1"
     ${kit}_BUILDDATE "${${kit}_WC_LAST_CHANGED_DATE}")
   set(${kit}_VERSION_UID "${(${kit}_BUILDDATE}")
@@ -153,8 +147,7 @@ add_subdirectory(Modules)
 
 #-----------------------------------------------------------------------------
 # Superbuild script
-#
-
+#-----------------------------------------------------------------------------
 if(${kit}_SUPERBUILD)
   add_subdirectory(${${kit}_SUPERBUILD_DIR})
   return()

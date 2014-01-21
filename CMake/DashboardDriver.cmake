@@ -1,20 +1,5 @@
-#============================================================================
-#
-# Copyright (c) Kitware Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0.txt
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-#============================================================================
+
+
 #
 # Included from a dashboard script, this cmake file drives the configuration
 # and build steps.
@@ -22,27 +7,28 @@
 
 # The following variable are expected to be define in the top-level script:
 set(expected_variables
-  CTEST_BINARY_DIRECTORY
-  CTEST_BUILD_CONFIGURATION
-  CTEST_BUILD_FLAGS
-  CTEST_BUILD_NAME
-  CTEST_CMAKE_COMMAND
-  CTEST_CMAKE_GENERATOR
-  CTEST_COVERAGE_COMMAND
-  CTEST_DASHBOARD_ROOT
-  CTEST_GIT_COMMAND
-  CTEST_MEMORYCHECK_COMMAND
+  ADDITIONAL_CMAKECACHE_OPTION
   CTEST_NOTES_FILES
-  CTEST_PROJECT_NAME
   CTEST_SITE
-  CTEST_SOURCE_DIRECTORY
-  CTEST_TEST_TIMEOUT
-  GIT_REPOSITORY
-  QT_QMAKE_EXECUTABLE
-  SCRIPT_MODE
+  CTEST_DASHBOARD_ROOT
+  CTEST_CMAKE_GENERATOR
+  WITH_MEMCHECK
   WITH_COVERAGE
   WITH_DOCUMENTATION
-  WITH_MEMCHECK
+  CTEST_BUILD_CONFIGURATION
+  CTEST_TEST_TIMEOUT
+  CTEST_BUILD_FLAGS
+  TEST_TO_EXCLUDE_REGEX
+  CTEST_PROJECT_NAME
+  CTEST_SOURCE_DIRECTORY
+  CTEST_BINARY_DIRECTORY
+  CTEST_BUILD_NAME
+  SCRIPT_MODE
+  CTEST_COVERAGE_COMMAND
+  CTEST_MEMORYCHECK_COMMAND
+  CTEST_SVN_COMMAND
+  CTEST_GIT_COMMAND
+  QT_QMAKE_EXECUTABLE
   )
 
 if(WITH_DOCUMENTATION)
@@ -50,6 +36,10 @@ if(WITH_DOCUMENTATION)
 endif()
 if(NOT DEFINED CTEST_PARALLEL_LEVEL)
   set(CTEST_PARALLEL_LEVEL 8)
+endif()
+
+if(WITH_PACKAGES AND NOT DEFINED MIDAS_PACKAGE_URL)
+  list(APPEND expected_variables MIDAS_PACKAGE_URL)
 endif()
 
 if(EXISTS "${CTEST_LOG_FILE}")
@@ -62,16 +52,52 @@ foreach(var ${expected_variables})
   endif()
 endforeach()
 
-if(NOT EXISTS "${CTEST_SOURCE_DIRECTORY}")
-  set(CTEST_CHECKOUT_COMMAND "${CTEST_GIT_COMMAND} clone ${GIT_REPOSITORY} ${CTEST_SOURCE_DIRECTORY}")
+if(NOT DEFINED CTEST_CONFIGURATION_TYPE AND DEFINED CTEST_BUILD_CONFIGURATION)
+  set(CTEST_CONFIGURATION_TYPE ${CTEST_BUILD_CONFIGURATION})
 endif()
-set(CTEST_UPDATE_COMMAND "${CTEST_GIT_COMMAND}")
+
+# Make sure command 'ctest_upload' is available if WITH_PACKAGES is True
+if(WITH_PACKAGES)
+  if(NOT COMMAND ctest_upload)
+    message(FATAL_ERROR "Failed to enable option WITH_PACKAGES ! CMake ${CMAKE_VERSION} doesn't support 'ctest_upload' command.")
+  endif()
+endif()
+
+if(NOT DEFINED GIT_REPOSITORY)
+  if(NOT DEFINED SVN_REPOSITORY)
+    set(SVN_REPOSITORY "http://svn.slicer.org/${CTEST_PROJECT_NAME}")
+  endif()
+  if(NOT DEFINED SVN_BRANCH)
+    set(SVN_BRANCH "trunk")
+  endif()
+  set(repository ${SVN_REPOSITORY}/${SVN_BRANCH})
+  set(svn_checkout_option "")
+  if(NOT "${SVN_REVISION}" STREQUAL "")
+    set(repository "${repository}@${SVN_REVISION}")
+    set(run_ctest_with_update FALSE)
+  endif()
+  message("SVN_BRANCH .............: ${SVN_BRANCH}")
+  message("SVN_REVISION ...........: ${SVN_REVISION}")
+  message("SVN_REPOSITORY .........: ${SVN_REPOSITORY}")
+  message("SVN_URL ................: ${repository}")
+else()
+  set(repository ${GIT_REPOSITORY})
+  set(git_branch_option "")
+  if(NOT "${GIT_TAG}" STREQUAL "")
+    set(git_branch_option "-b ${GIT_TAG}")
+  endif()
+  message("GIT_REPOSITORY ......: ${GIT_REPOSITORY}")
+  message("GIT_TAG .............: ${GIT_TAG}")
+endif()
 
 # Should binary directory be cleaned?
 set(empty_binary_directory FALSE)
 
 # Attempt to build and test also if 'ctest_update' returned an error
 set(force_build FALSE)
+
+# Ensure SCRIPT_MODE is lowercase
+string(TOLOWER ${SCRIPT_MODE} SCRIPT_MODE)
 
 # Set model and track options
 set(model "")
@@ -90,44 +116,69 @@ elseif(SCRIPT_MODE STREQUAL "nightly")
 else()
   message(FATAL_ERROR "Unknown script mode: '${SCRIPT_MODE}'. Script mode should be either 'experimental', 'continuous' or 'nightly'")
 endif()
-
 set(track ${model})
-# If packages is defined, make sure the dashboards have the Nightly-Packages
-# and Experimental-Packages groups.
 if(WITH_PACKAGES)
-  if(NOT COMMAND ctest_upload)
-    message(FATAL_ERROR "Failed to enable option WITH_PACKAGES ! CMake ${CMAKE_VERSION} doesn't support 'ctest_upload' command.")
-  endif()
   set(track "${track}-Packages")
 endif()
 set(track ${CTEST_TRACK_PREFIX}${track}${CTEST_TRACK_SUFFIX})
 
 # For more details, see http://www.kitware.com/blog/home/post/11
-set(CTEST_USE_LAUNCHERS 0)
-if(CTEST_CMAKE_GENERATOR MATCHES ".*Makefiles.*")
-  set(CTEST_USE_LAUNCHERS 1)
+set(CTEST_USE_LAUNCHERS 1)
+if(NOT "${CTEST_CMAKE_GENERATOR}" MATCHES "Make")
+  set(CTEST_USE_LAUNCHERS 0)
 endif()
+set(ENV{CTEST_USE_LAUNCHERS_DEFAULT} ${CTEST_USE_LAUNCHERS})
 
 if(empty_binary_directory)
   message("Directory ${CTEST_BINARY_DIRECTORY} cleaned !")
   ctest_empty_binary_directory(${CTEST_BINARY_DIRECTORY})
 endif()
 
+if(NOT EXISTS "${CTEST_SOURCE_DIRECTORY}")
+  if(NOT DEFINED GIT_REPOSITORY)
+    set(CTEST_CHECKOUT_COMMAND "${CTEST_SVN_COMMAND} checkout ${repository} ${CTEST_SOURCE_DIRECTORY}")
+  else()
+    set(CTEST_CHECKOUT_COMMAND "${CTEST_GIT_COMMAND} clone ${git_branch_option} ${repository} ${CTEST_SOURCE_DIRECTORY}")
+  endif()
+endif()
+
+if(NOT DEFINED GIT_REPOSITORY)
+  set(CTEST_UPDATE_COMMAND "${CTEST_SVN_COMMAND}")
+else()
+  set(CTEST_UPDATE_COMMAND "${CTEST_GIT_COMMAND}")
+endif()
+
 set(CTEST_SOURCE_DIRECTORY "${CTEST_SOURCE_DIRECTORY}")
+
+#-----------------------------------------------------------------------------
+# The following variable can be used while testing the driver scripts
+#-----------------------------------------------------------------------------
+setIfNotDefined(run_ctest_submit TRUE)
+setIfNotDefined(run_ctest_with_update TRUE)
+setIfNotDefined(run_ctest_with_configure TRUE)
+setIfNotDefined(run_ctest_with_build TRUE)
+setIfNotDefined(run_ctest_with_test TRUE)
+setIfNotDefined(run_ctest_with_coverage TRUE)
+setIfNotDefined(run_ctest_with_memcheck TRUE)
+setIfNotDefined(run_ctest_with_packages TRUE)
+setIfNotDefined(run_ctest_with_upload TRUE)
+setIfNotDefined(run_ctest_with_notes TRUE)
 
 #
 # run_ctest macro
 #
 macro(run_ctest)
   ctest_start(${model} TRACK ${track})
-  ctest_update(SOURCE "${CTEST_SOURCE_DIRECTORY}" RETURN_VALUE FILES_UPDATED)
+  if(run_ctest_with_update)
+    ctest_update(SOURCE "${CTEST_SOURCE_DIRECTORY}" RETURN_VALUE FILES_UPDATED)
+  endif()
 
   # force a build if this is the first run and the build dir is empty
   if(NOT EXISTS "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt")
     message("First time build - Initialize CMakeCache.txt")
-    set(force_build 1)
+    set(force_build TRUE)
 
-    if(WITH_EXTENSIONS)
+    if(WITH_TESTING_EXTENSIONS)
       set(ADDITIONAL_CMAKECACHE_OPTION
         "${ADDITIONAL_CMAKECACHE_OPTION} CTEST_MODEL:STRING=${model}")
     endif()
@@ -136,33 +187,19 @@ macro(run_ctest)
     # Write initial cache.
     #-----------------------------------------------------------------------------
     file(WRITE "${CTEST_BINARY_DIRECTORY}/CMakeCache.txt" "
-    QT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
-    GIT_EXECUTABLE:FILEPATH=${CTEST_GIT_COMMAND}
-    WITH_COVERAGE:BOOL=${WITH_COVERAGE}
-    DOCUMENTATION_TARGET_IN_ALL:BOOL=${WITH_DOCUMENTATION}
-    DOCUMENTATION_ARCHIVES_OUTPUT_DIRECTORY:PATH=${DOCUMENTATION_ARCHIVES_OUTPUT_DIRECTORY}
-    CTEST_USE_LAUNCHERS:BOOL=${CTEST_USE_LAUNCHERS}
-    ${ADDITIONAL_CMAKECACHE_OPTION}
-    ")
+QT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
+GIT_EXECUTABLE:FILEPATH=${CTEST_GIT_COMMAND}
+Subversion_SVN_EXECUTABLE:FILEPATH=${CTEST_SVN_COMMAND}
+WITH_COVERAGE:BOOL=${WITH_COVERAGE}
+DOCUMENTATION_TARGET_IN_ALL:BOOL=${WITH_DOCUMENTATION}
+DOCUMENTATION_ARCHIVES_OUTPUT_DIRECTORY:PATH=${DOCUMENTATION_ARCHIVES_OUTPUT_DIRECTORY}
+${ADDITIONAL_CMAKECACHE_OPTION}
+")
   endif()
 
   if(FILES_UPDATED GREATER 0 OR force_build)
 
-    set(force_build 0)
-
-    #-----------------------------------------------------------------------------
-    # The following variable can be used while testing the driver scripts
-    #-----------------------------------------------------------------------------
-    set(run_ctest_submit TRUE)
-    set(run_ctest_with_update TRUE)
-    set(run_ctest_with_configure TRUE)
-    set(run_ctest_with_build TRUE)
-    set(run_ctest_with_test TRUE)
-    set(run_ctest_with_coverage TRUE)
-    set(run_ctest_with_memcheck TRUE)
-    set(run_ctest_with_packages TRUE)
-    set(run_ctest_with_upload TRUE)
-    set(run_ctest_with_notes TRUE)
+    set(force_build FALSE)
 
     #-----------------------------------------------------------------------------
     # Update
@@ -176,9 +213,6 @@ macro(run_ctest)
     #-----------------------------------------------------------------------------
     if(run_ctest_with_configure)
       message("----------- [ Configure ${CTEST_PROJECT_NAME} ] -----------")
-
-      set_property(GLOBAL PROPERTY SubProject ${label})
-      set_property(GLOBAL PROPERTY Label ${label})
 
       ctest_configure(BUILD "${CTEST_BINARY_DIRECTORY}")
       ctest_read_custom_files("${CTEST_BINARY_DIRECTORY}")
@@ -213,10 +247,8 @@ macro(run_ctest)
       message("----------- [ Test ${CTEST_PROJECT_NAME} ] -----------")
       ctest_test(
         BUILD "${Inner_BUILD_DIR}"
-        #INCLUDE_LABEL ${label}
         PARALLEL_LEVEL ${CTEST_PARALLEL_LEVEL}
         EXCLUDE ${TEST_TO_EXCLUDE_REGEX})
-      # runs only tests that have a LABELS property matching "${label}"
       if(run_ctest_submit)
         ctest_submit(PARTS Test)
       endif()
@@ -293,7 +325,7 @@ macro(run_ctest)
 
         set(packages)
         if(run_ctest_with_packages)
-          message("Packaging...")
+          message("Packaging ...")
           ctest_package(
             BINARY_DIR ${Slicer_Inner_BUILD_DIR}
             CONFIG ${CTEST_BUILD_CONFIGURATION}
@@ -302,7 +334,7 @@ macro(run_ctest)
           set(packages ${CMAKE_CURRENT_LIST_FILE})
         endif()
         if(run_ctest_with_upload)
-          message("Uploading package...")
+          message("Uploading ...")
           foreach(p ${packages})
             get_filename_component(package_name "${p}" NAME)
             set(midas_upload_status "fail")
@@ -353,12 +385,13 @@ macro(run_ctest)
 endmacro()
 
 if(SCRIPT_MODE STREQUAL "continuous")
-  while(${CTEST_ELAPSED_TIME} LESS 68400)
+  while(${CTEST_ELAPSED_TIME} LESS 46800) # Lasts 13 hours (Assuming it starts at 9am, it will end around 10pm)
     set(START_TIME ${CTEST_ELAPSED_TIME})
     run_ctest()
-    # Loop no faster than once every 5 minutes
-    message("Wait for 5 minutes ...")
-    ctest_sleep(${START_TIME} 300 ${CTEST_ELAPSED_TIME})
+    set(interval 300)
+    # Loop no faster than once every <interval> seconds
+    message("Wait for ${interval} seconds ...")
+    ctest_sleep(${START_TIME} ${interval} ${CTEST_ELAPSED_TIME})
   endwhile()
 else()
   run_ctest()
