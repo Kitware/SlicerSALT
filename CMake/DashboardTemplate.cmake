@@ -27,6 +27,8 @@ macro(setOnlyIfNotDefined var defaultvalue)
   endif()
 endmacro()
 
+set(CTEST_PROJECT_NAME "Ninja")
+
 #-----------------------------------------------------------------------------
 # Repository
 #-----------------------------------------------------------------------------
@@ -52,7 +54,6 @@ setOnlyIfNotDefined(SCRIPT_MODE "Experimental")
 #-----------------------------------------------------------------------------
 # Dashboard properties
 #-----------------------------------------------------------------------------
-set(CTEST_PROJECT_NAME "Ninja")
 
 # Path where to pull and build the sources.
 # E.g. ${CTEST_SCRIPT_DIRECTORY}, C:/Work/Dashboards
@@ -140,7 +141,7 @@ find_program(CTEST_MEMORYCHECK_COMMAND NAMES valgrind)
 #-----------------------------------------------------------------------------
 # Additional CMakeCache options
 #-----------------------------------------------------------------------------
-setOnlyIfNotDefined(ADDITIONNAL_CMAKECACHE_OPTION "")
+setOnlyIfNotDefined(ADDITIONAL_CMAKECACHE_OPTION "")
 
 #-----------------------------------------------------------------------------
 # Build Name
