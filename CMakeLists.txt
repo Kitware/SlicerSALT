@@ -194,7 +194,7 @@ endif()
 
 get_property(${kit}_LIBRARY_DIRS GLOBAL PROPERTY ${kit}_LIBRARY_DIRS)
 if (${kit}_LIBRARY_DIRS)
-  ist(REMOVE_DUPLICATES ${kit}_LIBRARY_DIRS)
+  list(REMOVE_DUPLICATES ${kit}_LIBRARY_DIRS)
 endif()
 
 # --------------------------------------------------------------------------
