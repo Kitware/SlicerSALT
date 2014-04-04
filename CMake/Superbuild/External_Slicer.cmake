@@ -65,10 +65,14 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
     )
 
   if(DEFINED ${proj}_SOURCE_DIR)
-    list(APPEND ${proj}_EP_ARGS DOWNLOAD_COMMAND "")
+    list(APPEND ${proj}_EP_ARGS
+      DOWNLOAD_COMMAND ""
+      SOURCE_DIR ${${proj}_SOURCE_DIR}
+      )
   else()
     set(${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
     list(APPEND ${proj}_EP_ARGS
+      SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
       GIT_REPOSITORY "${git_protocol}://github.com/Slicer/Slicer.git"
       GIT_TAG "62d9181e545cb05b0f1e5e55973ad6b7b49dcee8"
       )
@@ -76,7 +80,6 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
 
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
-    SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${${proj}_DIR}
     PREFIX ${proj}${ep_suffix}
     INSTALL_COMMAND ""
