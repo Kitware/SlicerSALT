@@ -1,6 +1,6 @@
 #============================================================================
 #
-# Copyright (c) Kitware Inc.
+# Copyright (c) Kitware, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,9 +16,10 @@
 #
 #============================================================================
 
-cmake_minimum_required(VERSION 2.8.10)
+cmake_minimum_required(VERSION 3.0)
 
 set(APPLICATION_NAME Ninja)
+set(APPLICATION_VENDOR "Kitware, Inc.")
 
 #-----------------------------------------------------------------------------
 set(kit ${APPLICATION_NAME})
@@ -90,6 +91,11 @@ if(NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 #-----------------------------------------------------------------------------
+option(${APPLICATION_NAME}_USE_VTK_DEBUG_LEAKS "Enable VTK debug leaks." ON)
+set(Slicer_USE_VTK_DEBUG_LEAKS ${${APPLICATION_NAME}_USE_VTK_DEBUG_LEAKS})
+mark_as_superbuild(VARS Slicer_USE_VTK_DEBUG_LEAKS:BOOL PROJECTS Slicer)
+
+#-----------------------------------------------------------------------------
 # Superbuild Option - Enabled by default
 #
 option(${kit}_SUPERBUILD "Build ${kit} and the projects it depends on." ON)
@@ -114,7 +120,7 @@ mark_as_superbuild(VARS GIT_EXECUTABLE PROJECTS Slicer)
 # Project version number.
 #
 set(${kit}_VERSION_MAJOR 0)
-set(${kit}_VERSION_MINOR 0)
+set(${kit}_VERSION_MINOR 1)
 set(${kit}_VERSION_PATCH 0)
 # Releases define a tweak level
 #set(${kit}_VERSION_TWEAK 0)

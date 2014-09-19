@@ -1,6 +1,6 @@
 #============================================================================
 #
-# Copyright (c) Kitware Inc.
+# Copyright (c) Kitware, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,6 +17,9 @@
 #============================================================================
 
 set (APPLICATION_NAME ${Slicer_MAIN_PROJECT_APPLICATION_NAME})
+set(${APPLICATION_NAME}_ORGANIZATION_DOMAIN "kitware.com")
+set(${APPLICATION_NAME}_ORGANIZATION_NAME "Kitware, Inc.")
+
 project(${APPLICATION_NAME}App)
 
 # --------------------------------------------------------------------------
@@ -74,6 +77,8 @@ set(SlicerApp_SRCS
   qAppMainWindow.h
   ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppAboutDialog.cxx
   ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppAboutDialog.h
+  ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppErrorReportDialog.cxx
+  ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppErrorReportDialog.h
   ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppMainWindow.cxx
   ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppMainWindow.h
   ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppMainWindow_p.h
@@ -83,12 +88,14 @@ set(SlicerApp_MOC_SRCS
   qAppAboutDialog.h
   qAppMainWindow.h
   ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppAboutDialog.h
+  ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppErrorReportDialog.h
   ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppMainWindow.h
   )
 
 set(SlicerApp_UI_SRCS
   Resources/UI/qAppAboutDialog.ui
   ${Slicer_SOURCE_DIR}/Applications/SlicerApp/Resources/UI/qSlicerAppAboutDialog.ui
+  ${Slicer_SOURCE_DIR}/Applications/SlicerApp/Resources/UI/qSlicerAppErrorReportDialog.ui
   ${Slicer_SOURCE_DIR}/Applications/SlicerApp/Resources/UI/qSlicerAppMainWindow.ui
   )
 
@@ -96,7 +103,6 @@ set(SlicerApp_RESOURCES
   Resources/App.qrc
   ${Slicer_SOURCE_DIR}/Applications/SlicerApp/Resources/SlicerApp.qrc
   ${qSlicerBaseQTGUI_SOURCE_DIR}/Resources/qSlicerBaseQTGUI.qrc
-  ${qSlicerModulesCore_SOURCE_DIR}/Resources/qSlicerModulesCore.qrc
   ${${APPLICATION_NAME}_SOURCE_DIR}/Utilities/Qt/Resources.qrc
   )
 
@@ -120,31 +126,9 @@ set(SlicerApp_INCLUDE_DIRECTORIES
 include_directories(${SlicerApp_INCLUDE_DIRECTORIES})
 
 # --------------------------------------------------------------------------
-# Translation
-# --------------------------------------------------------------------------
-set(KIT_LIBRARY_NAME "q${PROJECT_NAME}")
-
-if(Slicer_BUILD_I18N_SUPPORT)
-  set(TS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Translations/")
-  get_property(Slicer_LANGUAGES GLOBAL PROPERTY Slicer_LANGUAGES)
-
-  include(${Slicer_SOURCE_DIR}/CMake/SlicerMacroTranslation.cmake)
-  SlicerMacroTranslation(
-    SRCS ${SlicerApp_SRCS}
-    UI_SRCS ${SlicerApp_UI_SRCS}
-    TS_DIR ${TS_DIR}
-    TS_BASEFILENAME ${KIT_LIBRARY_NAME}
-    TS_LANGUAGES ${Slicer_LANGUAGES}
-    QM_OUTPUT_DIR_VAR QM_OUTPUT_DIR
-    QM_OUTPUT_FILES_VAR QM_OUTPUT_FILES
-    )
-
-  set_property(GLOBAL APPEND PROPERTY Slicer_QM_OUTPUT_DIRS ${QM_OUTPUT_DIR})
-endif()
-
-# --------------------------------------------------------------------------
 # Build the library
 # --------------------------------------------------------------------------
+set(KIT_LIBRARY_NAME "q${PROJECT_NAME}")
 
 add_library(${KIT_LIBRARY_NAME}
   ${SlicerApp_SRCS}
@@ -161,21 +145,6 @@ set(SlicerApp_LIBRARIES
 target_link_libraries(${KIT_LIBRARY_NAME}
   ${SlicerApp_LIBRARIES}
   )
-
-#----------------------------------------------------------------------------
-# ITKv3: Ensure ITKIOReview library is packaged on MacOSX
-#----------------------------------------------------------------------------
-if(Slicer_BUILD_EXTENSIONMANAGER_SUPPORT)
-  # Force linking against ITKIOReview library to ensure it will be packaged and
-  # fixed-up on MacOSX. That way extensions depending on the associated code
-  # will load properly.
-  # On unix-like platform, by using gcc the dependency should NOT be
-  # optimized out. Hence, it is not required to explicitly call a function.
-  # See http://slicer-devel.65872.n3.nabble.com/ITK-lib-missing-from-Mac-Slicer-package-needed-for-Plastimatch-tt4027274.html
-  if(APPLE AND ITK_VERSION_MAJOR EQUAL 3)
-    target_link_libraries(${KIT_LIBRARY_NAME} ITKIOReview)
-  endif()
-endif()
 
 # --------------------------------------------------------------------------
 # Configure Application Bundle Resources (Mac Only)
@@ -261,6 +230,7 @@ if(APPLE)
     PROPERTIES
       OUTPUT_NAME ${SlicerApp_APPLICATION_NAME}
       MACOSX_BUNDLE_BUNDLE_VERSION "${Slicer_VERSION_FULL}"
+      MACOSX_BUNDLE_INFO_PLIST "${Slicer_CMAKE_DIR}/MacOSXBundleInfo.plist.in"
       LINK_FLAGS ${link_flags}
     )
   if(DEFINED Slicer_VERSION_TWEAK)
@@ -326,6 +296,7 @@ if(${PROJECT_NAME} STREQUAL ${Slicer_MAIN_PROJECT})
     include(${CTKAPPLAUNCHER_DIR}/CMake/ctkAppLauncher.cmake)
 
     # Define list of extra 'application to launch' to associate with the launcher
+    # within the build tree
     set(extraApplicationToLaunchListForBuildTree)
     if(EXISTS "${QT_DESIGNER_EXECUTABLE}")
       ctkAppLauncherAppendExtraAppToLaunchToList(
@@ -346,13 +317,34 @@ if(${PROJECT_NAME} STREQUAL ${Slicer_MAIN_PROJECT})
     foreach(executable ${executables})
       find_program(${executable}_EXECUTABLE ${executable})
       if(${executable}_EXECUTABLE)
-        message(STATUS "Enabling Slicer launcher option: --${executable}")
+        message(STATUS "Enabling Slicer build tree launcher option: --${executable}")
         ctkAppLauncherAppendExtraAppToLaunchToList(
           LONG_ARG ${executable}
           HELP "Start ${executable}"
           PATH ${${executable}_EXECUTABLE}
           ARGUMENTS ${${executable}_ARGUMENTS}
           OUTPUTVAR extraApplicationToLaunchListForBuildTree
+          )
+      endif()
+    endforeach()
+
+    # Define list of extra 'application to launch' to associate with the launcher
+    # within the install tree
+    set(executables)
+    if(WIN32)
+      list(APPEND executables cmd)
+      set(cmd_ARGUMENTS "/c start cmd")
+    endif()
+    foreach(executable ${executables})
+      find_program(${executable}_EXECUTABLE ${executable})
+      if(${executable}_EXECUTABLE)
+        message(STATUS "Enabling Slicer install tree launcher option: --${executable}")
+        ctkAppLauncherAppendExtraAppToLaunchToList(
+          LONG_ARG ${executable}
+          HELP "Start ${executable}"
+          PATH ${${executable}_EXECUTABLE}
+          ARGUMENTS ${${executable}_ARGUMENTS}
+          OUTPUTVAR extraApplicationToLaunchListForInstallTree
           )
       endif()
     endforeach()
@@ -378,8 +370,9 @@ if(${PROJECT_NAME} STREQUAL ${Slicer_MAIN_PROJECT})
       SPLASHSCREEN_HIDE_DELAY_MS 3000
       HELP_SHORT_ARG "-h"
       HELP_LONG_ARG "--help"
-      NOSPLASH_ARGS "--no-splash,--help,--version,--home,--program-path,--no-main-window"
+      NOSPLASH_ARGS "--no-splash,--help,--version,--home,--program-path,--no-main-window,--settings-path,--temporary-path"
       EXTRA_APPLICATION_TO_LAUNCH_BUILD ${extraApplicationToLaunchListForBuildTree}
+      EXTRA_APPLICATION_TO_LAUNCH_INSTALLED ${extraApplicationToLaunchListForInstallTree}
       DESTINATION_DIR ${Slicer_BINARY_DIR}
       LIBRARY_PATHS_BUILD "${${PROJECT_NAME}_LIBRARY_PATHS_BUILD}"
       PATHS_BUILD "${SLICER_PATHS_BUILD}"
@@ -387,39 +380,71 @@ if(${PROJECT_NAME} STREQUAL ${Slicer_MAIN_PROJECT})
       LIBRARY_PATHS_INSTALLED "${SLICER_LIBRARY_PATHS_INSTALLED}"
       PATHS_INSTALLED "${SLICER_PATHS_INSTALLED}"
       ENVVARS_INSTALLED "${SLICER_ENVVARS_INSTALLED}"
+      ADDITIONAL_PATH_ENVVARS_BUILD "${SLICER_ADDITIONAL_PATH_ENVVARS_BUILD}"
+      ADDITIONAL_PATH_ENVVARS_INSTALLED "${SLICER_ADDITIONAL_PATH_ENVVARS_INSTALLED}"
+      ADDITIONAL_PATH_ENVVARS_PREFIX SLICER_
       )
-    # HACK - Waiting "ctkAppLauncherConfigure" macro is updated so that it reconfigures the settings,
-    #        if possible, only if "SlicerBlockCTKAppLauncherSettings.cmake" has been modified.
-    #        Let's force a systematic reconfiguration of SlicerLauncherSettings.
-    add_custom_target(${SlicerApp_APPLICATION_NAME}RemoveLauncherSettings
-      COMMAND ${CMAKE_COMMAND} -E remove
-        ${Slicer_BINARY_DIR}/${SlicerApp_APPLICATION_NAME}LauncherSettings.ini
-        ${Slicer_BINARY_DIR}/${SlicerApp_APPLICATION_NAME}LauncherSettingsToInstall.ini
-      )
-    add_dependencies(${SlicerApp_APPLICATION_NAME}RemoveLauncherSettings ${PROJECT_NAME}${SlicerApp_EXE_SUFFIX})
-    add_dependencies(${SlicerApp_APPLICATION_NAME}ConfigureLauncher ${SlicerApp_APPLICATION_NAME}RemoveLauncherSettings)
 
     if(NOT APPLE)
       if(Slicer_HAS_CONSOLE_IO_SUPPORT)
-        install(PROGRAMS "${Slicer_BINARY_DIR}/${SlicerApp_APPLICATION_NAME}${CMAKE_EXECUTABLE_SUFFIX}" DESTINATION ".")
-      else()
         install(
-          PROGRAMS "${CTKAPPLAUNCHER_DIR}/bin/CTKAppLauncherW${CMAKE_EXECUTABLE_SUFFIX}"
+          PROGRAMS "${Slicer_BINARY_DIR}/${SlicerApp_APPLICATION_NAME}${CMAKE_EXECUTABLE_SUFFIX}"
+          DESTINATION "."
+          COMPONENT Runtime
+          )
+      else()
+        # Create command to update launcher icon
+        add_custom_command(
+          DEPENDS
+            ${CTKAPPLAUNCHER_DIR}/bin/CTKAppLauncherW${CMAKE_EXECUTABLE_SUFFIX}
+          OUTPUT
+            ${Slicer_BINARY_DIR}/CMakeFiles/${SlicerApp_APPLICATION_NAME}W${CMAKE_EXECUTABLE_SUFFIX}
+          COMMAND ${CMAKE_COMMAND} -E copy
+            ${CTKAPPLAUNCHER_DIR}/bin/CTKAppLauncherW${CMAKE_EXECUTABLE_SUFFIX}
+            ${Slicer_BINARY_DIR}/CMakeFiles/${SlicerApp_APPLICATION_NAME}W${CMAKE_EXECUTABLE_SUFFIX}
+          COMMAND
+            ${CTKResEdit_EXECUTABLE}
+              --update-resource-ico ${Slicer_BINARY_DIR}/CMakeFiles/${SlicerApp_APPLICATION_NAME}W${CMAKE_EXECUTABLE_SUFFIX}
+              IDI_ICON1 ${CMAKE_CURRENT_SOURCE_DIR}/Resources/Icons/XLarge/DesktopIcon.ico
+          WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+          COMMEND ""
+          )
+        add_custom_target(${SlicerApp_APPLICATION_NAME}UpdateLauncherWIcon ALL
+          DEPENDS
+            ${Slicer_BINARY_DIR}/CMakeFiles/${SlicerApp_APPLICATION_NAME}W${CMAKE_EXECUTABLE_SUFFIX}
+          )
+        install(
+          PROGRAMS "${Slicer_BINARY_DIR}/CMakeFiles/${SlicerApp_APPLICATION_NAME}W${CMAKE_EXECUTABLE_SUFFIX}"
           DESTINATION "."
           RENAME "${SlicerApp_APPLICATION_NAME}${CMAKE_EXECUTABLE_SUFFIX}"
+          COMPONENT Runtime
           )
       endif()
 
       install(
         FILES ${splash_image_path}
         DESTINATION ${Slicer_INSTALL_BIN_DIR}
+        COMPONENT Runtime
         )
       install(
         FILES "${Slicer_BINARY_DIR}/${SlicerApp_APPLICATION_NAME}LauncherSettingsToInstall.ini"
         DESTINATION ${Slicer_INSTALL_BIN_DIR}
         RENAME ${SlicerApp_APPLICATION_NAME}LauncherSettings.ini
+        COMPONENT Runtime
         )
     endif()
+
+    if(WIN32)
+      # Create target to update launcher icon
+      add_custom_target(${SlicerApp_APPLICATION_NAME}UpdateLauncherIcon ALL
+        COMMAND
+          ${CTKResEdit_EXECUTABLE}
+            --update-resource-ico ${Slicer_BINARY_DIR}/${SlicerApp_APPLICATION_NAME}${CMAKE_EXECUTABLE_SUFFIX}
+            IDI_ICON1 ${CMAKE_CURRENT_SOURCE_DIR}/Resources/Icons/XLarge/DesktopIcon.ico
+        )
+      add_dependencies(${SlicerApp_APPLICATION_NAME}UpdateLauncherIcon ${SlicerApp_APPLICATION_NAME}ConfigureLauncher)
+    endif()
+
   endif()
 endif()
 

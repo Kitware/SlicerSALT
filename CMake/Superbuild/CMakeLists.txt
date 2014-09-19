@@ -1,6 +1,6 @@
 #============================================================================
 #
-# Copyright (c) Kitware Inc.
+# Copyright (c) Kitware, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ set(${APPLICATION_NAME}_DEPENDENCIES Slicer)
 #-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
-# Git protocole option
+# Git protocol option
 #
 option(${APPLICATION_NAME}_USE_GIT_PROTOCOL "If behind a firewall turn this OFF to use http instead." ON)
 
@@ -37,7 +37,7 @@ endif()
 # Enable and setup External project global properties
 #
 
-set(ep_suffix      "-cmake")
+set(ep_suffix "-cmake")
 set(ep_common_c_flags "${CMAKE_C_FLAGS_INIT} ${ADDITIONAL_C_FLAGS}")
 set(ep_common_cxx_flags "${CMAKE_CXX_FLAGS_INIT} ${ADDITIONAL_CXX_FLAGS}")
 

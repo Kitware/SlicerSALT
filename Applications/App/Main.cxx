@@ -1,9 +1,8 @@
 /*==============================================================================
 
-  Copyright (c) Kitware Inc.
+  Copyright (c) Kitware, Inc.
 
-  See COPYRIGHT.txt
-  or http://www.slicer.org/copyright/copyright.txt for details.
+  See http://www.slicer.org/copyright/copyright.txt for details.
 
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
@@ -11,7 +10,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  This file was originally developed by Jean-Christophe Fillion-Robin, Kitware Inc.
+  This file was originally developed by Jean-Christophe Fillion-Robin, Kitware, Inc.
   and was partially funded by NIH grant 3P41RR013218-12S1
 
 ==============================================================================*/
@@ -85,7 +84,6 @@ void splashMessage(QScopedPointer<QSplashScreen>& splashScreen, const QString& m
     return;
     }
   splashScreen->showMessage(message, Qt::AlignBottom | Qt::AlignHCenter);
-  //splashScreen->repaint();
 }
 
 //----------------------------------------------------------------------------
@@ -107,6 +105,7 @@ int SlicerAppMain(int argc, char* argv[])
     return app.returnCode();
     }
 
+  QSettings().setValue("MainWindow/DontShowDisclaimerMessage", true);
 
 #ifdef Slicer_USE_QtTesting
   setEnableQtTesting(); // disabled the native menu bar.

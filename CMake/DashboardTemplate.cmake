@@ -12,7 +12,7 @@
 #     'glxinfo | grep OpenGL' to obtain GPU details.
 ####################################################################################
 
-cmake_minimum_required(VERSION 2.8.10)
+cmake_minimum_required(VERSION 3.0)
 
 # You could invoke the script with the following syntax:
 #  ctest -S /path/to/<scriptname>.cmake -C <CTEST_BUILD_CONFIGURATION> -V
@@ -27,7 +27,7 @@ macro(setOnlyIfNotDefined var defaultvalue)
   endif()
 endmacro()
 
-set(CTEST_PROJECT_NAME "Ninja")
+set(CTEST_PROJECT_NAME Ninja)
 
 #-----------------------------------------------------------------------------
 # Repository
@@ -135,7 +135,7 @@ endif()
 #-----------------------------------------------------------------------------
 find_program(CTEST_SVN_COMMAND NAMES svn)
 find_program(CTEST_GIT_COMMAND NAMES git)
-find_program(CTEST_COVERAGE_COMMAND NAMES gcov)
+find_program(CTEST_COVERAGE_COMMAND NAMES gcov llvm-cov)
 find_program(CTEST_MEMORYCHECK_COMMAND NAMES valgrind)
 
 #-----------------------------------------------------------------------------

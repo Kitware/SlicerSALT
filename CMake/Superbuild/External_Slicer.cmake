@@ -1,6 +1,6 @@
 #============================================================================
 #
-# Copyright (c) Kitware Inc.
+# Copyright (c) Kitware, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,118 +16,159 @@
 #
 #============================================================================
 
-#
-# Slicer
-#
 set(proj Slicer)
 
-# Set dependency list
 set(${proj}_DEPENDENCIES "")
-
-# Include dependent projects if any
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
 if(${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
-  message(FATAL_ERROR "Enabling ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj} is not supported !")
+  message(FATAL_ERROR "Enabling ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj} is not supported")
 endif()
 
-# Sanity checks
 if(DEFINED ${proj}_DIR AND NOT EXISTS ${${proj}_DIR})
-  message(FATAL_ERROR "${proj}_DIR variable is defined but corresponds to non-existing directory")
+  message(FATAL_ERROR "${proj}_DIR variable is defined but corresponds to nonexistent directory")
 endif()
 
-if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
+if(NOT DEFINED ${proj}_DIR)
 
   if(NOT DEFINED git_protocol)
       set(git_protocol "git")
   endif()
 
-  set(${proj}_INTERNAL_DEPENDENCIES_LIST "${APPLICATION_NAME}")
+  set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
+  set(${proj}_PREFIX ${CMAKE_BINARY_DIR}/${proj}-prefix)
+  set(${proj}_INTERNAL_DEPENDENCIES_LIST ${APPLICATION_NAME}
+    # List here additional external projects
+    )
 
   find_package(Qt4 REQUIRED)
 
-  set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
-
-  # Retrieve modules
   get_property(${APPLICATION_NAME}_MODULES GLOBAL PROPERTY ${APPLICATION_NAME}_MODULES)
-
-  # Set slicer build directory
-  set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
-
-  set(Slicer_QTLOADABLEMODULES_DISABLED
+  set(${proj}_QTLOADABLEMODULES_DISABLED
     SlicerWelcome
+    SceneViews
+    ViewControllers
     )
-  set(Slicer_QTSCRIPTEDMODULES_DISABLED
+  set(${proj}_QTSCRIPTEDMODULES_DISABLED
     Endoscopy
+    SampleData
+    LabelStatistics
+    PerformanceTests
+    DataProbe
     )
   set(Slicer_CLIMODULES_DISABLED
+    ACPCTransform
+    AddScalarVolumes
+    CastScalarVolume
+    CheckerBoardFilter
+    CreateDICOMSeries
+    CurvatureAnisotropicDiffusion
     ExecutionModelTour
+    ExpertAutomatedRegistration
+    ExtractSkeleton
+    FreesurferSurfaceSectionExtraction
+    GaussianBlurImageFilter
+    GradientAnisotropicDiffusion
+    GrayscaleFillHoleImageFilter
+    GrayscaleGrindPeakImageFilter
+    GrayscaleModelMaker
+    HistogramMatching
+    ImageLabelCombine
+    LabelMapSmoothing
+    MaskScalarVolume
+    MedianImageFilter
+    ModelToLabelMap
+    MultiplyScalarVolumes
+    N4ITKBiasFieldCorrection
+    OrientScalarVolume
+    PETStandardUptakeValueComputation
+    ProbeVolumeWithModel
+    RobustStatisticsSegmenter
+    SimpleRegionGrowingSegmentation
+    SubtractScalarVolumes
+    ThresholdScalarVolume
+    VotingBinaryHoleFillingImageFilter
+    MergeModels
+    ModelMaker
+    ResampleDTIVolume
+    # ResampleScalarVectorDWIVolume # Needed by 'CropVolume' module
+    )
+  # Legacy
+  list(APPEND Slicer_CLIMODULES_DISABLED
+    BSplineToDeformationField
+    FiducialRegistration
+    ResampleScalarVolume
     )
 
   if(DEFINED ${proj}_SOURCE_DIR)
-    list(APPEND ${proj}_EP_ARGS
-      DOWNLOAD_COMMAND ""
-      SOURCE_DIR ${${proj}_SOURCE_DIR}
-      )
+    list(APPEND ${proj}_EP_ARGS DOWNLOAD_COMMAND "")
   else()
     set(${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
     list(APPEND ${proj}_EP_ARGS
-      SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
-      GIT_REPOSITORY "${git_protocol}://github.com/Slicer/Slicer.git"
-      GIT_TAG "62d9181e545cb05b0f1e5e55973ad6b7b49dcee8"
+      GIT_REPOSITORY ${git_protocol}://github.com/Slicer/Slicer.git
+      GIT_TAG 1761cb2538270c4e914f4fdc4cd06502f81a3b7d
       )
   endif()
 
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
+    SOURCE_DIR ${${proj}_SOURCE_DIR}
     BINARY_DIR ${${proj}_DIR}
-    PREFIX ${proj}${ep_suffix}
+    PREFIX ${${proj}_PREFIX}
     INSTALL_COMMAND ""
     CMAKE_CACHE_ARGS
-      -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
-      -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
+      -D${APPLICATION_NAME}_ORGANIZATION_NAME:STRING=${APPLICATION_VENDOR}
+      -DBUILD_TESTING:BOOL=OFF
+      # Compile options
       -DADDITIONAL_C_FLAGS:STRING=${ADDITIONAL_C_FLAGS}
       -DADDITIONAL_CXX_FLAGS:STRING=${ADDITIONAL_CXX_FLAGS}
-      -DBUILD_TESTING:BOOL=OFF
+      -DCMAKE_C_COMPILER:FILEPATH=${CMAKE_C_COMPILER}
+      -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
+      -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
+      -DCMAKE_CXX_COMPILER:FILEPATH=${CMAKE_CXX_COMPILER}
+      -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
+      -DCMAKE_EXE_LINKER_FLAGS:STRING=${CMAKE_EXE_LINKER_FLAGS}
+      -DCMAKE_SHARED_LINKER_FLAGS:STRING=${CMAKE_SHARED_LINKER_FLAGS}
+      # Install paths
       -D${proj}_INSTALL_BIN_DIR:STRING=${${APPLICATION_NAME}_INSTALL_BIN_DIR}
       -D${proj}_INSTALL_LIB_DIR:STRING=${${APPLICATION_NAME}_INSTALL_BIN_DIR}
-      -D${proj}_USE_GIT_PROTOCOL:BOOL=${${APPLICATION_NAME}_USE_GIT_PROTOCOL}
       # Qt
       -DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
-      -DSlicer_REQUIRED_QT_VERSION:STRING=${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}
+      -D${proj}_REQUIRED_QT_VERSION:STRING=${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}.${QT_VERSION_PATCH}
       # External projects
       -DEXTERNAL_PROJECT_ADDITIONAL_DIR:PATH=${${APPLICATION_NAME}_SUPERBUILD_DIR}
-      -DSlicer_ADDITIONAL_DEPENDENCIES:STRING=${${proj}_INTERNAL_DEPENDENCIES_LIST}
+      -D${proj}_ADDITIONAL_DEPENDENCIES:STRING=${${proj}_INTERNAL_DEPENDENCIES_LIST}
+      -D${proj}_USE_GIT_PROTOCOL:BOOL=${${APPLICATION_NAME}_USE_GIT_PROTOCOL}
+      -D${proj}_DIR:PATH=${${proj}_DIR} # Required by External_<APPLICATION_NAME>.cmake
       # Application
       -D${APPLICATION_NAME}_SOURCE_DIR:PATH=${${APPLICATION_NAME}_SOURCE_DIR} # needed by External_${APPLICATION_NAME}.cmake
-      -DSlicer_MAIN_PROJECT:STRING=${APPLICATION_NAME}App
       -D${APPLICATION_NAME}App_APPLICATION_NAME:STRING=${APPLICATION_NAME}
-      -DSlicer_APPLICATIONS_DIR:PATH=${${APPLICATION_NAME}_SOURCE_DIR}/Applications
+      -D${proj}_APPLICATIONS_DIR:PATH=${${APPLICATION_NAME}_SOURCE_DIR}/Applications
+      -D${proj}_MAIN_PROJECT:STRING=${APPLICATION_NAME}App
       # Slicer features
-      -DSlicer_BUILD_DICOM_SUPPORT:BOOL=ON
-      -DSlicer_BUILD_DIFFUSION_SUPPORT:BOOL=OFF
-      -DSlicer_BUILD_EXTENSIONMANAGER_SUPPORT:BOOL=OFF
-      -DSlicer_BUILD_MULTIVOLUME_SUPPORT:BOOL=OFF
-      -DSlicer_USE_OpenIGTLink:BOOL=OFF
-      -DSlicer_USE_QtTesting:BOOL=OFF
-      -DSlicer_USE_PYTHONQT:BOOL=ON
-      -DSlicer_USE_PYTHONQT_WITH_OPENSSL:BOOL=ON
-      -DSlicer_USE_PYTHONQT_WITH_TCL:BOOL=OFF
-      -DSlicer_USE_SimpleITK:BOOL=OFF
+      -D${proj}_BUILD_DICOM_SUPPORT:BOOL=ON
+      -D${proj}_BUILD_DIFFUSION_SUPPORT:BOOL=OFF
+      -D${proj}_BUILD_EXTENSIONMANAGER_SUPPORT:BOOL=OFF
+      -D${proj}_BUILD_MULTIVOLUME_SUPPORT:BOOL=OFF
+      -D${proj}_USE_NUMPY:BOOL=ON
+      -D${proj}_USE_OpenIGTLink:BOOL=OFF
+      -D${proj}_USE_PYTHONQT_WITH_OPENSSL:BOOL=ON
+      -D${proj}_USE_PYTHONQT_WITH_TCL:BOOL=OFF
+      -D${proj}_USE_PYTHONQT:BOOL=ON
+      -D${proj}_USE_QtTesting:BOOL=OFF
+      -D${proj}_USE_SimpleITK:BOOL=ON
       # Slicer built-in modules
-      -DSlicer_CLIMODULES_DISABLED:STRING=${Slicer_CLIMODULES_DISABLED}
-      -DSlicer_QTLOADABLEMODULES_DISABLED:STRING=${Slicer_QTLOADABLEMODULES_DISABLED}
-      -DSlicer_QTSCRIPTEDMODULES_DISABLED:STRING=${Slicer_QTSCRIPTEDMODULES_DISABLED}
-      -DSlicer_BUILD_EMSegment:BOOL=OFF
+      -D${proj}_CLIMODULES_DISABLED:STRING=${${proj}_CLIMODULES_DISABLED}
+      -D${proj}_QTLOADABLEMODULES_DISABLED:STRING=${${proj}_QTLOADABLEMODULES_DISABLED}
+      -D${proj}_QTSCRIPTEDMODULES_DISABLED:STRING=${${proj}_QTSCRIPTEDMODULES_DISABLED}
+      -D${proj}_BUILD_EMSegment:BOOL=OFF
       # Slicer remote modules
-      -DSlicer_BUILD_BRAINSTOOLS:BOOL=OFF
-      -DSlicer_BUILD_ChangeTrackerPy:BOOL=OFF
-      -DSlicer_BUILD_CompareVolumes:BOOL=OFF
-      -DSlicer_BUILD_DataStore:BOOL=OFF
-      -DSlicer_BUILD_LandmarkRegistration:BOOL=OFF
-      -DSlicer_EXTENSION_SOURCE_DIRS:STRING=${${APPLICATION_NAME}_MODULES}
-      # Required by External_<APPLICATION_NAME>.cmake
-      -DSlicer_DIR:PATH=${${proj}_DIR}
+      -D${proj}_BUILD_BRAINSTOOLS:BOOL=OFF
+      -D${proj}_BUILD_ChangeTrackerPy:BOOL=OFF
+      -D${proj}_BUILD_CompareVolumes:BOOL=OFF
+      -D${proj}_BUILD_DataStore:BOOL=OFF
+      -D${proj}_BUILD_LandmarkRegistration:BOOL=OFF
+      -D${proj}_EXTENSION_SOURCE_DIRS:STRING=${${APPLICATION_NAME}_MODULES}
     DEPENDS
       ${${proj}_DEPENDENCIES}
     )
