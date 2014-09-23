@@ -170,7 +170,7 @@ if(NOT DEFINED ${proj}_DIR)
       -D${proj}_BUILD_LandmarkRegistration:BOOL=OFF
       -D${proj}_EXTENSION_SOURCE_DIRS:STRING=${${APPLICATION_NAME}_MODULES}
     DEPENDS
-      ${${proj}_DEPENDENCIES}
+      ${${proj}_DEPENDENCIES} ${Slicer_REMOTE_DEPENDENCIES}
     )
 
   # This custom external project step forces the build and later

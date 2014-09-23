@@ -42,6 +42,24 @@ set(ep_common_c_flags "${CMAKE_C_FLAGS_INIT} ${ADDITIONAL_C_FLAGS}")
 set(ep_common_cxx_flags "${CMAKE_CXX_FLAGS_INIT} ${ADDITIONAL_CXX_FLAGS}")
 
 #-----------------------------------------------------------------------------
+# Include remote modules
+#
+
+include(ExternalProjectAddSource)
+
+#ExternalProject_Add_Source(MyRemoteModule
+#  GIT_REPOSITORY ${git_protocol}://github.com/MyUser/MyRemoteModule.git
+#  GIT_TAG "123456790"
+#  SOURCE_DIR_VAR MyRemoteModule_SOURCE_DIR
+#  )
+#list(APPEND Slicer_REMOTE_DEPENDENCIES MyRemoteModule)
+
+set(Slicer_REMOTE_SOURCE_DIRS
+#  ${MyRemoteModule_SOURCE_DIR}
+  )
+set_property(GLOBAL APPEND PROPERTY ${APPLICATION_NAME}_MODULES ${Slicer_REMOTE_SOURCE_DIRS})
+
+#-----------------------------------------------------------------------------
 # Include external projects
 #
 
