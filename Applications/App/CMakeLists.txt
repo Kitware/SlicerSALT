@@ -82,6 +82,8 @@ set(SlicerApp_SRCS
   ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppMainWindow.cxx
   ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppMainWindow.h
   ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppMainWindow_p.h
+  Widgets/qAppStyle.cxx
+  Widgets/qAppStyle.h
   )
 
 set(SlicerApp_MOC_SRCS
@@ -90,6 +92,7 @@ set(SlicerApp_MOC_SRCS
   ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppAboutDialog.h
   ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppErrorReportDialog.h
   ${Slicer_SOURCE_DIR}/Applications/SlicerApp/qSlicerAppMainWindow.h
+  Widgets/qAppStyle.h
   )
 
 set(SlicerApp_UI_SRCS

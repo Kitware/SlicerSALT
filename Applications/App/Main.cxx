@@ -45,7 +45,7 @@
 #include "qSlicerCommandOptions.h"
 #include "qSlicerModuleFactoryManager.h"
 #include "qSlicerModuleManager.h"
-#include "qSlicerStyle.h"
+#include "Widgets/qAppStyle.h"
 
 // ITK includes
 #include <itkConfigure.h> // For ITK_VERSION_MAJOR
@@ -97,7 +97,26 @@ int SlicerAppMain(int argc, char* argv[])
   QCoreApplication::setApplicationVersion(qSlicerApp_VERSION_FULL);
   //vtkObject::SetGlobalWarningDisplay(false);
   QApplication::setDesktopSettingsAware(false);
-  QApplication::setStyle("Cleanlooks"); // to be changed
+  QApplication::setStyle(new qAppStyle);
+
+  // Instantiate the settings that are being used everywhere in Slicer.
+  QSettings settings(
+    QSettings::IniFormat,
+    QSettings::UserScope,
+    Slicer_ORGANIZATION_NAME,
+    Slicer_MAIN_PROJECT_APPLICATION_NAME);
+
+  // Instantiate the built-in application settings located in the resources
+  // system.
+  QString defaultSettingsFilePath = QString(":/DefaultSettings.ini");
+  QSettings defaultSettings(defaultSettingsFilePath, QSettings::IniFormat);
+  foreach(const QString& key, defaultSettings.allKeys())
+    {
+    if (!settings.contains(key))
+      {
+      settings.setValue(key, defaultSettings.value(key));
+      }
+    }
 
   qSlicerApplication app(argc, argv);
   if (app.returnCode() != -1)
