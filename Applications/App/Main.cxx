@@ -45,7 +45,7 @@
 #include "qSlicerCommandOptions.h"
 #include "qSlicerModuleFactoryManager.h"
 #include "qSlicerModuleManager.h"
-#include "qSlicerStyle.h"
+#include "Widgets/qAppStyle.h"
 
 // ITK includes
 #include <itkConfigure.h> // For ITK_VERSION_MAJOR
@@ -97,7 +97,7 @@ int SlicerAppMain(int argc, char* argv[])
   QCoreApplication::setApplicationVersion(qSlicerApp_VERSION_FULL);
   //vtkObject::SetGlobalWarningDisplay(false);
   QApplication::setDesktopSettingsAware(false);
-  QApplication::setStyle("Cleanlooks"); // to be changed
+  QApplication::setStyle(new qAppStyle);
 
   qSlicerApplication app(argc, argv);
   if (app.returnCode() != -1)
