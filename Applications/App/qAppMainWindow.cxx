@@ -18,6 +18,9 @@
 // Qt includes
 #include <QDebug>
 
+// Slicer includes
+#include "qSlicerModuleSelectorToolBar.h"
+
 // SlicerApp includes
 #include "qAppAboutDialog.h"
 #include "qAppMainWindow_p.h"
@@ -55,6 +58,30 @@ void qAppMainWindowPrivate::setupUi(QMainWindow * mainWindow)
   this->HelpAboutSlicerAppAction->setToolTip("");
 
   this->LogoLabel->setPixmap(QPixmap(":/LogoFull.png"));
+
+  // Hide the toolbars
+  this->MainToolBar->setVisible(false);
+  //this->ModuleSelectorToolBar->setVisible(false);
+  this->ModuleToolBar->setVisible(false);
+  this->ViewToolBar->setVisible(false);
+  this->MouseModeToolBar->setVisible(false);
+  this->CaptureToolBar->setVisible(false);
+  this->ViewersToolBar->setVisible(false);
+  this->DialogToolBar->setVisible(false);
+
+  // Hide the menus
+  //this->menubar->setVisible(false);
+  //this->FileMenu->setVisible(false);
+  //this->EditMenu->setVisible(false);
+  //this->ViewMenu->setVisible(false);
+  //this->LayoutMenu->setVisible(false);
+  //this->HelpMenu->setVisible(false);
+
+  // Hide the modules panel
+  //this->PanelDockWidget->setVisible(false);
+  this->DataProbeCollapsibleWidget->setCollapsed(true);
+  this->DataProbeCollapsibleWidget->setVisible(false);
+  this->StatusBar->setVisible(false);
 }
 
 //-----------------------------------------------------------------------------
