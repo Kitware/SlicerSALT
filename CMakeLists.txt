@@ -96,6 +96,11 @@ set(Slicer_USE_VTK_DEBUG_LEAKS ${${APPLICATION_NAME}_USE_VTK_DEBUG_LEAKS})
 mark_as_superbuild(VARS Slicer_USE_VTK_DEBUG_LEAKS:BOOL PROJECTS Slicer)
 
 #-----------------------------------------------------------------------------
+option(${APPLICATION_NAME}_USE_PYTHONQT_WITH_OPENSSL "Enable PythonQt SSL support." ON)
+set(Slicer_USE_PYTHONQT_WITH_OPENSSL ${${APPLICATION_NAME}_USE_PYTHONQT_WITH_OPENSSL})
+mark_as_superbuild(VARS Slicer_USE_PYTHONQT_WITH_OPENSSL:BOOL PROJECTS Slicer)
+
+#-----------------------------------------------------------------------------
 # Superbuild Option - Enabled by default
 #
 option(${kit}_SUPERBUILD "Build ${kit} and the projects it depends on." ON)
