@@ -152,9 +152,9 @@ if(NOT DEFINED ${proj}_DIR)
       -D${proj}_BUILD_MULTIVOLUME_SUPPORT:BOOL=OFF
       -D${proj}_USE_NUMPY:BOOL=ON
       -D${proj}_USE_OpenIGTLink:BOOL=OFF
-      -D${proj}_USE_PYTHONQT_WITH_OPENSSL:BOOL=ON
-      -D${proj}_USE_PYTHONQT_WITH_TCL:BOOL=OFF
       -D${proj}_USE_PYTHONQT:BOOL=ON
+      #Slicer_USE_PYTHONQT_WITH_OPENSSL was marke a superbuild.
+      -D${proj}_USE_PYTHONQT_WITH_TCL:BOOL=OFF
       -D${proj}_USE_QtTesting:BOOL=OFF
       -D${proj}_USE_SimpleITK:BOOL=ON
       # Slicer built-in modules
