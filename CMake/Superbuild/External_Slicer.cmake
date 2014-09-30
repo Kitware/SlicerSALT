@@ -106,7 +106,7 @@ if(NOT DEFINED ${proj}_DIR)
     set(${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
     list(APPEND ${proj}_EP_ARGS
       GIT_REPOSITORY ${git_protocol}://kwsource.kitwarein.com/slicer/slicer.git
-      GIT_TAG f55861222a6ce0d14c0b6d647a36a331d7a65fed
+      GIT_TAG 76c9f611fef7206ef1f05da88308b30d1f343bd9
       )
   endif()
 
@@ -152,9 +152,9 @@ if(NOT DEFINED ${proj}_DIR)
       -D${proj}_BUILD_MULTIVOLUME_SUPPORT:BOOL=OFF
       -D${proj}_USE_NUMPY:BOOL=ON
       -D${proj}_USE_OpenIGTLink:BOOL=OFF
-      -D${proj}_USE_PYTHONQT:BOOL=ON
-      #Slicer_USE_PYTHONQT_WITH_OPENSSL was marke a superbuild.
+      -D${proj}_USE_PYTHONQT_WITH_OPENSSL:BOOL=ON
       -D${proj}_USE_PYTHONQT_WITH_TCL:BOOL=OFF
+      -D${proj}_USE_PYTHONQT:BOOL=ON
       -D${proj}_USE_QtTesting:BOOL=OFF
       -D${proj}_USE_SimpleITK:BOOL=ON
       # Slicer built-in modules
@@ -170,7 +170,7 @@ if(NOT DEFINED ${proj}_DIR)
       -D${proj}_BUILD_LandmarkRegistration:BOOL=OFF
       -D${proj}_EXTENSION_SOURCE_DIRS:STRING=${${APPLICATION_NAME}_MODULES}
     DEPENDS
-      ${${proj}_DEPENDENCIES} ${Slicer_REMOTE_DEPENDENCIES}
+      ${${proj}_DEPENDENCIES}
     )
 
   # This custom external project step forces the build and later

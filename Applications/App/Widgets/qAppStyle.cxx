@@ -26,6 +26,9 @@
 #include <QStyleOption>
 #include <QToolBar>
 
+// CTK includes
+#include <ctkCollapsibleButton.h>
+
 // qMRML includes
 #include "qAppStyle.h"
 
@@ -226,4 +229,17 @@ QPalette qAppStyle::tweakWidgetPalette(QPalette widgetPalette,
     }
 */
   return widgetPalette;
+}
+
+//------------------------------------------------------------------------------
+void qAppStyle::polish(QWidget* widget)
+{
+  this->Superclass::polish(widget);
+  ctkCollapsibleButton* collapsibleButton =
+    qobject_cast<ctkCollapsibleButton*>(widget);
+  if (collapsibleButton)
+    {
+    collapsibleButton->setFlat(true);
+    collapsibleButton->setContentsFrameShadow(QFrame::Sunken);
+    }
 }
