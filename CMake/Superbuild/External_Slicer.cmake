@@ -106,7 +106,7 @@ if(NOT DEFINED ${proj}_DIR)
     set(${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
     list(APPEND ${proj}_EP_ARGS
       GIT_REPOSITORY ${git_protocol}://kwsource.kitwarein.com/slicer/slicer.git
-      GIT_TAG 76c9f611fef7206ef1f05da88308b30d1f343bd9
+      GIT_TAG 55498cbcf85731e1d9d67f305756294af5bcc1da
       )
   endif()
 
