@@ -35,7 +35,7 @@ if(NOT DEFINED ${proj}_DIR)
       set(git_protocol "git")
   endif()
 
-  set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
+  set(${proj}_DIR ${CMAKE_BINARY_DIR}/S-bld)
   set(${proj}_PREFIX ${CMAKE_BINARY_DIR}/${proj}-prefix)
   set(${proj}_INTERNAL_DEPENDENCIES_LIST ${APPLICATION_NAME}
     # List here additional external projects
