@@ -37,11 +37,13 @@ macro(configure_file_multiple_times)
     set(MY_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
   endif()
 
+  set(DOLLAR "$")
+
   configure_file(${MY_INPUT_FILE} ${MY_OUTPUT_FILE})
 
   set(number 1)
-  while (${MY_NUMBER_OF_CONFIGURE} GREATER number)
-    configure_file(${MY_OUTPUT_FILE} ${MY_OUTPUT_FILE})
+  while(${MY_NUMBER_OF_CONFIGURE} GREATER number)
+    configure_file(${MY_OUTPUT_FILE} ${MY_OUTPUT_FILE} @ONLY)
     math(EXPR number "${number} + 1" ) # decrement number
   endwhile()
 
