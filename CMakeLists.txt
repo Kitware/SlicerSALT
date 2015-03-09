@@ -96,9 +96,17 @@ set(Slicer_USE_VTK_DEBUG_LEAKS ${${APPLICATION_NAME}_USE_VTK_DEBUG_LEAKS})
 mark_as_superbuild(VARS Slicer_USE_VTK_DEBUG_LEAKS:BOOL PROJECTS Slicer)
 
 #-----------------------------------------------------------------------------
-option(${APPLICATION_NAME}_USE_PYTHONQT_WITH_OPENSSL "Enable PythonQt SSL support." ON)
+option(${APPLICATION_NAME}_USE_PYTHONQT_WITH_OPENSSL "Enable PythonQt SSL support." OFF)
 set(Slicer_USE_PYTHONQT_WITH_OPENSSL ${${APPLICATION_NAME}_USE_PYTHONQT_WITH_OPENSSL})
 mark_as_superbuild(VARS Slicer_USE_PYTHONQT_WITH_OPENSSL:BOOL PROJECTS Slicer)
+
+#-----------------------------------------------------------------------------
+if(WIN32)
+  option(Slicer_BUILD_WIN32_CONSOLE "Build ${PROJECT_NAME} executable as a console app on windows (allows debug output)" ON)
+else()
+  set(Slicer_BUILD_WIN32_CONSOLE OFF)
+endif()
+mark_as_superbuild(VARS Slicer_BUILD_WIN32_CONSOLE:BOOL PROJECTS Slicer)
 
 #-----------------------------------------------------------------------------
 # Superbuild Option - Enabled by default

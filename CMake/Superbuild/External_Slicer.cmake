@@ -105,8 +105,8 @@ if(NOT DEFINED ${proj}_DIR)
   else()
     set(${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
     list(APPEND ${proj}_EP_ARGS
-      GIT_REPOSITORY ${git_protocol}://kwsource.kitwarein.com/slicer/slicer.git
-      GIT_TAG 55498cbcf85731e1d9d67f305756294af5bcc1da
+      GIT_REPOSITORY ${git_protocol}://github.com/Slicer/Slicer.git
+      GIT_TAG 36eaeaff5917ecb36e38867f7e2dde0615355cd0
       )
   endif()
 
@@ -152,11 +152,10 @@ if(NOT DEFINED ${proj}_DIR)
       -D${proj}_BUILD_MULTIVOLUME_SUPPORT:BOOL=OFF
       -D${proj}_USE_NUMPY:BOOL=ON
       -D${proj}_USE_OpenIGTLink:BOOL=OFF
-      -D${proj}_USE_PYTHONQT_WITH_OPENSSL:BOOL=OFF
       -D${proj}_USE_PYTHONQT_WITH_TCL:BOOL=OFF
       -D${proj}_USE_PYTHONQT:BOOL=ON
       -D${proj}_USE_QtTesting:BOOL=OFF
-      -D${proj}_USE_SimpleITK:BOOL=ON
+      -D${proj}_USE_SimpleITK:BOOL=OFF
       # Slicer built-in modules
       -D${proj}_CLIMODULES_DISABLED:STRING=${${proj}_CLIMODULES_DISABLED}
       -D${proj}_QTLOADABLEMODULES_DISABLED:STRING=${${proj}_QTLOADABLEMODULES_DISABLED}
