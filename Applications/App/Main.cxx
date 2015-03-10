@@ -52,6 +52,7 @@
 
 // VTK includes
 //#include <vtkObject.h>
+#include <vtksys/SystemTools.hxx>
 
 #if defined (_WIN32) && !defined (Slicer_BUILD_WIN32_CONSOLE)
 # include <windows.h>
@@ -99,7 +100,17 @@ int SlicerAppMain(int argc, char* argv[])
 #endif
 #endif
 
-  QCoreApplication::setApplicationName(Slicer_MAIN_PROJECT_APPLICATION_NAME);
+  // Allow a custom appliction name so that the settings
+  // can be distinct for differently named applications
+  QString applicationName("Slicer");
+  if (argv[0])
+    {
+    std::string name = vtksys::SystemTools::GetFilenameWithoutExtension(argv[0]);
+    applicationName = QString::fromLocal8Bit(name.c_str());
+    applicationName.remove(QString("App-real"));
+    }
+  QCoreApplication::setApplicationName(applicationName);
+
   QCoreApplication::setApplicationVersion(qSlicerApp_VERSION_FULL);
   //vtkObject::SetGlobalWarningDisplay(false);
   QApplication::setDesktopSettingsAware(false);
