@@ -1,28 +1,18 @@
-#============================================================================
+#.rst:
+# ExternalProjectDependency
+# -------------------------
+
+###########################################################################
 #
-# Copyright (c) Kitware, Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0.txt
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-#============================================================================
-################################################################################
-#
-#  Program: 3D Slicer
+#  Library:   CTK
 #
 #  Copyright (c) Kitware, Inc.
 #
-#  See COPYRIGHT.txt
-#  or http://www.slicer.org/copyright/copyright.txt for details.
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0.txt
 #
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
@@ -30,10 +20,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-#  This file was originally developed by Jean-Christophe Fillion-Robin, Kitware, Inc.
-#  and was partially funded by NIH grant 3P41RR013218-12S1
-#
-################################################################################
+###########################################################################
 
 include(CMakeParseArguments)
 
@@ -41,10 +28,16 @@ if(NOT DEFINED EP_LIST_SEPARATOR)
   set(EP_LIST_SEPARATOR "^^")
 endif()
 
+#.rst:
+# .. cmake:variable:: EXTERNAL_PROJECT_DIR
+#
 if(NOT EXISTS "${EXTERNAL_PROJECT_DIR}")
   set(EXTERNAL_PROJECT_DIR ${CMAKE_SOURCE_DIR}/SuperBuild)
 endif()
 
+#.rst:
+# .. cmake:variable:: EXTERNAL_PROJECT_FILE_PREFIX
+#
 if(NOT DEFINED EXTERNAL_PROJECT_FILE_PREFIX)
   set(EXTERNAL_PROJECT_FILE_PREFIX "External_")
 endif()
@@ -56,29 +49,36 @@ else()
   set(EP_CMAKE_GENERATOR "${CMAKE_GENERATOR}")
 endif()
 
-#!
-#! mark_as_superbuild(<varname1>[:<vartype1>] [<varname2>[:<vartype2>] [...]])
-#!
-#! mark_as_superbuild(
-#!     VARS <varname1>[:<vartype1>] [<varname2>[:<vartype2>] [...]]
-#!     [PROJECTS <projectname> [<projectname> [...]] | ALL_PROJECTS]
-#!     [LABELS <label1> [<label2> [...]]]
-#!     [CMAKE_CMD]
-#!   )
-#!
-#! PROJECTS corresponds to a list of <projectname> that will be added using 'ExternalProject_Add' function.
-#!          If not specified and called within a project file, it defaults to the value of 'SUPERBUILD_TOPLEVEL_PROJECT'
-#!          Otherwise, it defaults to 'CMAKE_PROJECT_NAME'.
-#!          If instead 'ALL_PROJECTS' is specified, the variables and labels will be passed to all projects.
-#!
-#! VARS is an expected list of variables specified as <varname>:<vartype> to pass to <projectname>
-#!
-#!
-#! LABELS is an optional list of label to associate with the variable names specified using 'VARS' and passed to
-#!        the <projectname> as CMake CACHE args of the form:
-#!          -D<projectname>_EP_LABEL_<label1>=<varname1>;<varname2>[...]
-#!          -D<projectname>_EP_LABEL_<label2>=<varname1>;<varname2>[...]
-#!
+#.rst:
+# .. cmake:function:: mark_as_superbuild
+#
+# .. code-block:: cmake
+#
+#  mark_as_superbuild(<varname1>[:<vartype1>] [<varname2>[:<vartype2>] [...]])
+#
+# .. code-block:: cmake
+#
+#  mark_as_superbuild(
+#      VARS <varname1>[:<vartype1>] [<varname2>[:<vartype2>] [...]]
+#      [PROJECTS <projectname> [<projectname> [...]] | ALL_PROJECTS]
+#      [LABELS <label1> [<label2> [...]]]
+#    )
+#
+# .. code-block:: cmake
+#
+#  PROJECTS corresponds to a list of <projectname> that will be added using 'ExternalProject_Add' function.
+#           If not specified and called within a project file, it defaults to the value of 'SUPERBUILD_TOPLEVEL_PROJECT'
+#           Otherwise, it defaults to 'CMAKE_PROJECT_NAME'.
+#           If instead 'ALL_PROJECTS' is specified, the variables and labels will be passed to all projects.
+#
+#  VARS is an expected list of variables specified as <varname>:<vartype> to pass to <projectname>
+#
+#
+#  LABELS is an optional list of label to associate with the variable names specified using 'VARS' and passed to
+#         the <projectname> as CMake CACHE args of the form:
+#           -D<projectname>_EP_LABEL_<label1>=<varname1>;<varname2>[...]
+#           -D<projectname>_EP_LABEL_<label2>=<varname1>;<varname2>[...]
+#
 function(mark_as_superbuild)
   set(options ALL_PROJECTS CMAKE_CMD)
   set(oneValueArgs)
@@ -120,10 +120,6 @@ function(mark_as_superbuild)
     list(APPEND _vars_with_type ${_var})
   endforeach()
 
-  if(_sb_CMAKE_CMD)
-    set(optional_arg_CMAKE_CMD "CMAKE_CMD")
-  endif()
-
   if(_sb_ALL_PROJECTS)
     set(optional_arg_ALL_PROJECTS "ALL_PROJECTS")
   else()
@@ -131,17 +127,18 @@ function(mark_as_superbuild)
   endif()
 
   _sb_append_to_cmake_args(
-    VARS ${_vars_with_type} LABELS ${_sb_LABELS} ${optional_arg_ALL_PROJECTS} ${optional_arg_CMAKE_CMD})
+    VARS ${_vars_with_type} LABELS ${_sb_LABELS} ${optional_arg_ALL_PROJECTS})
 endfunction()
 
-#!
-#! _sb_extract_varname_and_vartype(<cmake_varname_and_type> <varname_var> [<vartype_var>])
-#!
-#! <cmake_varname_and_type> corresponds to variable name and variable type passed as "<varname>:<vartype>"
-#!
-#! <varname_var> will be set to "<varname>"
-#!
-#! <vartype_var> is an optional variable name that will be set to "<vartype>"
+#
+#  _sb_extract_varname_and_vartype(<cmake_varname_and_type> <varname_var> [<vartype_var>])
+#
+#  <cmake_varname_and_type> corresponds to variable name and variable type passed as "<varname>:<vartype>"
+#
+#  <varname_var> will be set to "<varname>"
+#
+#  <vartype_var> is an optional variable name that will be set to "<vartype>"
+#
 function(_sb_extract_varname_and_vartype cmake_varname_and_type varname_var)
   set(_vartype_var "${ARGV2}")
   string(REPLACE ":" ";" varname_and_vartype ${cmake_varname_and_type})
@@ -180,28 +177,26 @@ function(_sb_list_to_string separator input_list output_string_var)
   cmake_policy(POP)
 endfunction()
 
-
-#!
-#! _sb_cmakevar_to_cmakearg(<cmake_varname_and_type> <cmake_arg_var> <cmake_arg_type> [<varname_var> [<vartype_var>]])
-#!
-#! <cmake_varname_and_type> corresponds to variable name and variable type passed as "<varname>:<vartype>"
-#!
-#! <cmake_arg_var> is a variable name that will be set to "-D<varname>:<vartype>=${<varname>}"
-#!
-#! <cmake_arg_type> is set to either CMAKE_CACHE or CMAKE_CMD.
-#!                  CMAKE_CACHE means that the generated cmake argument will be passed to
-#!                  ExternalProject_Add as CMAKE_CACHE_ARGS.
-#!                  CMAKE_CMD means that the generated cmake argument will be passed to
-#!                  ExternalProject_Add as CMAKE_ARGS.
-#!
-#! <varname_var> is an optional variable name that will be set to "<varname>"
-#!
-#! <vartype_var> is an optional variable name that will be set to "<vartype>"
-function(_sb_cmakevar_to_cmakearg cmake_varname_and_type cmake_arg_var cmake_arg_type)
+#
+#  _sb_cmakevar_to_cmakearg(<cmake_varname_and_type> <cmake_arg_var> <has_cfg_intdir_var> [<varname_var> [<vartype_var>]])
+#
+#  <cmake_varname_and_type> corresponds to variable name and variable type passed as "<varname>:<vartype>"
+#
+#  <cmake_arg_var> is a variable name that will be set to "-D<varname>:<vartype>=${<varname>}"
+#
+#  <has_int_dir_var> is set to either TRUE or FALSE.
+#                      FALSE means that the value does NOT reference ${CMAKE_CFG_INTDIR} and
+#                      the generated cmake argument should be passed to ExternalProject_Add as CMAKE_CACHE_ARGS.
+#                      TRUEmeans that the value does reference ${CMAKE_CFG_INTDIR} and
+#                      the generated cmake argument should be passed to ExternalProject_Add as CMAKE_ARGS.
+#
+#  <varname_var> is an optional variable name that will be set to "<varname>"
+#
+#  <vartype_var> is an optional variable name that will be set to "<vartype>"
+#
+function(_sb_cmakevar_to_cmakearg cmake_varname_and_type cmake_arg_var has_cfg_intdir_var)
   set(_varname_var "${ARGV3}")
   set(_vartype_var "${ARGV4}")
-
-  # XXX Add check for <cmake_arg_type> value
 
   _sb_extract_varname_and_vartype(${cmake_varname_and_type} _varname _vartype)
 
@@ -211,12 +206,18 @@ function(_sb_cmakevar_to_cmakearg cmake_varname_and_type cmake_arg_var cmake_arg
     get_property(_var_value CACHE ${_varname} PROPERTY VALUE)
   endif()
 
-  if(cmake_arg_type STREQUAL "CMAKE_CMD")
-    # Separate list item with <EP_LIST_SEPARATOR>
-    _sb_list_to_string(${EP_LIST_SEPARATOR} "${_var_value}" _var_value)
+  set(_has_cfg_intdir FALSE)
+  if(CMAKE_CONFIGURATION_TYPES)
+    string(FIND "${_var_value}" ${CMAKE_CFG_INTDIR} _index)
+    if(NOT _index EQUAL -1)
+      # Separate list item with <EP_LIST_SEPARATOR>
+      _sb_list_to_string(${EP_LIST_SEPARATOR} "${_var_value}" _var_value)
+      set(_has_cfg_intdir TRUE)
+    endif()
   endif()
 
   set(${cmake_arg_var} -D${_varname}:${_vartype}=${_var_value} PARENT_SCOPE)
+  set(${has_cfg_intdir_var} ${_has_cfg_intdir} PARENT_SCOPE)
 
   if(_varname_var MATCHES ".+")
     set(${_varname_var} ${_varname} PARENT_SCOPE)
@@ -228,29 +229,28 @@ endfunction()
 
 set(_ALL_PROJECT_IDENTIFIER "ALLALLALL")
 
-#!
-#! _sb_append_to_cmake_args(
-#!     VARS <varname1>:<vartype1> [<varname2>:<vartype2> [...]]
-#!     [PROJECTS <projectname> [<projectname> [...]] | ALL_PROJECTS]
-#!     [LABELS <label1> [<label2> [...]]]
-#!     [CMAKE_CMD]
-#!   )
-#!
-#! PROJECTS corresponds to a list of <projectname> that will be added using 'ExternalProject_Add' function.
-#!          If not specified and called within a project file, it defaults to the value of 'SUPERBUILD_TOPLEVEL_PROJECT'
-#!          Otherwise, it defaults to 'CMAKE_PROJECT_NAME'.
-#!          If instead 'ALL_PROJECTS' is specified, the variables and labels will be passed to all projects.
-#!
-#! VARS is an expected list of variables specified as <varname>:<vartype> to pass to <projectname>
-#!
-#!
-#! LABELS is an optional list of label to associate with the variable names specified using 'VARS' and passed to
-#!        the <projectname> as CMake CACHE args of the form:
-#!          -D<projectname>_EP_LABEL_<label1>=<varname1>;<varname2>[...]
-#!          -D<projectname>_EP_LABEL_<label2>=<varname1>;<varname2>[...]
-#!
+#
+#  _sb_append_to_cmake_args(
+#      VARS <varname1>:<vartype1> [<varname2>:<vartype2> [...]]
+#      [PROJECTS <projectname> [<projectname> [...]] | ALL_PROJECTS]
+#      [LABELS <label1> [<label2> [...]]]
+#    )
+#
+#  PROJECTS corresponds to a list of <projectname> that will be added using 'ExternalProject_Add' function.
+#           If not specified and called within a project file, it defaults to the value of 'SUPERBUILD_TOPLEVEL_PROJECT'
+#           Otherwise, it defaults to 'CMAKE_PROJECT_NAME'.
+#           If instead 'ALL_PROJECTS' is specified, the variables and labels will be passed to all projects.
+#
+#  VARS is an expected list of variables specified as <varname>:<vartype> to pass to <projectname>
+#
+#
+#  LABELS is an optional list of label to associate with the variable names specified using 'VARS' and passed to
+#         the <projectname> as CMake CACHE args of the form:
+#           -D<projectname>_EP_LABEL_<label1>=<varname1>;<varname2>[...]
+#           -D<projectname>_EP_LABEL_<label2>=<varname1>;<varname2>[...]
+#
 function(_sb_append_to_cmake_args)
-  set(options ALL_PROJECTS CMAKE_CMD)
+  set(options ALL_PROJECTS)
   set(oneValueArgs)
   set(multiValueArgs VARS PROJECTS LABELS)
   cmake_parse_arguments(_sb "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
@@ -268,16 +268,11 @@ function(_sb_append_to_cmake_args)
   endif()
 
   foreach(_sb_PROJECT ${_sb_PROJECTS})
-    set(_cmake_arg_type "CMAKE_CACHE")
-    if(_sb_CMAKE_CMD)
-      set(_cmake_arg_type "CMAKE")
-      set(optional_arg_CMAKE_CMD "CMAKE_CMD")
-    endif()
-    set(_ep_property "${_cmake_arg_type}_ARGS")
+
     set(_ep_varnames "")
     foreach(varname_and_vartype ${_sb_VARS})
       if(NOT TARGET ${_sb_PROJECT})
-        set_property(GLOBAL APPEND PROPERTY ${_sb_PROJECT}_EP_${_ep_property} ${varname_and_vartype})
+        set_property(GLOBAL APPEND PROPERTY ${_sb_PROJECT}_EP_CMAKE_ARGS ${varname_and_vartype})
         _sb_extract_varname_and_vartype(${varname_and_vartype} _varname)
       else()
         message(FATAL_ERROR "Function _sb_append_to_cmake_args not allowed because project '${_sb_PROJECT}' already added !")
@@ -311,20 +306,16 @@ function(_sb_get_external_project_arguments proj varname)
       endforeach()
     endif()
 
-    foreach(cmake_arg_type CMAKE_CMD CMAKE_CACHE)
-
+    get_property(_args GLOBAL PROPERTY ${proj}_EP_CMAKE_ARGS)
+    foreach(var ${_args})
+      _sb_cmakevar_to_cmakearg(${var} cmake_arg _has_cfg_intdir)
       set(_ep_property "CMAKE_CACHE_ARGS")
-      if(cmake_arg_type STREQUAL "CMAKE_CMD")
+      if(_has_cfg_intdir)
         set(_ep_property "CMAKE_ARGS")
       endif()
-
-      get_property(_args GLOBAL PROPERTY ${proj}_EP_${_ep_property})
-      foreach(var ${_args})
-        _sb_cmakevar_to_cmakearg(${var} cmake_arg ${cmake_arg_type})
-        set_property(GLOBAL APPEND PROPERTY ${proj}_EP_PROPERTY_${_ep_property} ${cmake_arg})
-      endforeach()
-
+      set_property(GLOBAL APPEND PROPERTY ${proj}_EP_PROPERTY_${_ep_property} ${cmake_arg})
     endforeach()
+
   endfunction()
 
   _sb_collect_args(${proj})
@@ -336,7 +327,6 @@ function(_sb_get_external_project_arguments proj varname)
     get_property(${_ALL_PROJECT_IDENTIFIER}_EP_PROPERTY_${property} GLOBAL PROPERTY ${_ALL_PROJECT_IDENTIFIER}_EP_PROPERTY_${property})
     set(_all ${${proj}_EP_PROPERTY_${property}} ${${_ALL_PROJECT_IDENTIFIER}_EP_PROPERTY_${property}})
     if(_all)
-      list(REMOVE_DUPLICATES _all)
       list(APPEND _ep_arguments ${property} ${_all})
     endif()
   endforeach()
@@ -359,12 +349,16 @@ function(_sb_update_indent proj)
   set_property(GLOBAL PROPERTY SUPERBUILD_${proj}_INDENT ${_indent})
 endfunction()
 
-#!
-#! ExternalProject_Message(<project_name> <msg> [condition])
-#!
+#.rst:
+# .. cmake:function:: ExternalProject_Message
+#
+# .. code-block:: cmake
+#
+#  ExternalProject_Message(<project_name> <msg> [condition])
+#
 function(ExternalProject_Message proj msg)
   set(_display 1)
-  if("${ARGV2}" MATCHES ".+")
+  if(NOT "x${ARGV2}" STREQUAL "x")
     set(_display ${ARGN})
   endif()
   if(${_display})
@@ -373,48 +367,52 @@ function(ExternalProject_Message proj msg)
   endif()
 endfunction()
 
-#!
-#! superbuild_stack_content(<stack_name> <output_var>)
-#!
-#! <stack_name> corresponds to the name of stack.
-#!
-#! <output_var> is the name of CMake variable that will be set with the content
-#! of the stack identified by <stack_name>.
+#
+#  superbuild_stack_content(<stack_name> <output_var>)
+#
+#  <stack_name> corresponds to the name of stack.
+#
+#  <output_var> is the name of CMake variable that will be set with the content
+#  of the stack identified by <stack_name>.
+#
 function(superbuild_stack_content stack_name output_var)
   get_property(_stack GLOBAL PROPERTY ${stack_name})
   set(${output_var} ${_stack} PARENT_SCOPE)
 endfunction()
 
-#!
-#! superbuild_stack_size(<stack_name> <output_var>)
-#!
-#! <stack_name> corresponds to the name of stack.
-#!
-#! <output_var> is the name of CMake variable that will be set with the size
-#! of the stack identified by <stack_name>.
+#
+#  superbuild_stack_size(<stack_name> <output_var>)
+#
+#  <stack_name> corresponds to the name of stack.
+#
+#  <output_var> is the name of CMake variable that will be set with the size
+#  of the stack identified by <stack_name>.
+#
 function(superbuild_stack_size stack_name output_var)
   get_property(_stack GLOBAL PROPERTY ${stack_name})
   list(LENGTH _stack _stack_size)
   set(${output_var} ${_stack_size} PARENT_SCOPE)
 endfunction()
 
-#!
-#! superbuild_stack_push(<stack_name> <value>)
-#!
-#! <stack_name> corresponds to the name of stack.
-#!
-#! <value> is appended to the stack identified by <stack_name>.
+#
+#  superbuild_stack_push(<stack_name> <value>)
+#
+#  <stack_name> corresponds to the name of stack.
+#
+#  <value> is appended to the stack identified by <stack_name>.
+#
 function(superbuild_stack_push stack_name value)
   set_property(GLOBAL APPEND PROPERTY ${stack_name} ${value})
 endfunction()
 
-#!
-#! superbuild_stack_pop(<stack_name> <item_var>)
-#!
-#! <stack_name> corresponds to the name of stack.
-#!
-#! <item_var> names a CMake variable that will be set with the item
-#! removed from the stack identified by <stack_name>.
+#
+#  superbuild_stack_pop(<stack_name> <item_var>)
+#
+#  <stack_name> corresponds to the name of stack.
+#
+#  <item_var> names a CMake variable that will be set with the item
+#  removed from the stack identified by <stack_name>
+#
 function(superbuild_stack_pop stack_name item_var)
   get_property(_stack GLOBAL PROPERTY ${stack_name})
   list(LENGTH _stack _stack_size)
@@ -439,16 +437,19 @@ function(_sb_is_optional proj output_var)
   set(${output_var} ${optional} PARENT_SCOPE)
 endfunction()
 
-
-#!
-#! ExternalProject_Include_Dependencies(<project_name>
-#!     [PROJECT_VAR <project_var>]
-#!     [EP_ARGS_VAR <external_project_args_var>]
-#!     [DEPENDS_VAR <depends_var>]
-#!     [USE_SYSTEM_VAR <use_system_var>]
-#!     [SUPERBUILD_VAR <superbuild_var>]
-#!   )
-#!
+#.rst:
+# .. cmake:function:: ExternalProject_Include_Dependencies
+#
+# .. code-block:: cmake
+#
+#  ExternalProject_Include_Dependencies(<project_name>
+#      [PROJECT_VAR <project_var>]
+#      [EP_ARGS_VAR <external_project_args_var>]
+#      [DEPENDS_VAR <depends_var>]
+#      [USE_SYSTEM_VAR <use_system_var>]
+#      [SUPERBUILD_VAR <superbuild_var>]
+#    )
+#
 macro(ExternalProject_Include_Dependencies project_name)
   set(options)
   set(oneValueArgs PROJECT_VAR DEPENDS_VAR EP_ARGS_VAR USE_SYSTEM_VAR SUPERBUILD_VAR)
@@ -544,7 +545,9 @@ macro(ExternalProject_Include_Dependencies project_name)
   set(_sb_REQUIRED_DEPENDS)
   foreach(dep ${_sb_DEPENDS})
     if(NOT ${_sb_proj} STREQUAL ${SUPERBUILD_TOPLEVEL_PROJECT})
-      if(_sb_USE_SYSTEM)
+      # Set "use system" variable if it has NOT already been explicitly set
+      get_property(_sb_${dep}_USE_SYSTEM_VAR GLOBAL PROPERTY SB_${dep}_USE_SYSTEM_VAR)
+      if(_sb_USE_SYSTEM AND NOT DEFINED ${_sb_${dep}_USE_SYSTEM_VAR})
         set_property(GLOBAL PROPERTY SB_${dep}_USE_SYSTEM ${_sb_USE_SYSTEM})
         #message(${_sb_proj} "Property SB_${dep}_USE_SYSTEM set to [${_sb_USE_SYSTEM_VAR}:${_sb_USE_SYSTEM}]")
       endif()
@@ -674,12 +677,15 @@ macro(ExternalProject_Include_Dependencies project_name)
   #message("[${_sb_proj}] Setting ${_sb_USE_SYSTEM_VAR}:${_sb_USE_SYSTEM}")
 endmacro()
 
-
-#!
-#! ExternalProject_Add_Empty(<project_name>
-#!     DEPENDS <depends>
-#!   )
-#!
+#.rst:
+# .. cmake:function:: ExternalProject_Add_Empty
+#
+# .. code-block:: cmake
+#
+#  ExternalProject_Add_Empty(<project_name>
+#      DEPENDS <depends>
+#    )
+#
 macro(ExternalProject_Add_Empty project_name)
   set(options)
   set(oneValueArgs)
@@ -704,3 +710,22 @@ macro(ExternalProject_Add_Empty project_name)
     DEPENDS ${_sb_DEPENDS}
     )
 endmacro()
+
+#.rst:
+# .. cmake:function:: ExternalProject_Install_CMake
+#
+# Install an external CMake-based project as part of the ``install`` target.
+#
+# .. code-block:: cmake
+#
+#  ExternalProject_Install_CMake(<project_name>)
+#
+# This causes building the main project's ``install`` target to also execute
+# the CMake install script for the specified external project. The project must
+# be previously declared with :command:`ExternalProject_Add`.
+#
+function(ExternalProject_Install_CMake project_name)
+  ExternalProject_Get_Property(${project_name} binary_dir)
+
+  install(SCRIPT ${binary_dir}/cmake_install.cmake)
+endfunction()

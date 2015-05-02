@@ -17,8 +17,6 @@
 #============================================================================
 
 set(APPLICATION_NAME ${Slicer_MAIN_PROJECT_APPLICATION_NAME})
-set(${APPLICATION_NAME}_ORGANIZATION_DOMAIN "kitware.com")
-set(${APPLICATION_NAME}_ORGANIZATION_NAME "Kitware, Inc.")
 
 project(${APPLICATION_NAME}App)
 
@@ -61,10 +59,19 @@ endif()
 set(${PROJECT_NAME}_VERSION_FULL ${${APPLICATION_NAME}_VERSION})
 
 # --------------------------------------------------------------------------
+# Folder
+# --------------------------------------------------------------------------
+set(${PROJECT_NAME}_FOLDER "App-${PROJECT_NAME}")
+
+# --------------------------------------------------------------------------
 # Application library
 # --------------------------------------------------------------------------
 
 set(APPLIB_NAME "q${PROJECT_NAME}")
+
+set(APPLIB_DESCRIPTION_SUMMARY
+  "Customized version of slicer for Ninja"
+  )
 
 set(APPLIB_SRCS
   qAppAboutDialog.cxx
@@ -118,6 +125,8 @@ configure_file(
 
 slicerMacroBuildAppLibrary(
   NAME ${APPLIB_NAME}
+  DESCRIPTION_SUMMARY ${APPLIB_DESCRIPTION_SUMMARY}
+  DESCRIPTION_FILE ${Slicer_SOURCE_DIR}/README.txt
   APPLICATION_NAME ${SlicerApp_APPLICATION_NAME}
   EXPORT_DIRECTIVE "Q_SLICER_APP_EXPORT"
   FOLDER ${${PROJECT_NAME}_FOLDER}

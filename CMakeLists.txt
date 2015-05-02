@@ -19,6 +19,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 set(APPLICATION_NAME Ninja)
+set(APPLICATION_DOMAIN "kitware.com")
 set(APPLICATION_VENDOR "Kitware, Inc.")
 
 #-----------------------------------------------------------------------------
