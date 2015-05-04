@@ -64,35 +64,37 @@ endif()
 
 # Name of the machine that will appear on CDash
 # E.g. mymachine.kitware, mymachine.dkfz, ...
-set(CTEST_SITE "melcor.kitware")
+set(CTEST_SITE "machinename.kitware")
 
 # Operating system of the machine
-# E.g. Linux, Windows, Darwin...
-set(MY_OPERATING_SYSTEM "Linux")
+# E.g. Linux, Windows, Darwin
+set(MY_OPERATING_SYSTEM "Windows")
 
 # Compiler to use to compile the project.
-# E.g. GCC-4.7, VS2008Express...
-setOnlyIfNotDefined(MY_COMPILER "GCC-4.7")
+# E.g.  GCC-4.7, VS2008, VS2010
+setOnlyIfNotDefined(MY_COMPILER "VS2008")
 
 # Bitness of the compiler to use. It can be different than the machine.
 # E.g. 64, 32
 setOnlyIfNotDefined(MY_BITNESS "64")
 
 # Generator to use when configuring the CMake project.
-# E.g. Unix Makefiles, Visual Studio 9 Win32
-setOnlyIfNotDefined(CTEST_CMAKE_GENERATOR "Unix Makefiles")
+# E.g. Unix Makefiles, Visual Studio 9 Win64, Visual Studio 10 Win64
+setOnlyIfNotDefined(CTEST_CMAKE_GENERATOR "Visual Studio 9 Win64")
 
 # Build configuration
-# E.g. Release, RelWithDebInfo, Debug
+# E.g. Release, Debug
 setOnlyIfNotDefined(CTEST_BUILD_CONFIGURATION "Release")
 
 # Qt version to use when compiling the project.
 # E.g. 4.7.4, 4.8.5
-setOnlyIfNotDefined(MY_QT_VERSION "4.7.4")
+setOnlyIfNotDefined(MY_QT_VERSION "4.8.5")
 
 # Path of the qmake executable
-# E.g. /usr/bin/qmake, C:/work/Qt/qt-${MY_QT_VERSION}-debug-32bit-vs2008/bin/qmake.exe
-setOnlyIfNotDefined(QT_QMAKE_EXECUTABLE "/usr/bin/qmake")
+# E.g. C:/D/Support/qt-${MY_QT_VERSION}-${MY_BITNESS}-vs2008-rel/bin/qmake.exe
+string(TOLOWER ${CTEST_BUILD_CONFIGURATION} qt_build_type)
+string(SUBSTRING ${qt_build_type} 0 3 qt_short_build_type) # rel or deb
+setOnlyIfNotDefined(QT_QMAKE_EXECUTABLE "C:/D/Support/qt-${MY_QT_VERSION}-${MY_BITNESS}-vs2008-${qt_short_build_type}/bin/qmake.exe")
 
 #-----------------------------------------------------------------------------
 # Dashboard options
@@ -107,7 +109,7 @@ setOnlyIfNotDefined(CTEST_TEST_TIMEOUT 500)
 
 # Build flags to pass to the generator.
 # E.g. -j2, -j8, ""
-setOnlyIfNotDefined(CTEST_BUILD_FLAGS "-j2")
+setOnlyIfNotDefined(CTEST_BUILD_FLAGS "")
 
 # Each dashboard script should specify a unique ID per CTEST_DASHBOARD_ROOT.
 # It means the following directories will be created:
