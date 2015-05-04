@@ -141,8 +141,6 @@ int SlicerAppMain(int argc, char* argv[])
     return app.returnCode();
     }
 
-  QSettings().setValue("MainWindow/DontShowDisclaimerMessage", true);
-
 #ifdef Slicer_USE_QtTesting
   setEnableQtTesting(); // disabled the native menu bar.
 #endif
