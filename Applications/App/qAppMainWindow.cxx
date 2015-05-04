@@ -100,7 +100,7 @@ qAppMainWindow::~qAppMainWindow()
 {
 }
 
-//---------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 void qAppMainWindow::on_HelpAboutSlicerAppAction_triggered()
 {
   qAppAboutDialog about(this);

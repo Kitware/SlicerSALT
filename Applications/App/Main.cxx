@@ -112,7 +112,6 @@ int SlicerAppMain(int argc, char* argv[])
   QCoreApplication::setApplicationName(applicationName);
 
   QCoreApplication::setApplicationVersion(qSlicerApp_VERSION_FULL);
-  //vtkObject::SetGlobalWarningDisplay(false);
   QApplication::setDesktopSettingsAware(false);
   QApplication::setStyle(new qAppStyle);
 
@@ -225,8 +224,6 @@ int SlicerAppMain(int argc, char* argv[])
 
   // Process command line argument after the event loop is started
   QTimer::singleShot(0, &app, SLOT(handleCommandLineArguments()));
-
-  // qSlicerApplicationHelper::showMRMLEventLoggerWidget();
 
   // Look at QApplication::exec() documentation, it is recommended to connect
   // clean up code to the aboutToQuit() signal

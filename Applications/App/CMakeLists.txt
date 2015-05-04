@@ -112,7 +112,6 @@ set(APPLIB_RESOURCES
   ${${APPLICATION_NAME}_SOURCE_DIR}/Utilities/Qt/Resources.qrc
   )
 
-
 set(APPLIB_INCLUDE_DIRECTORIES
   ${Slicer_SOURCE_DIR}/Applications/SlicerApp
   ${Slicer_BINARY_DIR}/Applications/SlicerApp
