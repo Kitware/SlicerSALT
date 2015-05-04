@@ -55,6 +55,8 @@ if(NOT DEFINED ${proj}_DIR)
     LabelStatistics
     PerformanceTests
     SampleData
+    SurfaceToolbox
+    VectorToScalarVolume
     )
   set(Slicer_CLIMODULES_DISABLED
     ACPCTransform
