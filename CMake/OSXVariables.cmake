@@ -137,4 +137,11 @@ if(APPLE)
       message(FATAL_ERROR "error: CMAKE_OSX_SYSROOT='${CMAKE_OSX_SYSROOT}' does not exist")
     endif()
   endif()
+
+  if(COMMAND mark_as_superbuild)
+    mark_as_superbuild(
+      VARS CMAKE_OSX_ARCHITECTURES:STRING CMAKE_OSX_SYSROOT:PATH CMAKE_OSX_DEPLOYMENT_TARGET:STRING
+      ALL_PROJECTS
+      )
+  endif()
 endif()
