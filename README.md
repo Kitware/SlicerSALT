@@ -44,7 +44,7 @@ Checkout
 cd /c
 mkdir W
 cd /c/W
-git clone https://github.com/AorticaCorp/AorticaResearch.git Ninja
+git clone https://github.com/Ninja/Ninja.git Ninja
 ```
 
 Note: use short source and build directory names to avoid the [maximum path length limitation](http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247%28v=vs.85%29.aspx#maxpath).
