@@ -1,0 +1,5 @@
+<!DOCTYPE RCC><RCC version="1.0">
+  <qresource>
+    <file alias="KitwareLogo.png">../Logos/KitwareLogo.png</file>
+  </qresource>
+</RCC>
