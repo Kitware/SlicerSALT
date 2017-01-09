@@ -19,7 +19,7 @@
 # External project for the project.
 #
 
-set(proj Ninja)
+set(proj SlicerSALT)
 
 # Set dependency list
 set(${proj}_DEPENDENCIES VTKv7 ITKv4)

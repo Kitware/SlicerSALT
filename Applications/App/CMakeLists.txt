@@ -70,7 +70,7 @@ set(${PROJECT_NAME}_FOLDER "App-${PROJECT_NAME}")
 set(APPLIB_NAME "q${PROJECT_NAME}")
 
 set(APPLIB_DESCRIPTION_SUMMARY
-  "Customized version of slicer for Ninja"
+  "Customized version of slicer for SlicerSALT"
   )
 
 set(APPLIB_SRCS
