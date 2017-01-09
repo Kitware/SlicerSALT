@@ -1,0 +1,6 @@
+#ifndef __qSlicerAppExport_h
+#define __qSlicerAppExport_h
+
+#include <@APPLIB_NAME@Export.h>
+
+#endif

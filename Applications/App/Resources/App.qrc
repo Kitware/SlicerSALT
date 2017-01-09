@@ -1,0 +1,12 @@
+<!DOCTYPE RCC><RCC version="1.0">
+  <qresource>
+    <file alias="DefaultSettings.ini">Settings/DefaultSettings.ini</file>
+    <file alias="Icons/Small/DesktopIcon.png">Icons/Small/DesktopIcon.png</file>
+    <file alias="Icons/Medium/DesktopIcon.png">Icons/Medium/DesktopIcon.png</file>
+    <file alias="Icons/Large/DesktopIcon.png">Icons/Large/DesktopIcon.png</file>
+    <file alias="Icons/XLarge/DesktopIcon.png">Icons/XLarge/DesktopIcon.png</file>
+    <file alias="Logo.png">Images/Logo.png</file>
+    <file alias="LogoFull.png">Images/LogoFull.png</file>
+    <file alias="SplashScreen.png">Images/SplashScreen.png</file>
+  </qresource>
+</RCC>
