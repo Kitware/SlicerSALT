@@ -5,14 +5,14 @@ SlicerSALT
 
 Prerequisites
 -------------
-* Prerequisites for Slicer. Listed [here][Slicer Prerequisites]
+* [Slicer Prerequisites]
 
 Checkout
 --------
 * Register [Github Access]() to create an account
-* Crrate SSH keys associated to your account. Instructions [here][SSH Key Generation].
-        * It is recommended to keept he passphrase empty for your SSH key to let the Superbuild work without interruptions
-* Add the SSH key to your Github account. Steps [here][Add SSH Key to Github].
+* Create SSH keys associated to your account: [SSH Key Generation Instructions].
+    * Recommended: keep the passphrase empty for your SSH key to let the Superbuild work without interruptions
+* Add the SSH key to your Github account: [Steps to add SSH Key to Github].
 * Clone the repository and follow platform specific instructions below:
 
         $ git clone git@github.com:Kitware/slicerSALT.git
@@ -20,11 +20,11 @@ Checkout
 Build
 -----
 
-Make sure that you can compile Slicer OR have the Prerequisites for Slicer. Instructions [here][Slicer Build Instructions].
+Make sure that you can compile Slicer OR have the Prerequisites for Slicer: [Slicer Build Instructions].
 
 ### Windows
 
-Tested Development environment: as specified [here][Windows Dev Environment].
+Tested Development environment: [Slicer Windows Dev Environment].
 
 1. Run CMake (cmake-gui) from the Windows Start Menu
     * Set the build directory `C:\slicerSALT-Debug` or `C:\slicerSALT-Release`
@@ -107,8 +107,8 @@ Resources
 
 [Fork the slicerSALT Repository]: https://help.github.com/articles/fork-a-repo/
 [Slicer Coding and Commit Style Guide]: https://www.slicer.org/wiki/Documentation/Nightly/Developers/Style_Guide
-[Slicer Prerequisites]: (https://www.slicer.org/wiki/Documentation/Nightly/Developers/Build_Instructions#PREREQUISITES)
-[Slicer Build Instructions]: (https://www.slicer.org/slicerWiki/index.php/Documentation/Nightly/Developers/Build_Instructions)
-[SSH Key Generation]: (https://gitlab.kitware.com/help/ssh/README)
-[Add SSH key to Github]: (https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/)
-[Windows Dev Environment]: (https://www.slicer.org/wiki/Documentation/Nightly/Developers/Build_Instructions#Windows)
+[Slicer Prerequisites]: https://www.slicer.org/wiki/Documentation/Nightly/Developers/Build_Instructions#PREREQUISITES
+[Slicer Build Instructions]: https://www.slicer.org/slicerWiki/index.php/Documentation/Nightly/Developers/Build_Instructions
+[SSH Key Generation Instructions]: https://gitlab.kitware.com/help/ssh/README
+[Steps to add SSH Key to Github]: https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/
+[Slicer Windows Dev Environment]: https://www.slicer.org/wiki/Documentation/Nightly/Developers/Build_Instructions#Windows
