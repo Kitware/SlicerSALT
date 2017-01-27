@@ -11,6 +11,7 @@
  * [Editing previous commits](#editing-previous-commits)
 * [Dashboards](#dashboards)
 
+---
 ## Forking workflow
 To contribute your changes to slicerSALT, you will need to follow the forking workflow.
 
@@ -65,9 +66,9 @@ To contribute your changes to slicerSALT, you will need to follow the forking wo
 *Coming soon - Please refer to the rest of the code in the meantime*
 
 ## Commit guidelines
----
-### Commit 101
 
+### Commit 101
+---
 1. **Commit often**
 
     You do not need to have a lot of changes to create a commit. On the contrary, you should try to split your changes into small logical steps and commit each of them. They should be consistent, self-contained (work independently of later commits), and pass the same test which previously did (or more) to ensure you do not introduce any regression. On the other hand, do not push it to the extreme: if your changes are tightly related and stay clear as a whole, there is no need to create multiple commits, even if they are applied to different files, methods, etc.
@@ -92,7 +93,7 @@ To contribute your changes to slicerSALT, you will need to follow the forking wo
 Some of the content above was directly or partially taken from Crealytics blog : [5 reasons for keeping your git commits small](https://crealytics.com/blog/2010/07/09/5-reasons-keeping-git-commits-small/).
 
 ### Commit messages
-
+---
 Proper commit messages are important as they allow to speed up the review process. They are also crucial for development down the road to be able to come back to that commit and understand the logic behind the changes.
 
 1. Use the appropriate title prefix
@@ -125,7 +126,7 @@ Proper commit messages are important as they allow to speed up the review proces
     If your commit is composed of multiple changes in order to stay self-contained, list your changes instead of appending them in long paragraphs for clarity.
 
 ### Editing previous commits
-
+---
 While implementing your topic that would be holding multiple commits, you might end up making changes which should be coupled with or which revert changes from previous commits. The same thing can happen when your merge request has been reviewed and you need to make changes that should be applied in existing commit.
 
 It is possible to change previous commits in order to keep your topic clean and make the reviewing process easier, a couple options are listed below.
@@ -249,7 +250,7 @@ This process consists of rewriting the branch history, therefore re-syncing it w
 
 
 ## Dashboards
-------
+
 Coming soon!
  
  [Fork the slicerSALT Repository]: https://help.github.com/articles/fork-a-repo/
