@@ -1,55 +1,43 @@
-Contributing to Ninja
+Contributing to slicerSALT
 =====================
 
-There are many ways to contribute to Ninja.
+To contribute your changes to slicerSALT, you will need to follow the forking workflow.
 
-  * Submit a feature request or bug, or add to the discussion on the [Ninja issue tracker][is]
-  * Submit a [Pull Request][pr] to improve Ninja.
+1. [Fork the slicerSALT Repository] to your own github space, and add it to your git source directory
 
-The PR Process, and Related Gotchas
------------------------------------
+```sh
+ git remote add custom-remote-name git@github.com:{github-space-name}/slicerSALT.git
+ ```
 
-#### How to submit a PR ?
+2. Create an issue on slicerSALT's issue tracker (optional step for minor changes)
+>
+> https://github.com/Kitware/slicerSALT/issues
+ 
+3. Create a new branch named `<issuer_number>-a-descriptive-topic-name`. Example:
 
-If you are new to Ninja development and you don't have push access to the Ninja
-repository, here are the steps:
+ ```sh
+ git checkout -b 101-add-surface-preprocess-extension
+ ```
+4. Fix the code or implement your feature, then commit your change(s)
+>
+> Make sure to read the [Slicer Coding and Commit Style Guide]
 
-1. [Fork and clone][fk] the repository.
-3. Create a branch.
-4. [Push][push] the branch to your GitHub fork.
-5. Create a [Pull Request][pr].
+5. Push your branch to your fork of slicerSALT
 
-This corresponds to the `Fork & Pull Model` mentioned in the [GitHub flow](https://guides.github.com/introduction/flow/index.html)
-guides.
+ ```sh
+ git push custom-remote-name 101-add-surface-preprocess-extension
+ ```
 
-If you have push access to this repository, you could simply push your branch
-and create a [Pull Request][pr]. This corresponds to the `Shared Repository Model`
-and will facilitate other developers to checkout your topic without having to
-[configure a remote](https://help.github.com/articles/configuring-a-remote-for-a-fork/).
-It will also simplify the workflow when you are _co-developing_ a branch.
+6. Once your branch is ready for merging, create a pull request
+>
+> https://help.github.com/articles/creating-a-pull-request/
 
-When submitting a PR, make sure to add a `Cc: @ninja/developers` comment to
-notify Ninja developers of your awesome contributions. Based on the
-comments posted by the reviewers, you may have to revisit your patches.
-
-### How to integrate a PR ?
-
-Getting your contributions integrated is relatively straightforward, here
-is the checklist:
-
-* All tests pass
-* Consensus is reached. This usually means that at least one reviewer added a `LGTM` comment
-and a reasonable amount of time passed without anyone objecting. `LGTM` is an
-acronym for _Looks Good to Me_.
-
-Next, there are two scenarios:
-* You do NOT have push access: A Ninja core developer will integrate your PR.
-* You have push access: Simply click on the "Merge pull request" button.
-
-Then, click on the "Delete branch" button that appears afterward.
-
-
-[fk]: http://help.github.com/forking/
-[push]: https://help.github.com/articles/pushing-to-a-remote/
-[pr]: https://kwgitlab.kitware.com/slicer/slicertemplateproject/merge_requests
-[is]: https://kwgitlab.kitware.com/slicer/slicertemplateproject/issues
+7. Once your changes have been reviewed and merged into the `master` branch of slicerSALT, you may get rid of your development branch and pull the latest commits from the master branch, then repeat from step 2 for further development
+ 
+ ```sh
+ git branch -d 101-add-surface-preprocess-extension
+ git checkout master
+ git pull origin master
+ ```
+ 
+ [Fork the slicerSALT Repository]: https://help.github.com/articles/fork-a-repo/
