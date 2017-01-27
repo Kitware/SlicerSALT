@@ -5,25 +5,26 @@ SlicerSALT
 
 Prerequisites
 -------------
-
+* Prerequisites for Slicer. Listed [here][Slicer Prerequisites]
 
 Checkout
 --------
-
-
-Build
------
-
-* Make sure that you can compile Slicer. Instructions can be found [here](https://www.slicer.org/slicerWiki/index.php/Documentation/Nightly/Developers/Build_Instructions)
-* Register [Gitlab Access]() to create an account
-* To create SSH keys associated to your account follow instructions [here](https://gitlab.kitware.com/help/ssh/README)
+* Register [Github Access]() to create an account
+* Crrate SSH keys associated to your account. Instructions [here][SSH Key Generation].
+        * It is recommended to keept he passphrase empty for your SSH key to let the Superbuild work without interruptions
+* Add the SSH key to your Github account. Steps [here][Add SSH Key to Github].
 * Clone the repository and follow platform specific instructions below:
 
         $ git clone git@github.com:Kitware/slicerSALT.git
 
-Windows
--------
-Tested Development environment: as specified [here](https://www.slicer.org/wiki/Documentation/Nightly/Developers/Build_Instructions#Windows)
+Build
+-----
+
+Make sure that you can compile Slicer OR have the Prerequisites for Slicer. Instructions [here][Slicer Build Instructions].
+
+### Windows
+
+Tested Development environment: as specified [here][Windows Dev Environment].
 
 1. Run CMake (cmake-gui) from the Windows Start Menu
     * Set the build directory `C:\slicerSALT-Debug` or `C:\slicerSALT-Release`
@@ -37,8 +38,8 @@ Tested Development environment: as specified [here](https://www.slicer.org/wiki/
     * Build Solution!
 3. slicerSALT executable lives in `path/to/slicerSALT-build/S-bld/Slicer-build/`
 
-Unix-like
----------
+### Unix-like
+
 ***MacOSX Note:*** Beginning XCode 7 support for OpenMP has been removed. So if you're using XCode 7 or above OpenMP will be bypassed during build process.
 
         $ mkdir slicerSALT-build
@@ -58,7 +59,7 @@ Contribute
 
 To contribute your changes to slicerSALT, you will need to follow the forking workflow.
 
-1. [Fork the slicerSALT repository] to your own github space, and add it to your git source directory
+1. [Fork the slicerSALT Repository] to your own github space, and add it to your git source directory
 
 ```sh
  git remote add custom-remote-name git@github.com:{github-space-name}/slicerSALT.git
@@ -104,5 +105,10 @@ Resources
 * [3D Slicer Developer Wiki](http://wiki.slicer.org/slicerWiki/index.php/Documentation/Nightly/Developers)
 
 
-[Fork the slicerSALT repository]: https://help.github.com/articles/fork-a-repo/
+[Fork the slicerSALT Repository]: https://help.github.com/articles/fork-a-repo/
 [Slicer Coding and Commit Style Guide]: https://www.slicer.org/wiki/Documentation/Nightly/Developers/Style_Guide
+[Slicer Prerequisites]: (https://www.slicer.org/wiki/Documentation/Nightly/Developers/Build_Instructions#PREREQUISITES)
+[Slicer Build Instructions]: (https://www.slicer.org/slicerWiki/index.php/Documentation/Nightly/Developers/Build_Instructions)
+[SSH Key Generation]: (https://gitlab.kitware.com/help/ssh/README)
+[Add SSH key to Github]: (https://help.github.com/articles/adding-a-new-ssh-key-to-your-github-account/)
+[Windows Dev Environment]: (https://www.slicer.org/wiki/Documentation/Nightly/Developers/Build_Instructions#Windows)
