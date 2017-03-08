@@ -1,4 +1,4 @@
-![SlicerSALT by Kitware](SALT_Logo.png)
+<img src="SALT_Logo.png" width="720">
 
 Introduction
 ------------
