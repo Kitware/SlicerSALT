@@ -1,4 +1,6 @@
-<img src="Utilities/Logos/SALT_Logo.png" width="720">
+
+<img src="Utilities/Logos/SALT_Logo.png" width="512">
+
 
 Introduction
 ------------
