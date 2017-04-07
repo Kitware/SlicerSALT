@@ -59,14 +59,17 @@ void qAppMainWindowPrivate::setupUi(QMainWindow * mainWindow)
 
   this->LogoLabel->setPixmap(QPixmap(":/LogoFull.png"));
 
+  // To see any effect of changes over here in the application first delete the .ini file pointed by
+  // --settings-path option of the project executable.
+
   // Hide the toolbars
-  this->MainToolBar->setVisible(false);
-  //this->ModuleSelectorToolBar->setVisible(false);
-  this->ModuleToolBar->setVisible(false);
-  this->ViewToolBar->setVisible(false);
-  this->MouseModeToolBar->setVisible(false);
-  this->CaptureToolBar->setVisible(false);
-  this->ViewersToolBar->setVisible(false);
+  this->MainToolBar->setVisible(true);
+  this->ModuleSelectorToolBar->setVisible(true);
+  //this->ModuleToolBar->setVisible(false);
+  //this->ViewToolBar->setVisible(false);
+  //this->MouseModeToolBar->setVisible(false);
+  //this->CaptureToolBar->setVisible(false);
+  //this->ViewersToolBar->setVisible(false);
   this->DialogToolBar->setVisible(false);
 
   // Hide the menus

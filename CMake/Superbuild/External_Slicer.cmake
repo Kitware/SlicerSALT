@@ -171,6 +171,8 @@ if(NOT DEFINED ${proj}_DIR)
       -D${proj}_BUILD_DataStore:BOOL=OFF
       -D${proj}_BUILD_LandmarkRegistration:BOOL=OFF
       -D${proj}_EXTENSION_SOURCE_DIRS:STRING=${${APPLICATION_NAME}_MODULES}
+      # Slicer favorite modules
+      -DSlicer_DEFAULT_FAVORITE_MODULES:STRING=SubjectHierarchy,Volumes,Models,Transforms,Editor
     DEPENDS
       ${${proj}_DEPENDENCIES}
     )
