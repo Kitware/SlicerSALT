@@ -20,6 +20,9 @@
 
 // Slicer includes
 #include "qSlicerModuleSelectorToolBar.h"
+#include "qSlicerModulesMenu.h"
+#include "qSlicerModuleManager.h"
+#include "qSlicerAbstractModule.h"
 
 // SlicerApp includes
 #include "qAppAboutDialog.h"
@@ -57,6 +60,7 @@ void qAppMainWindowPrivate::setupUi(QMainWindow * mainWindow)
   this->HelpAboutSlicerAppAction->setText("About " + app->applicationName());
   this->HelpAboutSlicerAppAction->setToolTip("");
 
+  this->LogoLabel->setAlignment(Qt::AlignCenter);
   this->LogoLabel->setPixmap(QPixmap(":/LogoFull.png"));
 
   // To see any effect of changes over here in the application first delete the .ini file pointed by
@@ -108,4 +112,27 @@ void qAppMainWindow::on_HelpAboutSlicerAppAction_triggered()
 {
   qAppAboutDialog about(this);
   about.exec();
+}
+
+void qAppMainWindow::show()
+{
+  Q_D(qAppMainWindow);
+  qSlicerModulesMenu* qMenu = d->ModuleSelectorToolBar->modulesMenu();
+  qSlicerModuleManager * moduleManager = qSlicerApplication::application()->moduleManager();
+
+// Modules to add
+  QStringList addModuleNames = QStringList()
+          << "Home";
+  QAction * beforeAction = qMenu->actions().at(1); // to insert after the "All Modules" menu
+  foreach(const QString& moduleName, addModuleNames)
+    {
+    qSlicerAbstractCoreModule * coreModule = moduleManager->module(moduleName);
+    qSlicerAbstractModule* module = qobject_cast<qSlicerAbstractModule*>(coreModule);
+    qMenu->insertAction(beforeAction, module->action());
+    }
+  // Add missing separator (only if all modules removed from list)
+  beforeAction = qMenu->actions().at(1);
+  qMenu->insertSeparator(beforeAction);
+  // Show
+  this->Superclass::show();
 }

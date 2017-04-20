@@ -16,6 +16,7 @@
 ==============================================================================*/
 
 // Qt includes
+#include <QAction>
 #include <QList>
 #include <QSettings>
 #include <QSplashScreen>
@@ -27,6 +28,7 @@
 
 // CTK includes
 #include <ctkAbstractLibraryFactory.h>
+#include <ctkCollapsibleButton.h>
 #ifdef Slicer_USE_PYTHONQT
 # include <ctkPythonConsole.h>
 #endif
@@ -45,7 +47,10 @@
 #include "qSlicerCommandOptions.h"
 #include "qSlicerModuleFactoryManager.h"
 #include "qSlicerModuleManager.h"
+#include "qSlicerModulePanel.h"
+#include "qSlicerLayoutManager.h"
 #include "Widgets/qAppStyle.h"
+#include "vtkMRMLLayoutNode.h"
 
 // ITK includes
 #include <itkFactoryRegistration.h>
@@ -232,6 +237,20 @@ int SlicerAppMain(int argc, char* argv[])
     qDebug() << "Number of loaded modules:" << moduleManager->modulesNames().count();
     }
 
+  // Setup Home module
+  qSlicerAbstractCoreModule * homeCoreModule = moduleManager->module("Home");
+  qSlicerAbstractModule* homeModule = qobject_cast<qSlicerAbstractModule*>(homeCoreModule);
+  homeModule->action()->setIcon(window->windowIcon());
+
+  // Open Help & acknowledgment
+  qSlicerModulePanel* modulePanel = window->findChild<qSlicerModulePanel*>("ModulePanel");
+  ctkCollapsibleButton* helpButton = modulePanel->findChild<ctkCollapsibleButton*>("HelpCollapsibleButton");
+  helpButton->setCollapsed(false);
+
+  qSlicerLayoutManager * layoutManager = qSlicerApplication::application()->layoutManager();
+  layoutManager->setLayout(vtkMRMLLayoutNode::SlicerLayoutOneUp3DView);
+
+  // Launch SlicerSALT splash screen and window
   splashMessage(splashScreen, QString());
 
   if (window)

@@ -36,6 +36,7 @@ public:
 public:
   /// Reimplemented to use qAppAboutDialog instead of qSlicerAppAboutDialog.
   virtual void on_HelpAboutSlicerAppAction_triggered();
+  virtual void show();
 
 private:
   Q_DECLARE_PRIVATE(qAppMainWindow);
