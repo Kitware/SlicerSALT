@@ -48,8 +48,17 @@ qAppAboutDialog::qAppAboutDialog(QWidget* parentWidget)
   d->CreditsTextBrowser->append(
     slicer->applicationVersion()+ " "
     + "r" + slicer->repositoryRevision());
+  QString acknowledgmentText(
+      "Supported by: NIH and the Slicer Community.<br /><br />"
+      "This work is part of the  National Institute of Health grant titled "
+      "<i>Shape Analysis Toolbox for Medical Image Computing Projects</i>.<br /><br />"
+      "SlicerSALT is a  software package for medical image segmentation's "
+      "shape analysis. <br /><br />"
+      "Ongoing development, maintenance, distribution, and training is managed by "
+      "Kitware Inc., University of North Carolina, Chapel Hill, M.D. Cancer Center "
+      "at The University of Texas and NYU Tandon School of Engineering. <br /><br />");
   d->CreditsTextBrowser->append("");
-  d->CreditsTextBrowser->insertHtml(slicer->acknowledgment());
+  d->CreditsTextBrowser->insertHtml(acknowledgmentText);
   d->CreditsTextBrowser->insertHtml(slicer->libraries());
   d->SlicerLinksTextBrowser->insertHtml(slicer->copyrights());
   d->CreditsTextBrowser->moveCursor(QTextCursor::Start, QTextCursor::MoveAnchor);

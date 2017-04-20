@@ -154,7 +154,7 @@ slicerMacroBuildApplication(
   NAME ${PROJECT_NAME}
   APPLICATION_NAME ${${PROJECT_NAME}_APPLICATION_NAME}
   FOLDER ${${PROJECT_NAME}_FOLDER}
-  APPLE_ICON_FILE "Resources/Icons/Medium/DesktopIcon.icns"
+  APPLE_ICON_FILE "Resources/Icons/XLarge/DesktopIcon.icns"
   LAUNCHER_SPLASHSCREEN_FILE "Resources/Images/SplashScreen.png"
   WIN_ICON_FILE "Resources/App.ico"
   SRCS ${APP_SRCS}
