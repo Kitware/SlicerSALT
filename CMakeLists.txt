@@ -172,6 +172,17 @@ endif()
 #-----------------------------------------------------------------------------
 add_subdirectory(Modules)
 
+#-------------- Experimental: Delete this later:
+file(DOWNLOAD "https://data.kitware.com/api/v1/file/58ee83ce8d777f16d095fdf4/download"
+    "E:/tmp/Personal.zip"
+    SHOW_PROGRESS
+    EXPECTED_HASH SHA512=36ebc3052770e8ad52f89a7c70dc7d477daab1f3faa8e744a579e4fcacba6e8e9b2077de7e723f895023b047bae40358b4e88cfb5e02db98d1dd8432727e0c49)
+
+execute_process(
+COMMAND ${CMAKE_COMMAND} -E tar xzf "E:/tmp/Personal.zip"
+WORKING_DIRECTORY "E:/tmp"
+    )
+
 #-----------------------------------------------------------------------------
 # Superbuild script
 #-----------------------------------------------------------------------------
