@@ -16,7 +16,7 @@
 #
 #============================================================================
 
-set(${APPLICATION_NAME}_DEPENDENCIES Slicer)
+set(${APPLICATION_NAME}_DEPENDENCIES Slicer SlicerPackageExtensions)
 
 #-----------------------------------------------------------------------------
 # WARNING - No change should be required after this comment
