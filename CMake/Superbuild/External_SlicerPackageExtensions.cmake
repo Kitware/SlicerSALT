@@ -103,6 +103,44 @@ if(DEFINED ${proj}_CONFIGURE)
       continue()
     endif()
 
+#------------------------------------------------------------------------------
+# The SPT application has generally extension manager switched off.
+# To get to the generated extension libraries on Mac you need to go down 3 levels
+# of directories of the package dir - package_dir/Application_name.app/Contents/Extensions-<Rev#>.
+# Hence the following special case for the Apple.
+
+    if(APPLE)
+      set(extension_install_dir "${extension_install_dir}/${APPLICATION_NAME}.app/Contents")
+      file(
+        GLOB files
+        RELATIVE ${extension_install_dir}/
+        ${extension_install_dir}/*
+        )
+      set(extensions_dir "unknown")
+      foreach(file IN LISTS files)
+        if(IS_DIRECTORY ${extension_install_dir}/${file})
+          set(extensions_dir ${file})
+        endif()
+      endforeach()
+      set(extension_install_dir "${extension_install_dir}/${extensions_dir}")
+
+      # get to the extension name directory (this is where lib and share directories live)
+      file(
+        GLOB files
+        RELATIVE ${extension_install_dir}/
+        ${extension_install_dir}/*
+        )
+      set(extension_name_dir "unknown")
+      foreach(file IN LISTS files)
+        if(IS_DIRECTORY ${extension_install_dir}/${file})
+          set(extension_name_dir ${file})
+        endif()
+      endforeach()
+      set(extension_install_dir "${extension_install_dir}/${extension_name_dir}")
+
+      message(STATUS "***** Adding extension install dir as: [${extension_install_dir}]******")
+    endif()
+
     list(APPEND extension_install_dirs
       ${extension_install_dir}
       )
@@ -141,6 +179,7 @@ ExternalProject_Add(${proj}
     -DSlicer_INNER_BUILD_DIR:PATH=${Slicer_INNER_BUILD_DIR}
     -DEXTENSION_CPACK_PACKAGE_DIRS:STRING=${${APPLICATION_NAME}_EXTENSION_CPACK_PACKAGE_DIRS}
     -D${proj}_CONFIGURE=1
+    -DAPPLICATION_NAME:STRING=${APPLICATION_NAME}
     -P ${CMAKE_CURRENT_LIST_FILE}
   BUILD_COMMAND ${CMAKE_COMMAND} --build ${Slicer_INNER_BUILD_DIR} --config ${config} --target package
   INSTALL_COMMAND ""
