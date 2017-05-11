@@ -91,7 +91,7 @@ if(NOT DEFINED ${proj}_DIR)
     ThresholdScalarVolume
     VotingBinaryHoleFillingImageFilter
     MergeModels
-    ModelMaker
+    #ModelMaker
     ResampleDTIVolume
     # ResampleScalarVectorDWIVolume # Needed by 'CropVolume' module
     )
@@ -108,7 +108,7 @@ if(NOT DEFINED ${proj}_DIR)
     set(${proj}_SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj})
     list(APPEND ${proj}_EP_ARGS
       GIT_REPOSITORY ${git_protocol}://github.com/hina-shah/Slicer.git
-      GIT_TAG e3d63a2f257578448191bd4009b77ed09599eb55
+      GIT_TAG 865e10d877aef92a777ad987197baaa79b97ee5f
       )
   endif()
 
