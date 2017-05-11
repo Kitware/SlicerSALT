@@ -47,15 +47,15 @@ set(ep_common_cxx_flags "${CMAKE_CXX_FLAGS_INIT} ${ADDITIONAL_CXX_FLAGS}")
 
 include(ExternalProjectAddSource)
 
-#ExternalProject_Add_Source(MyRemoteModule
-#  GIT_REPOSITORY ${git_protocol}://github.com/MyUser/MyRemoteModule.git
-#  GIT_TAG "123456790"
-#  SOURCE_DIR_VAR MyRemoteModule_SOURCE_DIR
-#  )
-#list(APPEND Slicer_REMOTE_DEPENDENCIES MyRemoteModule)
+ExternalProject_Add_Source(MeshToLabelMap
+  GIT_REPOSITORY ${git_protocol}://github.com/NIRALUser/MeshToLabelMap.git
+  GIT_TAG "0a2540e111e6452abc757a8bf96847dc35ff688f"
+  SOURCE_DIR_VAR MeshToLabelMap_SOURCE_DIR
+  )
+list(APPEND Slicer_REMOTE_DEPENDENCIES MeshToLabelMap)
 
 set(Slicer_REMOTE_SOURCE_DIRS
-#  ${MyRemoteModule_SOURCE_DIR}
+  ${MeshToLabelMap_SOURCE_DIR}
   )
 set_property(GLOBAL APPEND PROPERTY ${APPLICATION_NAME}_MODULES ${Slicer_REMOTE_SOURCE_DIRS})
 
