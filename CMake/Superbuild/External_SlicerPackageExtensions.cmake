@@ -30,6 +30,7 @@ set(proj SlicerPackageExtensions)
 #
 set(${proj}_EXTENSIONS
   SPHARM-PDM
+  ShapePopulationViewer
   )
 
 #-----------------------------------------------------------------------------
@@ -138,7 +139,6 @@ if(DEFINED ${proj}_CONFIGURE)
       endforeach()
       set(extension_install_dir "${extension_install_dir}/${extension_name_dir}")
 
-      message(STATUS "***** Adding extension install dir as: [${extension_install_dir}]******")
     endif()
 
     list(APPEND extension_install_dirs
@@ -146,11 +146,12 @@ if(DEFINED ${proj}_CONFIGURE)
       )
   endforeach()
 
-  message(STATUS "Slicer_EXTENSION_INSTALL_DIRS: ${extension_install_dirs}")
+  string (REPLACE ";" "^^" extension_install_dirs "${extension_install_dirs}")
+  message(STATUS "Slicer_EXTENSION_INSTALL_DIRS in slicer package extensions: ${extension_install_dirs}")
 
   # Re-configure Slicer
   execute_process(
-    COMMAND ${CMAKE_COMMAND} -DSlicer_EXTENSION_INSTALL_DIRS:PATH=${extension_install_dirs} .
+    COMMAND ${CMAKE_COMMAND} -DSlicer_EXTENSION_INSTALL_DIRS:STRING=${extension_install_dirs} .
     WORKING_DIRECTORY ${Slicer_INNER_BUILD_DIR}
     )
   return()
@@ -169,6 +170,9 @@ if(DEFINED CMAKE_CONFIGURATION_TYPES)
 endif()
 
 set(Slicer_INNER_BUILD_DIR ${Slicer_DIR}/Slicer-build)
+
+_sb_list_to_string("^^" "${${APPLICATION_NAME}_EXTENSION_CPACK_PACKAGE_DIRS}" ${APPLICATION_NAME}_EXTENSION_CPACK_PACKAGE_DIRS)
+message(STATUS "${APPLICATION_NAME}_EXTENSION_CPACK_PACKAGE_DIRS: ${${APPLICATION_NAME}_EXTENSION_CPACK_PACKAGE_DIRS}")
 
 ExternalProject_Add(${proj}
   ${${proj}_EP_ARGS}
