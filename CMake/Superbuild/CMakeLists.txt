@@ -49,7 +49,7 @@ include(ExternalProjectAddSource)
 
 ExternalProject_Add_Source(MeshToLabelMap
   GIT_REPOSITORY ${git_protocol}://github.com/NIRALUser/MeshToLabelMap.git
-  GIT_TAG "0a2540e111e6452abc757a8bf96847dc35ff688f"
+  GIT_TAG "9e2e199b99396c570f5f26c0ccfd5e149f6b9d34"
   SOURCE_DIR_VAR MeshToLabelMap_SOURCE_DIR
   )
 list(APPEND Slicer_REMOTE_DEPENDENCIES MeshToLabelMap)
