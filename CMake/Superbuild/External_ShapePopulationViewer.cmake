@@ -19,7 +19,7 @@
 # External project for the project.
 #
 
-set(proj SPHARM-PDM)
+set(proj ShapePopulationViewer)
 
 # Set dependency list
 set(${proj}_DEPENDENCIES Slicer)
@@ -48,11 +48,11 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   endif()
 
   set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
-  set(${proj}_PACKAGE_DIR ${${proj}_DIR}/${proj}-build)
+  set(${proj}_PACKAGE_DIR ${${proj}_DIR})
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
-    GIT_REPOSITORY "${git_protocol}://github.com/NIRALUser/SPHARM-PDM.git"
-    GIT_TAG "8221677d286401356fb2cad840843629ec455850"
+    GIT_REPOSITORY "${git_protocol}://github.com/NIRALUser/ShapePopulationViewer.git"
+    GIT_TAG "release"
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${${proj}_DIR}
     INSTALL_COMMAND ${CMAKE_COMMAND} --build ${${proj}_PACKAGE_DIR} --config ${config} --target package
@@ -68,7 +68,7 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   list(APPEND ${APPLICATION_NAME}_EXTENSION_CPACK_PACKAGE_DIRS
     ${${proj}_PACKAGE_DIR}/_CPack_Packages
     )
-
+  MESSAGE(STATUS "~~~~~ Appended _cpack_packages for ${proj}, the variable is: ${${APPLICATION_NAME}_EXTENSION_CPACK_PACKAGE_DIRS}")
 else()
   ExternalProject_Add_Empty(${proj} DEPENDS ${${proj}_DEPENDENCIES})
 endif()
