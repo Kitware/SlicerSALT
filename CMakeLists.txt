@@ -43,6 +43,13 @@ project(${kit})
 # Configure necessary cmakes
 #
 
+# Configure CTestCustom
+configure_file(
+  CMake/CTestCustom.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/CTestCustom.cmake
+  @ONLY
+  )
+
 # Configure Use${kit}.cmake
 configure_file(
   ${${kit}_CMAKE_SOURCE_DIR}/UseApplication.cmake.in
