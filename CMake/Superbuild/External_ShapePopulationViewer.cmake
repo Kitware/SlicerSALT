@@ -59,6 +59,7 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
     CMAKE_CACHE_ARGS
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
       -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
+      -DCMAKE_BUILD_TYPE:STRING=${config}
       -DSlicer_DIR:PATH=${Slicer_DIR}/Slicer-build
       -D${proj}_BUILD_SLICER_EXTENSION:BOOL=ON
     DEPENDS

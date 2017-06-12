@@ -21,6 +21,10 @@ set(proj Slicer)
 set(${proj}_DEPENDENCIES "")
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
+list(APPEND ${proj}_DEPENDENCIES
+ ${${proj}_REMOTE_DEPENDENCIES}
+ )
+
 if(${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   message(FATAL_ERROR "Enabling ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj} is not supported")
 endif()
