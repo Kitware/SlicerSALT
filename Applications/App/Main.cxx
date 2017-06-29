@@ -238,20 +238,26 @@ int SlicerAppMain(int argc, char* argv[])
     }
 
   // Setup Home module
-  qSlicerAbstractCoreModule * homeCoreModule = moduleManager->module("Home");
-  qSlicerAbstractModule* homeModule = qobject_cast<qSlicerAbstractModule*>(homeCoreModule);
-  homeModule->action()->setIcon(window->windowIcon());
+  if(window)
+    {
+    qSlicerAbstractCoreModule * homeCoreModule = moduleManager->module("Home");
+    qSlicerAbstractModule* homeModule = qobject_cast<qSlicerAbstractModule*>(homeCoreModule);
+    homeModule->action()->setIcon(window->windowIcon());
 
-  // Open Help & acknowledgment
-  qSlicerModulePanel* modulePanel = window->findChild<qSlicerModulePanel*>("ModulePanel");
-  ctkCollapsibleButton* helpButton = modulePanel->findChild<ctkCollapsibleButton*>("HelpCollapsibleButton");
-  helpButton->setCollapsed(false);
+    // Open Help & acknowledgment
+    qSlicerModulePanel* modulePanel = window->findChild<qSlicerModulePanel*>("ModulePanel");
+    ctkCollapsibleButton* helpButton = modulePanel->findChild<ctkCollapsibleButton*>("HelpCollapsibleButton");
+    helpButton->setCollapsed(false);
 
-  qSlicerLayoutManager * layoutManager = qSlicerApplication::application()->layoutManager();
-  layoutManager->setLayout(vtkMRMLLayoutNode::SlicerLayoutOneUp3DView);
+    qSlicerLayoutManager * layoutManager = qSlicerApplication::application()->layoutManager();
+    layoutManager->setLayout(vtkMRMLLayoutNode::SlicerLayoutOneUp3DView);
+    }
 
-  // Launch SlicerSALT splash screen and window
-  splashMessage(splashScreen, QString());
+  if(splashScreen)
+    {
+    // Launch SlicerSALT splash screen and window
+    splashMessage(splashScreen, QString());
+    }
 
   if (window)
     {
