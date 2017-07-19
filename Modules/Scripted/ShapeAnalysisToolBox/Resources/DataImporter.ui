@@ -200,14 +200,18 @@
    <item row="2" column="0">
     <widget class="ctkCollapsibleButton" name="StructuresCollapsibleButton">
      <property name="text">
-      <string>Structures For All Subjects</string>
+      <string>Structures In All Subjects</string>
      </property>
      <property name="contentsFrameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
-       <widget class="QTableWidget" name="StructuresTableWidget"/>
+       <widget class="ctkSliderWidget" name="StructuresSliderWidget">
+        <property name="decimals">
+         <number>0</number>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -222,24 +226,24 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="0" column="2">
-       <widget class="QLineEdit" name="lineEdit"/>
+       <widget class="QLineEdit" name="CurrentStructureTopologyLineEdit"/>
       </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Subject Topology:</string>
+         <string>Current Structure Topology:</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Cohort Topology:</string>
+         <string>Structure Cohort Topology:</string>
         </property>
        </widget>
       </item>
       <item row="1" column="2">
-       <widget class="QLineEdit" name="lineEdit_2"/>
+       <widget class="QLineEdit" name="CohortTopologyLineEdit"/>
       </item>
      </layout>
     </widget>
@@ -263,6 +267,11 @@
    <class>ctkDirectoryButton</class>
    <extends>QWidget</extends>
    <header>ctkDirectoryButton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>ctkSliderWidget</class>
+   <extends>QWidget</extends>
+   <header>ctkSliderWidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

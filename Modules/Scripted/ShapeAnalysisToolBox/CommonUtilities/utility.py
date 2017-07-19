@@ -8,8 +8,9 @@ import os
 '''
 This class harbors all the utility functions to save and remove mrml nodes
 '''
-class MRMLUtility(object):
 
+
+class MRMLUtility(object):
     @staticmethod
     def loadMRMLNode(node_name, file_dir, file_name, file_type):
         node = slicer.util.getNode(node_name)
@@ -31,7 +32,7 @@ class MRMLUtility(object):
 
     @staticmethod
     def createNewMRMLNode(node_name, mrml_type, copy_node=None, transform=None):
-        mrml_node = slicer.mrmlScene.CreateNodeByClass(mrml_type)
+        mrml_node = slicer.mrmlScene.AddNewNodeByClass(mrml_type)
         if copy_node is not None:
             mrml_node.Copy(copy_node)
             if mrml_type is 'vtkMRMLModelNode':
@@ -46,8 +47,10 @@ class MRMLUtility(object):
                 display_node.UnRegister(slicer.mrmlScene)
                 mrml_node.SetAndObserveDisplayNodeID(display_node.GetID())
                 mrml_node.SetAndObserveStorageNodeID(None)
-                if transform is None:
-                    print 'Transform is empty guys!'
+        else:
+            if mrml_type is 'vtkMRMLModelNode':
+                mrml_node.CreateDefaultDisplayNodes()
+
         if transform is not None:
             mrml_node.ApplyTransform(transform)
         mrml_node.SetName(node_name)
@@ -117,7 +120,4 @@ class MRMLUtility(object):
     @staticmethod
     def removeMRMLNode(node):
         if slicer.util.getNode(node.GetName()):
-
             slicer.mrmlScene.RemoveNode(node)
-
-            
