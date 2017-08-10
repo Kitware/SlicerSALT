@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>397</width>
+    <width>417</width>
     <height>682</height>
    </rect>
   </property>
@@ -166,10 +166,23 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="checkBoxSaveCleanData">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The segmentation data generally has to be cleaned in order to get to underlying geometry.&lt;/p&gt;&lt;p&gt;If enabled, this clean geometry will be used for all further processing.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Save Cleaned Data</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="2" column="0">
     <widget class="ctkCollapsibleButton" name="SubjectsCollapsibleButton">
      <property name="text">
       <string>Imported Subjects</string>
@@ -197,7 +210,7 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item row="3" column="0">
     <widget class="ctkCollapsibleButton" name="StructuresCollapsibleButton">
      <property name="text">
       <string>Structures In All Subjects</string>
@@ -216,7 +229,7 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="4" column="0">
     <widget class="ctkCollapsibleButton" name="CohortMetricsCollapsibleButton">
      <property name="text">
       <string>Cohort metrics</string>

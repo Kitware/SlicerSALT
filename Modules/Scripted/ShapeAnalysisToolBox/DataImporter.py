@@ -32,14 +32,20 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
   def __init__(self):
     ScriptedLoadableModuleLogic.__init__(self)
+
+    self.saveCleanedData = False
     self.testCaseDict = {}
     self.segmentationDict = {}
     self.topologyDict = {}
     self.consistentTopologyDict = {}
+    self.polyDataDict = {}
 
     self.singleDisplayedSegmentation = None
     self.createSingleDisplaySegmentModelNode()
     self.labelRangeInCohort = (-1, -1)
+
+  def SetSaveCleanData(self, save):
+    self.saveCleanData = save
 
   def createSingleDisplaySegmentModelNode(self):
     if MRMLUtility.isMRMLNodeEmpty(self.singleDisplayedSegmentation, 'vtkMRMLModelNode'):
@@ -64,6 +70,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     self.labelRangeInCohort = (-1, -1)
     self.topologyDict = {}
     self.consistentTopologyDict = {}
+    self.polyDataDict = {} # Dictionary that has all the segmentations.
 
   def importFiles(self, filePaths):
 
@@ -72,6 +79,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
       pathPair = os.path.split(path)
       directory = pathPair[0]
       fileName = pathPair[1]
+
       self.testCaseDict[fileName] = MRMLUtility.loadMRMLNode(fileName, directory, fileName, 'LabelMap')
       if self.testCaseDict[fileName] is None:
         print 'ERROR: Failed to load ' + fileName + 'as a labelmap'
@@ -112,15 +120,13 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
   def populateTopologyDictionary(self):
 
     # Create vtk objects that will be used to clean the geometries
-    polydataCleaner = vtk.vtkCleanPolyData()
-    connectivityFilter = vtk.vtkPolyDataConnectivityFilter()
-    extractEdgeFilter = vtk.vtkExtractEdges()
 
     firstValue = {}  # This will be used for checking consistent, inconsistent topologies
 
     for nodeName in self.testCaseDict.keys():
       # Topology table is a dictionary of dictionaries.
       self.topologyDict[nodeName] = {}
+      self.polyDataDict[nodeName] = {}
       for segmentNum in range(self.labelRangeInCohort[0], self.labelRangeInCohort[1] + 1):
         # 0 label is assumed to be the background.
         if segmentNum == 0:
@@ -130,6 +136,11 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
         if polydata == None:
           print 'Ignoring segment id ' + segmentId + ' for case: ' + nodeName
           continue
+
+        polydataCleaner = vtk.vtkCleanPolyData()
+        connectivityFilter = vtk.vtkPolyDataConnectivityFilter()
+        extractEdgeFilter = vtk.vtkExtractEdges()
+
         # clean up polydata
         polydataCleaner.SetInputData(polydata)
         polydataCleaner.Update()
@@ -147,21 +158,26 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
         polydataCleaner.Update()
         cleanData = polydataCleaner.GetOutput()
 
+
+
         # run extract edge filter
         extractEdgeFilter.SetInputData(cleanData)
         extractEdgeFilter.Update()
         edges = extractEdgeFilter.GetOutput()
 
         # calculate the numbers
-        topologyNumber = cleanData.GetNumberOfPoints() - edges.GetNumberOfLines() + cleanData.GetNumberOfPolys()
-        # print 'Topology number of ' + nodeName + ' segment: ' + segmentId + ' is: ' + str(topologyNumber)
-        # print 'Number of edges: ' + str(edges.GetNumberOfLines()) + ' Number of points: ' + \
-        #  str(cleanData.GetNumberOfPoints() ) + ' Number of polys: ' + str(cleanData.GetNumberOfPolys())
+        topologyNumber = cleanData.GetNumberOfPoints() - edges.GetNumberOfLines()\
+                         + cleanData.GetNumberOfPolys()
 
         self.topologyDict[nodeName][segmentNum] = topologyNumber
-        del cleanData
+        if self.saveCleanData:
+          self.polyDataDict[nodeName][segmentNum] = cleanData
+        else:
+          self.polyDataDict[nodeName][segmentNum] = polydata
+
         del edges
         del largestComponent
+        del cleanData
 
         # Check for consistency in the cohort for this segment label
         if segmentNum not in self.consistentTopologyDict.keys():
@@ -188,7 +204,11 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     if self.segmentationDict[nodeName].GetDisplayVisibility() is 1:
       self.segmentationDict[nodeName].SetDisplayVisibility(False)
 
-    polydata = self.segmentationDict[nodeName].GetClosedSurfaceRepresentation(segmentId)
+    segmentIdNum = int(segmentId)
+    polydata = None
+
+    if nodeName in self.polyDataDict.keys() and segmentIdNum in self.polyDataDict[nodeName].keys():
+      polydata = self.polyDataDict[nodeName][segmentIdNum] #elf.segmentationDict[nodeName].GetClosedSurfaceRepresentation(segmentId)
     if polydata == None:
       print 'ERROR: polydata for ' + nodeName + ' and ' + segmentId + ' does not exist!!'
       return
@@ -198,7 +218,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     self.singleDisplayedSegmentation.SetAndObservePolyData(polydata)
     self.singleDisplayedSegmentation.SetDisplayVisibility(1)
     color = [0, 0, 0, 0]
-    segmentIdNum = int(segmentId)
+
     slicer.util.getNode('GenericAnatomyColors').GetColor(segmentIdNum, color)
     self.singleDisplayedSegmentation.GetDisplayNode().SetColor(color[0:3])
     self.reset3dView()
@@ -272,6 +292,9 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.StructuresSliderWidget = self.getWidget('StructuresSliderWidget')
     self.CurrentStructureTopologyLineEdit = self.getWidget('CurrentStructureTopologyLineEdit')
     self.CohortTopologyLineEdit = self.getWidget('CohortTopologyLineEdit')
+    self.SaveCleanDataCheckBox = self.getWidget('checkBoxSaveCleanData')
+    self.SaveCleanDataCheckBox.setChecked(True)
+    self.SaveCleanDataCheckBox.connect('toggled(bool)', self.onSaveCleanDataCheckBoxToggled)
 
     self.SubjectsTableWidget.connect('cellClicked(int, int)', self.onSubjectTableWidgetClicked)
     self.StructuresSliderWidget.connect('valueChanged(double)', self.onStructuresSliderWidgetChanged)
@@ -283,6 +306,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.onInputType_chosen(self.FSLInputType)
     self.onInputType_chosen(self.FreeSurferInputType)
     self.onInputType_chosen(self.GeneralInputType)
+    self.onSaveCleanDataCheckBoxToggled()
 
   #
   # Reset all the data for data import
@@ -396,6 +420,9 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     segmentId = str(int(value))
     self.logic.displaySegment(nodeName, segmentId)
     self.updateTopologyDisplay(nodeName, segmentId)
+
+  def onSaveCleanDataCheckBoxToggled(self):
+    self.logic.SetSaveCleanData(self.SaveCleanDataCheckBox.isChecked())
 
   '''
   Supplemental functions to update the visualizations
