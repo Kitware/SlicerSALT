@@ -85,7 +85,7 @@ void qAppMainWindowPrivate::setupUi(QMainWindow * mainWindow)
   //this->HelpMenu->setVisible(false);
 
   // Hide the modules panel
-  //this->PanelDockWidget->setVisible(false);
+  this->PanelDockWidget->setVisible(false);
   this->DataProbeCollapsibleWidget->setCollapsed(true);
   this->DataProbeCollapsibleWidget->setVisible(false);
   this->StatusBar->setVisible(false);
