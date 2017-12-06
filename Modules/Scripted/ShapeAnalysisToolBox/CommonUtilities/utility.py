@@ -32,23 +32,23 @@ class MRMLUtility(object):
 
     @staticmethod
     def createNewMRMLNode(node_name, mrml_type, copy_node=None, transform=None):
-        mrml_node = slicer.mrmlScene.AddNewNodeByClass(mrml_type)
+        mrml_node = slicer.mrmlScene.AddNode(mrml_type)
         if copy_node is not None:
             mrml_node.Copy(copy_node)
-            if mrml_type is 'vtkMRMLModelNode':
+            if mrml_type.GetClassName() is 'vtkMRMLModelNode':
                 display_node = slicer.mrmlScene.CreateNodeByClass('vtkMRMLModelDisplayNode')
                 slicer.mrmlScene.AddNode(display_node)
                 display_node.UnRegister(slicer.mrmlScene)
                 mrml_node.SetAndObserveDisplayNodeID(display_node.GetID())
                 mrml_node.SetAndObserveStorageNodeID(None)
-            elif mrml_type is 'vtkMRMLMarkupsFiducialNode':
+            elif mrml_type.GetClassName() is 'vtkMRMLMarkupsFiducialNode':
                 display_node = slicer.mrmlScene.CreateNodeByClass('vtkMRMLMarkupsDisplayNode')
                 slicer.mrmlScene.AddNode(display_node)
                 display_node.UnRegister(slicer.mrmlScene)
                 mrml_node.SetAndObserveDisplayNodeID(display_node.GetID())
                 mrml_node.SetAndObserveStorageNodeID(None)
         else:
-            if mrml_type is 'vtkMRMLModelNode':
+            if mrml_type.GetClassName() is 'vtkMRMLModelNode':
                 mrml_node.CreateDefaultDisplayNodes()
 
         if transform is not None:
@@ -96,7 +96,7 @@ class MRMLUtility(object):
     @staticmethod
     def saveMRMLNode(node, case_dir):
         if slicer.util.getNode(node.GetName()):
-            file_name = node.GetName().split("_")[0]
+            file_name = node.GetName()
             class_name = node.GetClassName()
             if class_name == 'vtkMRMLScalarVolumeNode' or class_name == 'vtkMRMLLabelMapVolumeNode':
                 file_name += '.nrrd'

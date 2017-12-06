@@ -49,7 +49,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
   def createSingleDisplaySegmentModelNode(self):
     if MRMLUtility.isMRMLNodeEmpty(self.singleDisplayedSegmentation, 'vtkMRMLModelNode'):
-      self.singleDisplayedSegmentation = MRMLUtility.createNewMRMLNode('CurrentSegmentation', 'vtkMRMLModelNode')
+      self.singleDisplayedSegmentation = MRMLUtility.createNewMRMLNode('CurrentSegmentation', slicer.vtkMRMLModelNode())
 
   #
   # Reset all the data for data import
@@ -88,7 +88,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
       # Create segmentation representations.
       self.segmentationDict[fileName] = MRMLUtility.createNewMRMLNode(fileName + '_allSegments',
-                                                                      'vtkMRMLSegmentationNode')
+                                                                      slicer.vtkMRMLSegmentationNode())
       slicer.modules.segmentations.logic().ImportLabelmapToSegmentationNode(self.testCaseDict[fileName],
                                                                             self.segmentationDict[fileName])
       t = self.segmentationDict[fileName].CreateClosedSurfaceRepresentation()
