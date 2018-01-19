@@ -58,7 +58,6 @@ if(NOT DEFINED ${proj}_DIR)
     Endoscopy
     LabelStatistics
     PerformanceTests
-    SampleData
     SurfaceToolbox
     VectorToScalarVolume
     )
@@ -90,6 +89,7 @@ if(NOT DEFINED ${proj}_DIR)
     PETStandardUptakeValueComputation
     ProbeVolumeWithModel
     RobustStatisticsSegmenter
+    SampleData
     SimpleRegionGrowingSegmentation
     SubtractScalarVolumes
     ThresholdScalarVolume
