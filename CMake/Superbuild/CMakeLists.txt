@@ -52,10 +52,16 @@ ExternalProject_Add_Source(MeshToLabelMap
   GIT_TAG "9e2e199b99396c570f5f26c0ccfd5e149f6b9d34"
   SOURCE_DIR_VAR MeshToLabelMap_SOURCE_DIR
   )
-list(APPEND Slicer_REMOTE_DEPENDENCIES MeshToLabelMap)
+ExternalProject_Add_Source(Sequences
+  GIT_REPOSITORY ${git_protocol}://github.com/SlicerRt/Sequences.git
+  GIT_TAG "c867c678dfbed002d843884b10e6e978f9e78a0e"
+  SOURCE_DIR_VAR Sequences_SOURCE_DIR
+  )
+list(APPEND Slicer_REMOTE_DEPENDENCIES MeshToLabelMap Sequences)
 
 set(Slicer_REMOTE_SOURCE_DIRS
   ${MeshToLabelMap_SOURCE_DIR}
+  ${Sequences_SOURCE_DIR}
   )
 set_property(GLOBAL APPEND PROPERTY ${APPLICATION_NAME}_MODULES ${Slicer_REMOTE_SOURCE_DIRS})
 
