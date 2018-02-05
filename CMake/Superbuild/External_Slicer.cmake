@@ -58,7 +58,7 @@ if(NOT DEFINED ${proj}_DIR)
     Endoscopy
     LabelStatistics
     PerformanceTests
-    SurfaceToolbox
+    #SurfaceToolbox
     VectorToScalarVolume
     )
   set(Slicer_CLIMODULES_DISABLED
@@ -94,7 +94,7 @@ if(NOT DEFINED ${proj}_DIR)
     SubtractScalarVolumes
     ThresholdScalarVolume
     VotingBinaryHoleFillingImageFilter
-    MergeModels
+    #MergeModels
     #ModelMaker
     ResampleDTIVolume
     # ResampleScalarVectorDWIVolume # Needed by 'CropVolume' module
