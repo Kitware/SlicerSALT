@@ -157,6 +157,7 @@ slicerMacroBuildApplication(
   APPLE_ICON_FILE "Resources/Icons/XLarge/DesktopIcon.icns"
   LAUNCHER_SPLASHSCREEN_FILE "Resources/Images/SplashScreen.png"
   WIN_ICON_FILE "Resources/App.ico"
+  LICENSE_FILE ${SlicerSALT_CPACK_RESOURCE_FILE_LICENSE}
   SRCS ${APP_SRCS}
   TARGET_LIBRARIES ${APPLIB_NAME}
   TARGET_NAME_VAR "APP_TARGET_NAME"
