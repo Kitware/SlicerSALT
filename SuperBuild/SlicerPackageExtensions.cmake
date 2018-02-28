@@ -15,9 +15,6 @@
 # limitations under the License.
 #
 #============================================================================
-#
-# External project for the project.
-#
 
 set(proj SlicerPackageExtensions)
 
@@ -25,7 +22,7 @@ set(proj SlicerPackageExtensions)
 # List here all the extensions that should be built and packaged in Slicer.
 # 
 # Each extension name listed here corresponds to a file named 
-# "External_<extensionName>.cmake" found in "<root>/CMake/Superbuild"
+# "External_<extensionName>.cmake" found in "<root>/Superbuild"
 # directory.
 #
 set(${proj}_EXTENSIONS
@@ -105,11 +102,11 @@ if(DEFINED ${proj}_CONFIGURE)
       continue()
     endif()
 
-#------------------------------------------------------------------------------
-# The SPT application has generally extension manager switched off.
-# To get to the generated extension libraries on Mac you need to go down 3 levels
-# of directories of the package dir - package_dir/Application_name.app/Contents/Extensions-<Rev#>.
-# Hence the following special case for the Apple.
+    #------------------------------------------------------------------------------
+    # The SPT application has generally extension manager switched off.
+    # To get to the generated extension libraries on Mac you need to go down 3 levels
+    # of directories of the package dir - package_dir/Application_name.app/Contents/Extensions-<Rev#>.
+    # Hence the following special case for the Apple.
 
     if(APPLE)
       set(extension_install_dir "${extension_install_dir}/${APPLICATION_NAME}.app/Contents")
@@ -160,17 +157,21 @@ endif()
 
 #-----------------------------------------------------------------------------
 # Set dependency list
-set(${proj}_DEPENDENCIES Slicer ${${proj}_EXTENSIONS})
+set(${proj}_DEPENDENCIES ${${proj}_EXTENSIONS})
+
+# Variable used in dependent External_* files
+set(Slicer_INNER_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/Slicer-build)
 
 # Include dependent projects if any
-ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
+ExternalProject_Include_Dependencies(SlicerPackageExtensions
+  DEPENDS_VAR SlicerPackageExtensions_DEPENDENCIES
+  SUPERBUILD_VAR Slicer_SUPERBUILD
+  )
 
 set(config ${CMAKE_BUILD_TYPE})
 if(DEFINED CMAKE_CONFIGURATION_TYPES)
   set(config ${CMAKE_CFG_INTDIR})
 endif()
-
-set(Slicer_INNER_BUILD_DIR ${Slicer_DIR}/Slicer-build)
 
 _sb_list_to_string("^^" "${${APPLICATION_NAME}_EXTENSION_CPACK_PACKAGE_DIRS}" ${APPLICATION_NAME}_EXTENSION_CPACK_PACKAGE_DIRS)
 message(STATUS "${APPLICATION_NAME}_EXTENSION_CPACK_PACKAGE_DIRS: ${${APPLICATION_NAME}_EXTENSION_CPACK_PACKAGE_DIRS}")
@@ -189,6 +190,6 @@ ExternalProject_Add(${proj}
   BUILD_COMMAND ${CMAKE_COMMAND} --build ${Slicer_INNER_BUILD_DIR} --config ${config} --target package
   INSTALL_COMMAND ""
   DEPENDS
-    ${${proj}_DEPENDENCIES}
+    ${${proj}_DEPENDENCIES} Slicer
   )
 

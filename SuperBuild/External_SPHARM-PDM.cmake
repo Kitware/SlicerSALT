@@ -16,18 +16,22 @@
 #
 #============================================================================
 #
-# External project for @APPLICATION_NAME@. This file is configured from
-# External_Application.cmake.in if the file named
-# External_@APPLICATION_NAME@ doesn't already exists.
+# External project for the project.
 #
 
-set(proj @APPLICATION_NAME@)
+set(proj SPHARM-PDM)
 
 # Set dependency list
-set(${proj}_DEPENDENCIES VTK ITKv4)
+set(${proj}_DEPENDENCIES "")
 
 # Include dependent projects if any
-ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
+ExternalProject_Include_Dependencies(${proj}
+  PROJECT_VAR proj
+  DEPENDS_VAR ${proj}_DEPENDENCIES
+  SUPERBUILD_VAR Slicer_SUPERBUILD
+  )
+
+list(APPEND ${proj}_DEPENDENCIES Slicer)
 
 if(${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   message(FATAL_ERROR "Enabling ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj} is not supported !")
@@ -40,34 +44,34 @@ endif()
 
 if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
 
+  set(config ${CMAKE_BUILD_TYPE})
+  if(DEFINED CMAKE_CONFIGURATION_TYPES)
+    set(config ${CMAKE_CFG_INTDIR})
+  endif()
+
   set(${proj}_DIR ${CMAKE_BINARY_DIR}/${proj}-build)
+  set(${proj}_PACKAGE_DIR ${${proj}_DIR}/${proj}-build)
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
-    SOURCE_DIR ${${proj}_SOURCE_DIR}
+    GIT_REPOSITORY "${EP_GIT_PROTOCOL}://github.com/NIRALUser/SPHARM-PDM.git"
+    GIT_TAG "91c11c62f3658183b2d20d3c57d6506765fbced8" # release branch
+    SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${${proj}_DIR}
-    DOWNLOAD_COMMAND ""
-    INSTALL_COMMAND ""
+    INSTALL_COMMAND ${CMAKE_COMMAND} --build ${${proj}_PACKAGE_DIR} --config ${config} --target package
     CMAKE_CACHE_ARGS
-      -D${proj}_SUPERBUILD:BOOL=OFF
-      -DBUILD_SHARED_LIBS:BOOL=${BUILD_SHARED_LIBS}
-      -DDOCUMENTATION_ARCHIVES_OUTPUT_DIRECTORY:PATH=${DOCUMENTATION_ARCHIVES_OUTPUT_DIRECTORY}
-      -D${proj}_INSTALL_BIN_DIR:STRING=${Slicer_INSTALL_BIN_DIR}
-      -D${proj}_INSTALL_LIB_DIR:STRING=${Slicer_INSTALL_LIB_DIR}
-      -D${proj}_INSTALL_INCLUDE_DIR:STRING=${${proj}_INSTALL_INCLUDE_DIR}
-      #-D@APPLICATION_NAME@_INSTALL_DOC_DIR:STRING=${@APPLICATION_NAME@_INSTALL_DOC_DIR}
-      #-DDOXYGEN_EXECUTABLE:FILEPATH=${DOXYGEN_EXECUTABLE}
-      -D${proj}_BUILD_SHARED_LIBS:BOOL=${${proj}_BUILD_SHARED_LIBS}
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
       -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
-      -D${proj}_EXTERNAL_LIBRARY_DIRS:STRING=${${proj}_EXTERNAL_LIBRARY_DIRS}
-      #-DQT_QMAKE_EXECUTABLE:FILEPATH=${QT_QMAKE_EXECUTABLE}
-      -DGIT_EXECUTABLE:FILEPATH=${GIT_EXECUTABLE}
-      -DSubversion_SVN_EXECUTABLE:FILEPATH=${Subversion_SVN_EXECUTABLE}
-      -DVTK_DIR:PATH=${VTK_DIR}
-      -DITK_DIR:PATH=${ITK_DIR}
-      #${dependency_args}
+      -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
+      -DCMAKE_CXX_STANDARD_REQUIRED:BOOL=${CMAKE_CXX_STANDARD_REQUIRED}
+      -DCMAKE_CXX_EXTENSIONS:BOOL=${CMAKE_CXX_EXTENSIONS}
+      -DSlicer_DIR:PATH=${Slicer_INNER_BUILD_DIR}
+      -D${proj}_BUILD_SLICER_EXTENSION:BOOL=ON
     DEPENDS
       ${${proj}_DEPENDENCIES}
+    )
+
+  list(APPEND ${APPLICATION_NAME}_EXTENSION_CPACK_PACKAGE_DIRS
+    ${${proj}_PACKAGE_DIR}/_CPack_Packages
     )
 
 else()

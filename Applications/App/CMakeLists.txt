@@ -17,7 +17,6 @@
 #============================================================================
 
 set(APPLICATION_NAME ${Slicer_MAIN_PROJECT_APPLICATION_NAME})
-
 project(${APPLICATION_NAME}App)
 
 include(SlicerMacroBuildApplication)
@@ -42,21 +41,31 @@ if(${PROJECT_NAME} STREQUAL ${Slicer_MAIN_PROJECT})
 endif()
 
 # --------------------------------------------------------------------------
-# Project dependencies
+# Metadata
 # --------------------------------------------------------------------------
-find_package(${APPLICATION_NAME} REQUIRED)
-include(${${APPLICATION_NAME}_USE_FILE})
 
-set(${PROJECT_NAME}_VERSION_MAJOR ${${APPLICATION_NAME}_VERSION_MAJOR})
-set(${PROJECT_NAME}_VERSION_MINOR ${${APPLICATION_NAME}_VERSION_MINOR})
-set(${PROJECT_NAME}_VERSION_PATCH ${${APPLICATION_NAME}_VERSION_PATCH})
-if(DEFINED ${APPLICATION_NAME}_VERSION_TWEAK)
-  set(${PROJECT_NAME}_VERSION_TWEAK ${${APPLICATION_NAME}_VERSION_TWEAK})
-endif()
-if(DEFINED ${APPLICATION_NAME}_VERSION_RC)
-  set(${PROJECT_NAME}_VERSION_RC ${${APPLICATION_NAME}_VERSION_RC})
-endif()
-set(${PROJECT_NAME}_VERSION_FULL ${${APPLICATION_NAME}_VERSION})
+set(APPLIB_DESCRIPTION_SUMMARY
+  "Customized version of slicer for SlicerSALT"
+  )
+set(APPLIB_DESCRIPTION_FILE
+  ${SlicerSALT_SOURCE_DIR}/README.md
+  )
+
+set(APP_LAUNCHER_SPLASHSCREEN_FILE
+  "Resources/Images/SplashScreen.png"
+  )
+
+set(APP_APPLE_ICON_FILE
+  "Resources/Icons/XLarge/DesktopIcon.icns"
+  )
+
+set(APP_WIN_ICON_FILE
+  "Resources/App.ico"
+  )
+
+set(APP_LICENSE_FILE
+  "${SlicerSALT_SOURCE_DIR}/LICENSE"
+  )
 
 # --------------------------------------------------------------------------
 # Folder
@@ -68,10 +77,6 @@ set(${PROJECT_NAME}_FOLDER "App-${PROJECT_NAME}")
 # --------------------------------------------------------------------------
 
 set(APPLIB_NAME "q${PROJECT_NAME}")
-
-set(APPLIB_DESCRIPTION_SUMMARY
-  "Customized version of slicer for SlicerSALT"
-  )
 
 set(APPLIB_SRCS
   qAppAboutDialog.cxx
@@ -125,7 +130,7 @@ configure_file(
 slicerMacroBuildAppLibrary(
   NAME ${APPLIB_NAME}
   DESCRIPTION_SUMMARY ${APPLIB_DESCRIPTION_SUMMARY}
-  DESCRIPTION_FILE ${Slicer_SOURCE_DIR}/README.txt
+  DESCRIPTION_FILE ${APPLIB_DESCRIPTION_FILE}
   APPLICATION_NAME ${SlicerApp_APPLICATION_NAME}
   EXPORT_DIRECTIVE "Q_SLICER_APP_EXPORT"
   FOLDER ${${PROJECT_NAME}_FOLDER}
@@ -150,16 +155,18 @@ set(APP_SRCS
   Main.cxx
   )
 
+set(APP_TARGET_LIBRARIES ${APPLIB_NAME})
+
 slicerMacroBuildApplication(
   NAME ${PROJECT_NAME}
   APPLICATION_NAME ${${PROJECT_NAME}_APPLICATION_NAME}
+  LAUNCHER_SPLASHSCREEN_FILE ${APP_LAUNCHER_SPLASHSCREEN_FILE}
+  APPLE_ICON_FILE ${APP_APPLE_ICON_FILE}
+  WIN_ICON_FILE ${APP_WIN_ICON_FILE}
+  LICENSE_FILE ${APP_LICENSE_FILE}
   FOLDER ${${PROJECT_NAME}_FOLDER}
-  APPLE_ICON_FILE "Resources/Icons/XLarge/DesktopIcon.icns"
-  LAUNCHER_SPLASHSCREEN_FILE "Resources/Images/SplashScreen.png"
-  WIN_ICON_FILE "Resources/App.ico"
-  LICENSE_FILE ${SlicerSALT_CPACK_RESOURCE_FILE_LICENSE}
   SRCS ${APP_SRCS}
-  TARGET_LIBRARIES ${APPLIB_NAME}
+  TARGET_LIBRARIES ${APP_TARGET_LIBRARIES}
   TARGET_NAME_VAR "APP_TARGET_NAME"
   ${extra_args}
   )

@@ -22,10 +22,16 @@
 set(proj ShapePopulationViewer)
 
 # Set dependency list
-set(${proj}_DEPENDENCIES Slicer)
+set(${proj}_DEPENDENCIES "")
 
 # Include dependent projects if any
-ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
+ExternalProject_Include_Dependencies(${proj}
+  PROJECT_VAR proj
+  DEPENDS_VAR ${proj}_DEPENDENCIES
+  SUPERBUILD_VAR Slicer_SUPERBUILD
+  )
+
+list(APPEND ${proj}_DEPENDENCIES Slicer)
 
 if(${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   message(FATAL_ERROR "Enabling ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj} is not supported !")
@@ -38,10 +44,6 @@ endif()
 
 if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
 
-  if(NOT DEFINED git_protocol)
-    set(git_protocol "git")
-  endif()
-
   set(config ${CMAKE_BUILD_TYPE})
   if(DEFINED CMAKE_CONFIGURATION_TYPES)
     set(config ${CMAKE_CFG_INTDIR})
@@ -51,16 +53,19 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   set(${proj}_PACKAGE_DIR ${${proj}_DIR})
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
-    GIT_REPOSITORY "${git_protocol}://github.com/NIRALUser/ShapePopulationViewer.git"
-    GIT_TAG "5888b0ea7e32dbed9df90407dbbaa4605ccba0a8"
+    GIT_REPOSITORY "${EP_GIT_PROTOCOL}://github.com/NIRALUser/ShapePopulationViewer.git"
+    GIT_TAG "a3c6dc087ae6b5ee857cd64e606056659333eb1f"
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${${proj}_DIR}
     INSTALL_COMMAND ${CMAKE_COMMAND} --build ${${proj}_PACKAGE_DIR} --config ${config} --target package
     CMAKE_CACHE_ARGS
       -DCMAKE_CXX_FLAGS:STRING=${ep_common_cxx_flags}
       -DCMAKE_C_FLAGS:STRING=${ep_common_c_flags}
+      -DCMAKE_CXX_STANDARD:STRING=${CMAKE_CXX_STANDARD}
+      -DCMAKE_CXX_STANDARD_REQUIRED:BOOL=${CMAKE_CXX_STANDARD_REQUIRED}
+      -DCMAKE_CXX_EXTENSIONS:BOOL=${CMAKE_CXX_EXTENSIONS}
       -DCMAKE_BUILD_TYPE:STRING=${config}
-      -DSlicer_DIR:PATH=${Slicer_DIR}/Slicer-build
+      -DSlicer_DIR:PATH=${Slicer_INNER_BUILD_DIR}
       -D${proj}_BUILD_SLICER_EXTENSION:BOOL=ON
     DEPENDS
       ${${proj}_DEPENDENCIES}
@@ -69,7 +74,6 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   list(APPEND ${APPLICATION_NAME}_EXTENSION_CPACK_PACKAGE_DIRS
     ${${proj}_PACKAGE_DIR}/_CPack_Packages
     )
-  MESSAGE(STATUS "~~~~~ Appended _cpack_packages for ${proj}, the variable is: ${${APPLICATION_NAME}_EXTENSION_CPACK_PACKAGE_DIRS}")
 else()
   ExternalProject_Add_Empty(${proj} DEPENDS ${${proj}_DEPENDENCIES})
 endif()

@@ -21,8 +21,12 @@
 #include <QMenuBar>
 #include <QPainter>
 #include <QPalette>
-#include <QPlastiqueStyle>
 #include <QPushButton>
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
+#include <QCleanlooksStyle>
+#else
+#include <QStyleFactory>
+#endif
 #include <QStyleOption>
 #include <QToolBar>
 
@@ -38,8 +42,14 @@
 // --------------------------------------------------------------------------
 qAppStyle::qAppStyle()
 {
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
   // Slicer uses a QCleanlooksStyle as base style.
-  this->setBaseStyle(new QPlastiqueStyle());
+  this->setBaseStyle(new QProxyStyle(new QCleanlooksStyle));
+#else
+  // Slicer uses fusion as base style.
+  this->setBaseStyle(new QProxyStyle(QStyleFactory::create("fusion")));
+#endif
+
 }
 
 // --------------------------------------------------------------------------
