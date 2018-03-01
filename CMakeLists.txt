@@ -123,12 +123,14 @@ Slicer_Remote_Add(MeshToLabelMap
   GIT_TAG "9e2e199b99396c570f5f26c0ccfd5e149f6b9d34"
   LABELS REMOTE_MODULE
   )
+list(APPEND Slicer_REMOTE_DEPENDENCIES MeshToLabelMap)
 
 Slicer_Remote_Add(Sequences
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/SlicerRt/Sequences.git
   GIT_TAG "d8f018972664f2d03c64a50bd2b30029ea563a03"
   LABELS REMOTE_MODULE
   )
+list(APPEND Slicer_REMOTE_DEPENDENCIES Sequences)
 
 # Add Slicer sources
 add_subdirectory(${slicersources_SOURCE_DIR} ${slicersources_BINARY_DIR})
