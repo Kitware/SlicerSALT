@@ -68,7 +68,6 @@ option(Slicer_BUILD_DIFFUSION_SUPPORT           "Build application with Diffusio
 option(Slicer_BUILD_EXTENSIONMANAGER_SUPPORT    "Build application with ExtensionManager support"     OFF)
 option(Slicer_BUILD_MULTIVOLUME_SUPPORT         "Build application with MultiVolume support"          OFF)
 option(Slicer_BUILD_PARAMETERSERIALIZER_SUPPORT "Build application with parameter serializer support" OFF)
-option(Slicer_USE_OpenIGTLink                   "Build application with OpenIGTLink support"          OFF)
 option(Slicer_USE_PYTHONQT                      "Build application with Python support"               ON)
 option(Slicer_USE_PYTHONQT_WITH_TCL             "Build application with Python Tcl adapter layer"     OFF)
 option(Slicer_USE_QtTesting                     "Build application with QtTesting support"            OFF)
