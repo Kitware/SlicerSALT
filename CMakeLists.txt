@@ -127,7 +127,7 @@ list(APPEND Slicer_REMOTE_DEPENDENCIES MeshToLabelMap)
 
 Slicer_Remote_Add(Sequences
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/SlicerRt/Sequences.git
-  GIT_TAG "d8f018972664f2d03c64a50bd2b30029ea563a03"
+  GIT_TAG "c890ed096d301ee7ea3426860a3cccfe50b377e8"
   LABELS REMOTE_MODULE
   )
 list(APPEND Slicer_REMOTE_DEPENDENCIES Sequences)
