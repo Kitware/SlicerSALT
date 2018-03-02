@@ -114,7 +114,6 @@ set(APPLIB_RESOURCES
   Resources/App.qrc
   ${Slicer_SOURCE_DIR}/Applications/SlicerApp/Resources/SlicerApp.qrc
   ${qSlicerBaseQTGUI_SOURCE_DIR}/Resources/qSlicerBaseQTGUI.qrc
-  ${${APPLICATION_NAME}_SOURCE_DIR}/Utilities/Qt/Resources.qrc
   )
 
 set(APPLIB_INCLUDE_DIRECTORIES
