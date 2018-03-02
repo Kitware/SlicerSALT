@@ -17,7 +17,7 @@ if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
 	  GIT_REPOSITORY git://github.com/Slicer/Slicer
-	  GIT_TAG        e36fa70fb85aa4bea9ce7313b2ab467b4c401740 # 2018-03-01
+	  GIT_TAG        efcf19444b9d79c394dc1c2d36300c5c227ac272 # 2018-03-02
 	  GIT_PROGRESS   1
 	  )
 else()
@@ -25,7 +25,7 @@ else()
 endif()
 
 set(CMAKE_MODULE_PATH ${slicersources_SOURCE_DIR}/CMake ${CMAKE_MODULE_PATH})
-include(SlicerBlockSetCMakeOSXVariables)
+include(SlicerInitializeOSXVariables)
 
 # Set application metadata
 set(APPLICATION_NAME           "SlicerSALT")
