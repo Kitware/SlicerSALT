@@ -11,15 +11,17 @@ endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+project(SlicerSALT)
+
 # Slicer sources
 include(FetchContent)
 if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
-	  GIT_REPOSITORY git://github.com/Slicer/Slicer
-	  GIT_TAG        efcf19444b9d79c394dc1c2d36300c5c227ac272 # 2018-03-02
-	  GIT_PROGRESS   1
-	  )
+    GIT_REPOSITORY git://github.com/phcerdan/Slicer
+    GIT_TAG        66aa0988ee81488667fa0be81a3844a90af6b66d # 2018-08-31, with vtk9 and ctk
+    GIT_PROGRESS   1
+    )
 else()
   set(slicersources_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/slicersources-subbuild)
 endif()
@@ -27,23 +29,15 @@ endif()
 set(CMAKE_MODULE_PATH ${slicersources_SOURCE_DIR}/CMake ${CMAKE_MODULE_PATH})
 include(SlicerInitializeOSXVariables)
 
-# Set application metadata
-set(APPLICATION_NAME           "SlicerSALT")
-set(Slicer_VERSION_MAJOR       "0")
-set(Slicer_VERSION_MINOR       "1")
-set(Slicer_VERSION_PATCH       "0")
-project(${APPLICATION_NAME} VERSION "${Slicer_VERSION_MAJOR}.${Slicer_VERSION_MINOR}.${Slicer_VERSION_PATCH}")
+# Configure Application
+set(Slicer_APPLICATIONS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Applications)
+set(Slicer_MAIN_PROJECT "SlicerSALTApp")
 
 # Set organization
 set(Slicer_ORGANIZATION_DOMAIN "kitware.com")
 set(Slicer_ORGANIZATION_NAME   "Kitware, Inc.")
 
-# Configure Application
-set(Slicer_APPLICATIONS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Applications)
-set(Slicer_MAIN_PROJECT ${APPLICATION_NAME}App)
-set(${Slicer_MAIN_PROJECT}_APPLICATION_NAME ${APPLICATION_NAME})
-
-# Default home and favorite modules 
+# Default home and favorite modules
 set(Slicer_DEFAULT_HOME_MODULE "Home")
 set(Slicer_DEFAULT_FAVORITE_MODULES "Data, Volumes, Models, Transforms, Markups, SegmentEditor")
 
@@ -61,8 +55,10 @@ include(SlicerInitializeReleaseType)
 # Slicer options
 option(BUILD_TESTING                            "Build application test suite"                        ON)
 option(Slicer_BUILD_DOCUMENTATION               "Build documentation (Doxygen, sphinx, ...)"          OFF)
+if(WIN32)
+  option(Slicer_BUILD_WIN32_CONSOLE             "Build application executable as a console app"       OFF)
+endif()
 
-option(Slicer_BUILD_QT_DESIGNER_PLUGINS         "Build Qt designer plugins"                           OFF)
 option(Slicer_BUILD_DICOM_SUPPORT               "Build application with DICOM support"                ON)
 option(Slicer_BUILD_DIFFUSION_SUPPORT           "Build application with Diffusion support"            OFF)
 option(Slicer_BUILD_EXTENSIONMANAGER_SUPPORT    "Build application with ExtensionManager support"     OFF)
@@ -110,26 +106,35 @@ set(Slicer_QTSCRIPTEDMODULES_DISABLED
 
 # Enable/Disable Slicer custom modules: To create a new module, use the SlicerExtensionWizard.
 set(Slicer_EXTENSION_SOURCE_DIRS
-  ${${APPLICATION_NAME}_SOURCE_DIR}/Modules/Scripted/Home
-  ${${APPLICATION_NAME}_SOURCE_DIR}/Modules/Scripted/ShapeAnalysisToolBox
+  ${SlicerSALT_SOURCE_DIR}/Modules/Scripted/Home
+  ${SlicerSALT_SOURCE_DIR}/Modules/Scripted/ShapeAnalysisToolBox
   )
 
 # Add remote extension source directories
-include(ExternalProjectAddSource)
 
-Slicer_Remote_Add(MeshToLabelMap
+# MeshToLabelMap
+set(extension_name "MeshToLabelMap")
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/NIRALUser/MeshToLabelMap.git
-  GIT_TAG "9e2e199b99396c570f5f26c0ccfd5e149f6b9d34"
-  LABELS REMOTE_MODULE
+  GIT_TAG        9e2e199b99396c570f5f26c0ccfd5e149f6b9d34
+  GIT_PROGRESS   1
+  QUIET
   )
-list(APPEND Slicer_REMOTE_DEPENDENCIES MeshToLabelMap)
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
-Slicer_Remote_Add(Sequences
+# Sequences
+set(extension_name "Sequences")
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/SlicerRt/Sequences.git
-  GIT_TAG "c890ed096d301ee7ea3426860a3cccfe50b377e8"
-  LABELS REMOTE_MODULE
+  GIT_TAG        c890ed096d301ee7ea3426860a3cccfe50b377e8
+  GIT_PROGRESS   1
+  QUIET
   )
-list(APPEND Slicer_REMOTE_DEPENDENCIES Sequences)
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
 # Add Slicer sources
 add_subdirectory(${slicersources_SOURCE_DIR} ${slicersources_BINARY_DIR})

@@ -15,16 +15,8 @@
 
 ==============================================================================*/
 
-// Slicer includes
-#include "qSlicerApplication.h"
-#include "qSlicerApplicationHelper.h"
-
-//
 // SlicerSALT includes
-//
-
-// SlicerApp includes
-#include "qAppMainWindow.h"
+#include "qSlicerSALTAppMainWindow.h"
 #include "Widgets/qAppStyle.h"
 
 // Qt includes
@@ -48,7 +40,7 @@ namespace
 //----------------------------------------------------------------------------
 int SlicerAppMain(int argc, char* argv[])
 {
-  typedef qAppMainWindow SlicerMainWindowType;
+  typedef qSlicerSALTAppMainWindow SlicerMainWindowType;
 
   qSlicerApplicationHelper::preInitializeApplication(argv[0], new qAppStyle);
 
@@ -66,7 +58,7 @@ int SlicerAppMain(int argc, char* argv[])
 
   if(!window.isNull())
     {
-    QString windowTitle = QString("%1 %2").arg(Slicer_MAIN_PROJECT_APPLICATION_NAME).arg(Slicer_VERSION);
+    QString windowTitle = QString("%1 %2").arg(Slicer_MAIN_PROJECT_APPLICATION_NAME).arg(Slicer_MAIN_PROJECT_VERSION_FULL);
     window->setWindowTitle(windowTitle);
 
     // Setup Home module

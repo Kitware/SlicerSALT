@@ -15,22 +15,24 @@
 
 ==============================================================================*/
 
-#ifndef __qAppMainWindow_p_h
-#define __qAppMainWindow_p_h
+#ifndef __qSlicerSALTAppMainWindow_p_h
+#define __qSlicerSALTAppMainWindow_p_h
 
-// SlicerApp includes
-#include "qAppMainWindow.h"
-#include "qSlicerAppMainWindow_p.h"
+// SlicerSALT includes
+#include "qSlicerSALTAppMainWindow.h"
+
+// Slicer includes
+#include "qSlicerMainWindow_p.h"
 
 //-----------------------------------------------------------------------------
-class Q_SLICER_APP_EXPORT qAppMainWindowPrivate
-  : public qSlicerAppMainWindowPrivate
+class Q_SLICERSALT_APP_EXPORT qSlicerSALTAppMainWindowPrivate
+  : public qSlicerMainWindowPrivate
 {
-  Q_DECLARE_PUBLIC(qAppMainWindow);
+  Q_DECLARE_PUBLIC(qSlicerSALTAppMainWindow);
 public:
-  typedef qSlicerAppMainWindowPrivate Superclass;
-  qAppMainWindowPrivate(qAppMainWindow& object);
-  virtual ~qAppMainWindowPrivate();
+  typedef qSlicerMainWindowPrivate Superclass;
+  qSlicerSALTAppMainWindowPrivate(qSlicerSALTAppMainWindow& object);
+  virtual ~qSlicerSALTAppMainWindowPrivate();
 
   virtual void init();
   /// Reimplemented for custom behavior

@@ -26,42 +26,60 @@
 
 // SlicerApp includes
 #include "qAppAboutDialog.h"
-#include "qAppMainWindow_p.h"
+#include "qSlicerSALTAppMainWindow_p.h"
 #include "qSlicerApplication.h"
 
 //-----------------------------------------------------------------------------
-// qAppMainWindowPrivate methods
+// qSlicerSALTAppMainWindowPrivate methods
 
-qAppMainWindowPrivate::qAppMainWindowPrivate(qAppMainWindow& object)
+qSlicerSALTAppMainWindowPrivate::qSlicerSALTAppMainWindowPrivate(qSlicerSALTAppMainWindow& object)
   : Superclass(object)
 {
 }
 
 //-----------------------------------------------------------------------------
-qAppMainWindowPrivate::~qAppMainWindowPrivate()
+qSlicerSALTAppMainWindowPrivate::~qSlicerSALTAppMainWindowPrivate()
 {
 }
 
 //-----------------------------------------------------------------------------
-void qAppMainWindowPrivate::init()
+void qSlicerSALTAppMainWindowPrivate::init()
 {
-  Q_Q(qAppMainWindow);
+  Q_Q(qSlicerSALTAppMainWindow);
   this->Superclass::init();
 }
 
 //-----------------------------------------------------------------------------
-void qAppMainWindowPrivate::setupUi(QMainWindow * mainWindow)
+void qSlicerSALTAppMainWindowPrivate::setupUi(QMainWindow * mainWindow)
 {
-  this->Superclass::setupUi(mainWindow);
-
   qSlicerApplication * app = qSlicerApplication::application();
 
-  mainWindow->setWindowTitle(app->applicationName());
-  this->HelpAboutSlicerAppAction->setText("About " + app->applicationName());
-  this->HelpAboutSlicerAppAction->setToolTip("");
+  //----------------------------------------------------------------------------
+  // Add actions
+  //----------------------------------------------------------------------------
+  QAction* helpAboutSlicerAppAction = new QAction(mainWindow);
+  helpAboutSlicerAppAction->setObjectName("HelpAboutSlicerSALTAppAction");
+  helpAboutSlicerAppAction->setText("About " + app->applicationName());
 
-  this->LogoLabel->setAlignment(Qt::AlignCenter);
-  this->LogoLabel->setPixmap(QPixmap(":/LogoFull.png"));
+  //----------------------------------------------------------------------------
+  // Calling "setupUi()" after adding the actions above allows the call
+  // to "QMetaObject::connectSlotsByName()" done in "setupUi()" to
+  // successfully connect each slot with its corresponding action.
+  this->Superclass::setupUi(mainWindow);
+
+  //----------------------------------------------------------------------------
+  // Configure
+  //----------------------------------------------------------------------------
+  mainWindow->setWindowIcon(QIcon(":/Icons/Medium/DesktopIcon.png"));
+
+  QPixmap logo(":/LogoFull.png");
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
+  qreal dpr = sqrt(qApp->desktop()->logicalDpiX()*qreal(qApp->desktop()->logicalDpiY()) / (qApp->desktop()->physicalDpiX()*qApp->desktop()->physicalDpiY()));
+  logo.setDevicePixelRatio(dpr);
+#endif
+  this->LogoLabel->setAlignment(Qt::AlignCenter); // XXX Synx with template ?
+  this->LogoLabel->setPixmap(logo);
+
 
   // To see any effect of changes over here in the application first delete the .ini file pointed by
   // --settings-path option of the project executable.
@@ -92,35 +110,58 @@ void qAppMainWindowPrivate::setupUi(QMainWindow * mainWindow)
 }
 
 //-----------------------------------------------------------------------------
-// qAppMainWindow methods
+// qSlicerSALTAppMainWindow methods
 
 //-----------------------------------------------------------------------------
-qAppMainWindow::qAppMainWindow(QWidget* windowParent)
-  : Superclass(new qAppMainWindowPrivate(*this), windowParent)
+qSlicerSALTAppMainWindow::qSlicerSALTAppMainWindow(QWidget* windowParent)
+  : Superclass(new qSlicerSALTAppMainWindowPrivate(*this), windowParent)
 {
-  Q_D(qAppMainWindow);
+  Q_D(qSlicerSALTAppMainWindow);
   d->init();
 }
 
 //-----------------------------------------------------------------------------
-qAppMainWindow::~qAppMainWindow()
+qSlicerSALTAppMainWindow::qSlicerSALTAppMainWindow(
+  qSlicerSALTAppMainWindowPrivate* pimpl, QWidget* windowParent)
+  : Superclass(pimpl, windowParent)
+{
+  // init() is called by derived class.
+}
+
+//-----------------------------------------------------------------------------
+qSlicerSALTAppMainWindow::~qSlicerSALTAppMainWindow()
 {
 }
 
 //-----------------------------------------------------------------------------
-void qAppMainWindow::on_HelpAboutSlicerAppAction_triggered()
+void qSlicerSALTAppMainWindow::on_HelpAboutSlicerSALTAppAction_triggered()
 {
-  qAppAboutDialog about(this);
+  qSlicerAboutDialog about(this);
+  about.setLogo(QPixmap(":/Logo.png"));
+
+
+  QString acknowledgmentText(
+      "Supported by: NIH and the Slicer Community.<br /><br />"
+      "This work is part of the  National Institute of Health grant titled "
+      "<i>Shape Analysis Toolbox for Medical Image Computing Projects</i>.<br /><br />"
+      "SlicerSALT is a  software package for medical image segmentation's "
+      "shape analysis. <br /><br />"
+      "Ongoing development, maintenance, distribution, and training is managed by "
+      "Kitware Inc., University of North Carolina, Chapel Hill, M.D. Cancer Center "
+      "at The University of Texas and NYU Tandon School of Engineering. <br /><br />");
+
+
   about.exec();
 }
 
-void qAppMainWindow::show()
+//-----------------------------------------------------------------------------
+void qSlicerSALTAppMainWindow::show()
 {
-  Q_D(qAppMainWindow);
+  Q_D(qSlicerSALTAppMainWindow);
   qSlicerModulesMenu* qMenu = d->ModuleSelectorToolBar->modulesMenu();
   qSlicerModuleManager * moduleManager = qSlicerApplication::application()->moduleManager();
 
-// Modules to add
+  // Modules to add
   QStringList addModuleNames = QStringList()
           << "Home";
   QAction * beforeAction = qMenu->actions().at(1); // to insert after the "All Modules" menu

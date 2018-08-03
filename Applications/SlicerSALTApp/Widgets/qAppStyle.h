@@ -18,11 +18,13 @@
 #ifndef __qAppStyle_h
 #define __qAppStyle_h
 
+// SlicerSALT includes
+#include "qSlicerSALTAppExport.h"
+
 // Slicer includes
-#include "qSlicerAppExport.h"
 #include "qSlicerStyle.h"
 
-class Q_SLICER_APP_EXPORT qAppStyle
+class Q_SLICERSALT_APP_EXPORT qAppStyle
   : public qSlicerStyle
 {
   Q_OBJECT

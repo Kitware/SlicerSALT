@@ -15,32 +15,37 @@
 
 ==============================================================================*/
 
-#ifndef __qAppMainWindow_h
-#define __qAppMainWindow_h
+#ifndef __qSlicerSALTAppMainWindow_h
+#define __qSlicerSALTAppMainWindow_h
+
+// SlicerSALT includes
+#include "qSlicerSALTAppExport.h"
+class qSlicerSALTAppMainWindowPrivate;
 
 // Slicer includes
-#include "qSlicerAppExport.h"
-#include "qSlicerAppMainWindow.h"
-class qAppMainWindowPrivate;
+#include "qSlicerMainWindow.h"
 
-class Q_SLICER_APP_EXPORT qAppMainWindow
-  : public qSlicerAppMainWindow
+class Q_SLICERSALT_APP_EXPORT qSlicerSALTAppMainWindow : public qSlicerMainWindow
 {
   Q_OBJECT
 public:
+  typedef qSlicerMainWindow Superclass;
 
-  typedef qSlicerAppMainWindow Superclass;
-  qAppMainWindow(QWidget *parent=0);
-  virtual ~qAppMainWindow();
+  qSlicerSALTAppMainWindow(QWidget *parent=0);
+  virtual ~qSlicerSALTAppMainWindow();
 
 public:
-  /// Reimplemented to use qAppAboutDialog instead of qSlicerAppAboutDialog.
-  virtual void on_HelpAboutSlicerAppAction_triggered();
   virtual void show();
 
+public slots:
+  void on_HelpAboutSlicerSALTAppAction_triggered();
+
+protected:
+  qSlicerSALTAppMainWindow(qSlicerSALTAppMainWindowPrivate* pimpl, QWidget* parent);
+
 private:
-  Q_DECLARE_PRIVATE(qAppMainWindow);
-  Q_DISABLE_COPY(qAppMainWindow);
+  Q_DECLARE_PRIVATE(qSlicerSALTAppMainWindow);
+  Q_DISABLE_COPY(qSlicerSALTAppMainWindow);
 };
 
 #endif
