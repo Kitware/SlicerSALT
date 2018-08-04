@@ -124,18 +124,17 @@ FetchContent_Populate(${extension_name}
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
-#XXX: Still getting VERSION issues on this, see: https://github.com/KitwareMedical/SlicerCustomAppTemplate/issues/3
 # Sequences
-# set(extension_name "Sequences")
-# set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
-# FetchContent_Populate(${extension_name}
-#   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-#   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/SlicerRt/Sequences.git
-#   GIT_TAG        c890ed096d301ee7ea3426860a3cccfe50b377e8
-#   GIT_PROGRESS   1
-#   QUIET
-#   )
-# list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+set(extension_name "Sequences")
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/SlicerRt/Sequences.git
+  GIT_TAG        a4b32e822505373d34f250123421ac9485f3947c
+  GIT_PROGRESS   1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
 # Add Slicer sources
 add_subdirectory(${slicersources_SOURCE_DIR} ${slicersources_BINARY_DIR})
