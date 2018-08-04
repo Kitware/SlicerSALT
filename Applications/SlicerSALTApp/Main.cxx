@@ -27,6 +27,7 @@
 
 // Slicer includes
 #include <qSlicerAbstractCoreModule.h>
+#include <qSlicerApplicationHelper.h>
 #include <qSlicerLayoutManager.h>
 #include <qSlicerModuleManager.h>
 #include <qSlicerModulePanel.h>

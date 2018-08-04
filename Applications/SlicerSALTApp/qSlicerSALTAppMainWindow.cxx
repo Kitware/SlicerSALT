@@ -17,15 +17,16 @@
 
 // Qt includes
 #include <QDebug>
+#include <QDesktopWidget>
 
 // Slicer includes
+#include "qSlicerAboutDialog.h"
 #include "qSlicerModuleSelectorToolBar.h"
 #include "qSlicerModulesMenu.h"
 #include "qSlicerModuleManager.h"
 #include "qSlicerAbstractModule.h"
 
 // SlicerApp includes
-#include "qAppAboutDialog.h"
 #include "qSlicerSALTAppMainWindow_p.h"
 #include "qSlicerApplication.h"
 
@@ -139,7 +140,7 @@ void qSlicerSALTAppMainWindow::on_HelpAboutSlicerSALTAppAction_triggered()
   qSlicerAboutDialog about(this);
   about.setLogo(QPixmap(":/Logo.png"));
 
-
+  // XXX: unused, modify slicer to accept setAcknowledgmentText
   QString acknowledgmentText(
       "Supported by: NIH and the Slicer Community.<br /><br />"
       "This work is part of the  National Institute of Health grant titled "

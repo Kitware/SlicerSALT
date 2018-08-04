@@ -31,6 +31,6 @@ set(WIN_ICON_FILE
   )
 
 set(LICENSE_FILE
-  "${SlicerSALT_SOURCE_DIR}/License.txt"
+  "${SlicerSALT_SOURCE_DIR}/LICENSE"
   )
 
