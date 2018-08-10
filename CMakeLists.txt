@@ -139,5 +139,14 @@ list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 # Add Slicer sources
 add_subdirectory(${slicersources_SOURCE_DIR} ${slicersources_BINARY_DIR})
 
-# include(SuperBuild/SlicerPackageExtensions.cmake)
+# Considering that
+#  (1) extensions like "SPHARM-PDM" have a SuperBuild-like structure,
+#  (2) they can conditionally include external projects like VTK when build as standalone package and
+#  (3) the Slicer build-system collect the list of external project only based on filenames,
+# we can not simply bundle them like any other SuperBuild-like extensions (e.g SlicerOpenIGTLink).
+# Trying to do so would lead to re-building unwanted projects that would conflict with Slicer own projects.
+#
+# For these reasons, we use "SlicerPackageExtensions" module to first package each extension
+# and then re-configure Slicer to package the associated directories.
+include(SuperBuild/SlicerPackageExtensions.cmake)
 

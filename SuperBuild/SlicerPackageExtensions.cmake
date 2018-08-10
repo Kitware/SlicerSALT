@@ -156,6 +156,9 @@ if(DEFINED ${proj}_CONFIGURE)
 endif()
 
 #-----------------------------------------------------------------------------
+include(ExternalProject)
+
+#-----------------------------------------------------------------------------
 # Set dependency list
 set(${proj}_DEPENDENCIES ${${proj}_EXTENSIONS})
 
