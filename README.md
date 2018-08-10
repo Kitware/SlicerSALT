@@ -1,5 +1,5 @@
 
-<img src="Utilities/Logos/SALT_Logo.png" width="512">
+<img src="SlicerSALT.png" width="512">
 
 
 Introduction
