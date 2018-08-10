@@ -54,7 +54,7 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY "${EP_GIT_PROTOCOL}://github.com/KitwareMedical/ShapeRegressionExtension.git"
-    GIT_TAG "d8b11aeb089bfe36d36a77e217fc75eb3f08e00a"
+    GIT_TAG "dbfbae5e1478a502ade903910862959aa32a7be9"
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${${proj}_DIR}
     INSTALL_COMMAND ${CMAKE_COMMAND} --build ${${proj}_PACKAGE_DIR} --config ${config} --target package
