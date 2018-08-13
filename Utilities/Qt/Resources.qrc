@@ -1,5 +1,0 @@
-<!DOCTYPE RCC><RCC version="1.0">
-  <qresource>
-    <file alias="SALT_Logo.png">../Logos/SALT_Logo.png</file>
-  </qresource>
-</RCC>

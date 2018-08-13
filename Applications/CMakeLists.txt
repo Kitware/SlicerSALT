@@ -16,4 +16,4 @@
 #
 #============================================================================
 
-add_subdirectory(App)
+add_subdirectory(SlicerSALTApp)
