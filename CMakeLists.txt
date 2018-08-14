@@ -76,6 +76,7 @@ option(Slicer_BUILD_LandmarkRegistration        "Build application with Landmark
 
 # Enable Slicer built-in modules
 set(Slicer_CLIMODULES_ENABLED
+  MergeModels
   ModelMaker
   ResampleDTIVolume             # Needed by ResampleScalarVectorDWIVolume
   ResampleScalarVectorDWIVolume # Depends on DiffusionApplications, needed by CropVolume
@@ -100,7 +101,6 @@ set(Slicer_QTSCRIPTEDMODULES_DISABLED
   LabelStatistics
   PerformanceTests
   SampleData
-  SurfaceToolbox
   VectorToScalarVolume
   )
 
