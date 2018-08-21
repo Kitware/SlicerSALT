@@ -91,8 +91,8 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
                                                                       slicer.vtkMRMLSegmentationNode())
       slicer.modules.segmentations.logic().ImportLabelmapToSegmentationNode(self.testCaseDict[fileName],
                                                                             self.segmentationDict[fileName])
-      t = self.segmentationDict[fileName].CreateClosedSurfaceRepresentation()
-      if t == False:
+      closedSurface = self.segmentationDict[fileName].CreateClosedSurfaceRepresentation()
+      if closedSurface is False:
         print 'ERROR: Failed to create closed surface representation'
         continue
 
@@ -133,7 +133,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
           continue
         segmentId = str(segmentNum)
         polydata = self.segmentationDict[nodeName].GetClosedSurfaceRepresentation(segmentId)
-        if polydata == None:
+        if polydata is None:
           print 'Ignoring segment id ' + segmentId + ' for case: ' + nodeName
           continue
 
@@ -157,8 +157,6 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
         polydataCleaner.SetInputData(largestComponent)
         polydataCleaner.Update()
         cleanData = polydataCleaner.GetOutput()
-
-
 
         # run extract edge filter
         extractEdgeFilter.SetInputData(cleanData)
@@ -209,7 +207,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
     if nodeName in self.polyDataDict.keys() and segmentIdNum in self.polyDataDict[nodeName].keys():
       polydata = self.polyDataDict[nodeName][segmentIdNum] #elf.segmentationDict[nodeName].GetClosedSurfaceRepresentation(segmentId)
-    if polydata == None:
+    if polydata is None:
       print 'ERROR: polydata for ' + nodeName + ' and ' + segmentId + ' does not exist!!'
       return
 
