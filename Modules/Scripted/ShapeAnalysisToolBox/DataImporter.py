@@ -1,10 +1,9 @@
-import vtk, qt, slicer
+import vtk, ctk, qt, slicer
 from slicer.ScriptedLoadableModule import (ScriptedLoadableModule,
                                            ScriptedLoadableModuleLogic,
                                            ScriptedLoadableModuleWidget,
                                            ScriptedLoadableModuleTest)
 from CommonUtilities import MRMLUtility
-import csv
 import os
 import logging
 
@@ -54,7 +53,6 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
         -2: 'Double Torus',
         -4: 'Triple Torus',
     }
-    self.INVALID_TOPOLOGY_KEY=-999
 
     self.singleDisplayedSegmentation = None
     # self.createSingleDisplaySegmentModelNode()
@@ -265,12 +263,11 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     """
     inconsistenciesExist = False
     inconsistentSegments = {}
-    INVALID_TOPOLOGY_KEY = None
 
     # Check input expectedTopologyType is valid, if default, provide one.
     # Convert to long if not None
     expectedTopologyType = long(expectedTopologyType) if expectedTopologyType else expectedTopologyType
-    if expectedTopologyType is not INVALID_TOPOLOGY_KEY:
+    if expectedTopologyType is not None:
       validExpectedTopology = (expectedTopologyType in self.TOPOLOGY_TYPES)
       if not validExpectedTopology:
         logging.error("Provided expected topology key: {}, is invalid, use a key from {}".format(expectedTopologyType, self.TOPOLOGY_TYPES))
@@ -376,20 +373,18 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.widget = widget
     self.layout.addWidget(widget)
 
-    self.CSVFileBrowsePushButton = self.getWidget('CSVFileBrowsePushButton')
-    self.CSVFileBrowsePushButton.connect('clicked(bool)', self.onCSVFileBrowsePushButton)
+    self.FolderNameLineEdit = self.getWidget('InputFolderNameLineEdit')
+    self.DirectoryButton = self.getWidget('DirectoryButton')
+    self.DirectoryButton.connect('clicked(bool)', self.onClickDirectoryButton)
+    #### TODO: support displaying the files, but only be able to choose a folder:
+    #https://forum.qt.io/topic/62138/qfiledialog-choose-directories-only-but-show-files-as-well/13
+    # self.DirectoryButton.setFileMode(qt.QFileDialog.DirectoryOnly)
+    # self.DirectoryButton.setOption(qt.QFileDialog.DontUseNativeDialog, True)
+    # self.DirectoryButton.setOption(qt.QFileDialog.ShowDirsOnly, False)
+
     self.ImportButton = self.getWidget('ImportButton')
-    self.ImportButton.connect('clicked(bool)', self.onImportButton)
-    self.CSVFileNameLineEdit = self.getWidget('CSVFileNameLineEdit')
+    self.ImportButton.connect('clicked(bool)', self.onClickImportButton)
     self.DataInputTypeGroupBox = self.getWidget('DataInputTypeGroupBox')
-    self.AutoSegInputType = self.getWidget('AutoSegInputType')
-    self.AutoSegInputType.toggled.connect(lambda: self.onInputType_chosen(self.AutoSegInputType))
-    self.FSLInputType = self.getWidget('FSLInputType')
-    self.FSLInputType.toggled.connect(lambda: self.onInputType_chosen(self.FSLInputType))
-    self.FreeSurferInputType = self.getWidget('FreeSurferInputType')
-    self.FreeSurferInputType.toggled.connect(lambda: self.onInputType_chosen(self.FreeSurferInputType))
-    self.GeneralInputType = self.getWidget('GeneralInputType')
-    self.GeneralInputType.toggled.connect(lambda: self.onInputType_chosen(self.GeneralInputType))
     self.SubjectsTableWidget = self.getWidget('SubjectsTableWidget')
     self.StructuresSliderWidget = self.getWidget('StructuresSliderWidget')
     self.CurrentStructureTopologyLineEdit = self.getWidget('CurrentStructureTopologyLineEdit')
@@ -404,10 +399,6 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.StructuresSliderWidget.maximum = 0
 
     # Initialize the beginning input type.
-    self.onInputType_chosen(self.AutoSegInputType)
-    self.onInputType_chosen(self.FSLInputType)
-    self.onInputType_chosen(self.FreeSurferInputType)
-    self.onInputType_chosen(self.GeneralInputType)
     self.onSaveCleanDataCheckBoxToggled()
 
   #
@@ -482,30 +473,35 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
   #  Handle request to import data
   #
 
-  def onImportButton(self):
-    filenames = []
-    self.cleanup()
-    if self.importFromCSV:
-      with open(self.csvFileName, 'r') as csvfile:
-        reader = csv.reader(csvfile)
-        # ignore the header
-        next(reader, None)
-        # assuming that each row is just a file path.
-        for row in reader:
-          if len(row) > 0:
-            filenames.append(row[0])
-        # Import all files
-        self.importFiles(filenames)
+  def onClickImportButton(self):
+    pass
+    # filenames = []
+    # self.cleanup()
+    # if self.importFromCSV:
+    #   with open(self.csvFileName, 'r') as csvfile:
+    #     reader = csv.reader(csvfile)
+    #     # ignore the header
+    #     next(reader, None)
+    #     # assuming that each row is just a file path.
+    #     for row in reader:
+    #       if len(row) > 0:
+    #         filenames.append(row[0])
+    #     # Import all files
+    #     self.importFiles(filenames)
 
         # Depending on the mode fill the structures table.
         # TODO: add directory parsing based on mode
-    else:
-      logging.error("Importing from directory is not yet supported")
+    # else:
+    #   logging.error("Importing from directory is not yet supported")
 
-  def onCSVFileBrowsePushButton(self):
-    self.csvFileName = qt.QFileDialog.getOpenFileName(self.widget, "Open CSV File", ".", "CSV Files (*.csv)")
-    self.CSVFileNameLineEdit.text = self.csvFileName
-    self.importFromCSV = True
+  def onClickDirectoryButton(self):
+    hola = self.DirectoryButton.getOpenFileName(self.widget)
+    print hola
+    self.FolderNameLineEdit.text  = hola
+    # self.CSVFileNameLineEdit.text = self.csvFileName
+    # self.csvFileName = qt.QFileDialog.getOpenFileName(self.widget, "Open CSV File", ".", "CSV Files (*.csv)")
+    # self.CSVFileNameLineEdit.text = self.csvFileName
+    # self.importFromCSV = True
 
   def onInputType_chosen(self, b):
     inputTypeText = b.text
