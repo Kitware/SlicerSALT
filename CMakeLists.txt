@@ -26,6 +26,12 @@ else()
   set(slicersources_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/slicersources-subbuild)
 endif()
 
+# Update CMake module path
+set(SlicerSALT_CMAKE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
+list(INSERT CMAKE_MODULE_PATH 0 ${SlicerSALT_CMAKE_DIR})
+add_subdirectory(${SlicerSALT_CMAKE_DIR})
+list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_BINARY_DIR}/CMake")
+
 set(CMAKE_MODULE_PATH ${slicersources_SOURCE_DIR}/CMake ${CMAKE_MODULE_PATH})
 include(SlicerInitializeOSXVariables)
 
@@ -116,6 +122,9 @@ if(NOT DEFINED EIGEN_BUILD_TESTING)
   set(EIGEN_BUILD_TESTING OFF)
 endif()
 mark_as_superbuild(EIGEN_BUILD_TESTING)
+# Do not add convenience blas/lapack target to avoid conflict with "lapack" project
+set(EIGEN_ADD_BLAS_LAPACK_TARGETS 0)
+mark_as_superbuild(EIGEN_ADD_BLAS_LAPACK_TARGETS)
 
 # XXX: Using branch meanwhile upstream merge proposed cmake fixes
 set(extension_name "Eigen3")
@@ -123,7 +132,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/eigen-git-mirror
-  GIT_TAG        582908bca0d23136ac9ef8241f1aa51691ea4b47 # slicersalt-3.3-2018-09-07-2fd9e7447
+  GIT_TAG        16e54382bc1938069cf9faa200f009c48964195e # slicersalt-3.3-2018-09-07-2fd9e7447
   GIT_PROGRESS   1
   QUIET
   )
@@ -162,6 +171,18 @@ FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/SlicerSkeletalRepresentation
   GIT_TAG        dfb8cab5cf9a2422ac69fd0b37f82f88e8c969dd # 2018-09-07 Rename
+  GIT_PROGRESS   1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+# GROUPS
+set(extension_name "GROUPS")
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/GROUPS
+  GIT_TAG        0317bf0e2c1cf0f2321cc5226eb56148669eaea1 # fix-modernize-simplify-buildsystem-NIRALUser
   GIT_PROGRESS   1
   QUIET
   )
