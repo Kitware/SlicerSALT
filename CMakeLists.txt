@@ -129,8 +129,8 @@ set(extension_name "Sequences")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/SlicerRt/Sequences.git
-  GIT_TAG        a4b32e822505373d34f250123421ac9485f3947c
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/phcerdan/Sequences.git
+  GIT_TAG        origin/disable_sampledata # Temporary workaround, see @SlicerSALT#50
   GIT_PROGRESS   1
   QUIET
   )
