@@ -3,8 +3,8 @@ from slicer.ScriptedLoadableModule import (ScriptedLoadableModule,
                                            ScriptedLoadableModuleLogic,
                                            ScriptedLoadableModuleWidget,
                                            ScriptedLoadableModuleTest)
-import os
 import logging
+import os
 
 #
 # DataImporter
@@ -55,13 +55,13 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     }
 
     self.singleDisplayedSegmentation = None
-    # self.createSingleDisplaySegmentModelNode()
+    self.createSingleDisplaySegmentModelNode()
 
   def setSaveCleanData(self, save):
     self.saveCleanData = save
 
   def createSingleDisplaySegmentModelNode(self):
-    if self.singleDisplayedSegmentation is not None:
+    if self.singleDisplayedSegmentation is None:
       self.singleDisplayedSegmentation = slicer.mrmlScene.AddNode(slicer.vtkMRMLModelNode())
       self.singleDisplayedSegmentation.CreateDefaultDisplayNodes()
       self.singleDisplayedSegmentation.SetName('CurrentSegmentation')
@@ -204,6 +204,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     Call the appropiate import function from a heteregeneous list of file paths.
     Raises TypeError if not existent file or unhandled filetype by this module.
     Files with a different number of labels/segments than the first one loaded are ignored with a warning.
+    Return true if success, raise error otherwise.
     """
     for path in filePaths:
       fileType = slicer.app.ioManager().fileType(path)
@@ -219,8 +220,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
       else:
         raise TypeError("Path [{}] has file type [{}], but this module does not handle it".format(path, fileType))
 
-  def getLabelRangeInCohort(self):
-    return self.labelRangeInCohort
+    return True
 
   def _computeModeOfNestedDict(self, dictOfDicts):
     """
@@ -358,11 +358,10 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     if self.segmentationDict[nodeName].GetDisplayVisibility() is 1:
       self.segmentationDict[nodeName].SetDisplayVisibility(False)
 
-    segmentIdNum = int(segmentId)
     polydata = None
 
-    if nodeName in self.polyDataDict.keys() and segmentIdNum in self.polyDataDict[nodeName].keys():
-      polydata = self.polyDataDict[nodeName][segmentIdNum] #elf.segmentationDict[nodeName].GetClosedSurfaceRepresentation(segmentId)
+    if nodeName in self.polyDataDict.keys() and segmentId in self.polyDataDict[nodeName].keys():
+      polydata = self.polyDataDict[nodeName][segmentId] #elf.segmentationDict[nodeName].GetClosedSurfaceRepresentation(segmentId)
     if polydata is None:
       logging.error('Polydata for ' + nodeName + ' and ' + segmentId + ' does not exist!!')
       return
@@ -373,9 +372,13 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     self.singleDisplayedSegmentation.SetDisplayVisibility(1)
     color = [0, 0, 0, 0]
 
+    segmentIdNum = int(segmentId)
     slicer.util.getNode('GenericAnatomyColors').GetColor(segmentIdNum, color)
     self.singleDisplayedSegmentation.GetDisplayNode().SetColor(color[0:3])
     self.reset3dView()
+
+  def getLabelRangeInCohort(self):
+    return self.labelRangeInCohort
 
   def getTopologyAndConsistencyString(self, nodeName, inputSegmentId):
     """
@@ -411,6 +414,8 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     #   Global variables
     #
     self.logic = DataImporterLogic()
+    self.directoryPath = ''
+    self.filteredFilePathsList = list()
 
     #
     #  Interface
@@ -427,19 +432,15 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.widget = widget
     self.layout.addWidget(widget)
 
-    self.FolderNameLineEdit = self.getWidget('InputFolderNameLineEdit')
+    self.InputFolderNameLineEdit = self.getWidget('InputFolderNameLineEdit')
     self.DirectoryButton = self.getWidget('DirectoryButton')
-    self.DirectoryButton.connect('clicked(bool)', self.onClickDirectoryButton)
-    #### TODO: support displaying the files, but only be able to choose a folder:
-    #https://forum.qt.io/topic/62138/qfiledialog-choose-directories-only-but-show-files-as-well/13
-    # self.DirectoryButton.setFileMode(qt.QFileDialog.DirectoryOnly)
-    # self.DirectoryButton.setOption(qt.QFileDialog.DontUseNativeDialog, True)
-    # self.DirectoryButton.setOption(qt.QFileDialog.ShowDirsOnly, False)
+    self.DirectoryButton.connect('directoryChanged(QString)', self.onDirectoryChanged)
 
     self.ImportButton = self.getWidget('ImportButton')
     self.ImportButton.connect('clicked(bool)', self.onClickImportButton)
     self.DataInputTypeGroupBox = self.getWidget('DataInputTypeGroupBox')
     self.SubjectsTableWidget = self.getWidget('SubjectsTableWidget')
+    self.SubjectsTableWidget.horizontalHeader().setSectionResizeMode(qt.QHeaderView.Stretch)
     self.StructuresSliderWidget = self.getWidget('StructuresSliderWidget')
     self.CurrentStructureTopologyLineEdit = self.getWidget('CurrentStructureTopologyLineEdit')
     self.CohortTopologyLineEdit = self.getWidget('CohortTopologyLineEdit')
@@ -495,7 +496,6 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.SubjectsTableWidget.setSelectionMode(qt.QAbstractItemView.SingleSelection)
 
     if self.logic.importFiles(filePaths):
-
       for path in filePaths:
         # load each file
         pathPair = os.path.split(path)
@@ -528,7 +528,12 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
   #
 
   def onClickImportButton(self):
-    pass
+    if not self.filteredFilePathsList:
+      logging.warning('List of files is empty, choose a folder to import first.')
+      return
+
+    self.importFiles(self.filteredFilePathsList)
+
     # filenames = []
     # self.cleanup()
     # if self.importFromCSV:
@@ -548,10 +553,42 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     # else:
     #   logging.error("Importing from directory is not yet supported")
 
-  def onClickDirectoryButton(self):
-    hola = self.DirectoryButton.getOpenFileName(self.widget)
-    print hola
-    self.FolderNameLineEdit.text  = hola
+  # def onClickDirectoryButton(self):
+
+  def onDirectoryChanged(self, directoryPath):
+    """
+    Populates self.directoryPath and self.filteredFilePathsList
+    containing a list of files contained in the directoryPath
+    that can be used in this module.
+    """
+    logging.info("onDirectoryChanged: {}".format(directoryPath))
+    # Create a list of files from the directory
+    directory = qt.QDir(directoryPath)
+    if not directory.exists():
+      logging.error("Directory {} does not exist.".format(directory))
+      return
+
+    self.directoryPath = directoryPath
+    self.InputFolderNameLineEdit.text = directoryPath
+
+    fileNameList = directory.entryList(qt.QDir.Files | qt.QDir.Readable)
+    # Trim fileList to only accept types recognized by slicer
+    filePathsList = list()
+    for name in fileNameList:
+      filePathsList.append(os.path.join(directoryPath, name))
+
+    filteredFilePathsList = list()
+    for filePath in filePathsList:
+      fileType = slicer.app.ioManager().fileType(filePath)
+      if fileType == 'VolumeFile' or fileType == 'SegmentationFile' or fileType == 'ModelFile':
+        filteredFilePathsList.append(filePath)
+
+    self.filteredFilePathsList = filteredFilePathsList
+
+    # logging.debug(filteredFilePathsList)
+    # self.logic.importFiles(filteredFilePathsList)
+
+    # self.folderName = self.DirectoryButton.getOpenFileName(self.widget, "Select a directory", ".")
     # self.CSVFileNameLineEdit.text = self.csvFileName
     # self.csvFileName = qt.QFileDialog.getOpenFileName(self.widget, "Open CSV File", ".", "CSV Files (*.csv)")
     # self.CSVFileNameLineEdit.text = self.csvFileName
