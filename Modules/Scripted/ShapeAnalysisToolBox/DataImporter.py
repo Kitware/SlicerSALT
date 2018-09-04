@@ -3,7 +3,6 @@ from slicer.ScriptedLoadableModule import (ScriptedLoadableModule,
                                            ScriptedLoadableModuleLogic,
                                            ScriptedLoadableModuleWidget,
                                            ScriptedLoadableModuleTest)
-from CommonUtilities import MRMLUtility
 import os
 import logging
 
@@ -62,8 +61,10 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     self.saveCleanData = save
 
   def createSingleDisplaySegmentModelNode(self):
-    if MRMLUtility.isMRMLNodeEmpty(self.singleDisplayedSegmentation, 'vtkMRMLModelNode'):
-      self.singleDisplayedSegmentation = MRMLUtility.createNewMRMLNode('CurrentSegmentation', slicer.vtkMRMLModelNode())
+    if self.singleDisplayedSegmentation is not None:
+      self.singleDisplayedSegmentation = slicer.mrmlScene.AddNode(slicer.vtkMRMLModelNode())
+      self.singleDisplayedSegmentation.CreateDefaultDisplayNodes()
+      self.singleDisplayedSegmentation.SetName('CurrentSegmentation')
 
   #
   # Reset all the data for data import
@@ -73,17 +74,17 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     if self.labelMapDict is not None:
       for nodeName in self.labelMapDict.keys():
         logging.info('Deleting node: ' + nodeName)
-        MRMLUtility.removeMRMLNode(self.labelMapDict[nodeName])
-        MRMLUtility.removeMRMLNode(self.segmentationDict[nodeName])
+        slicer.mrmlScene.RemoveNode(self.labelMapDict[nodeName])
+        slicer.mrmlScene.RemoveNode(self.segmentationDict[nodeName])
 
     if self.modelDict is not None:
       for nodeName in self.modelDict.keys():
         logging.info('Deleting node: ' + nodeName)
-        MRMLUtility.removeMRMLNode(self.modelDict[nodeName])
-        MRMLUtility.removeMRMLNode(self.segmentationDict[nodeName])
+        slicer.mrmlScene.RemoveNode(self.modelDict[nodeName])
+        slicer.mrmlScene.RemoveNode(self.segmentationDict[nodeName])
 
     if self.singleDisplayedSegmentation is not None:
-      MRMLUtility.removeMRMLNode(self.singleDisplayedSegmentation)
+      slicer.mrmlScene.RemoveNode(self.singleDisplayedSegmentation)
       self.singleDisplayedSegmentation = None
 
     self.labelRangeInCohort = (-1, -1)

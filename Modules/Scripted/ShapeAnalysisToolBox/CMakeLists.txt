@@ -8,8 +8,6 @@ set(MODULE_PYTHON_SCRIPTS
 
 set(MODULE_PYTHON_RESOURCES
   Resources/DataImporter.ui
-  CommonUtilities/__init__.py
-  CommonUtilities/utility.py
   )
 #-----------------------------------------------------------------------------
 slicerMacroBuildScriptedModule(
