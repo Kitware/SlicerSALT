@@ -21,7 +21,7 @@ class DataImporter(ScriptedLoadableModule):
     self.parent.title = "Data Importer"
     self.parent.categories = ["Shape Analysis Toolbox"]
     self.parent.dependencies = []
-    self.parent.contributors = ["Hina Shah (Kitware Inc.)", "Pablo Hernandez (Kitware Inc,)"]
+    self.parent.contributors = ["Hina Shah (Kitware Inc.), Pablo Hernandez (Kitware Inc,)"]
     self.parent.helpText = """
     This module import label images and segmentations from files and folders and compute the topology number of each segment.
     topologyNumber = cleanData.GetNumberOfPoints() - edges.GetNumberOfLines() + cleanData.GetNumberOfPolys()
@@ -41,6 +41,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
     self.saveCleanData = False
     self.labelMapDict = {}
+    self.modelDict = {}
     self.segmentationDict = {}
     self.labelRangeInCohort = (-1, -1)
     self.topologyDict = {}
@@ -70,10 +71,16 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
   def cleanup(self):
     logging.info('Deleting nodes')
     if self.labelMapDict is not None:
-      for node_name in self.labelMapDict.keys():
-        logging.info('Deleting node: ' + node_name)
-        MRMLUtility.removeMRMLNode(self.labelMapDict[node_name])
-        MRMLUtility.removeMRMLNode(self.segmentationDict[node_name])
+      for nodeName in self.labelMapDict.keys():
+        logging.info('Deleting node: ' + nodeName)
+        MRMLUtility.removeMRMLNode(self.labelMapDict[nodeName])
+        MRMLUtility.removeMRMLNode(self.segmentationDict[nodeName])
+
+    if self.modelDict is not None:
+      for nodeName in self.modelDict.keys():
+        logging.info('Deleting node: ' + nodeName)
+        MRMLUtility.removeMRMLNode(self.modelDict[nodeName])
+        MRMLUtility.removeMRMLNode(self.segmentationDict[nodeName])
 
     if self.singleDisplayedSegmentation is not None:
       MRMLUtility.removeMRMLNode(self.singleDisplayedSegmentation)
@@ -84,42 +91,85 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     self.inconsistentTopologyDict = {}
     self.polyDataDict = {} # Dictionary that has all the segmentations.
 
+  def checkLabelRangeConsistency(self, numberOfSegments):
+    """
+    Return tuple [boolean, labelRange].
+    boolean is false if not consistent with current self.labelRangeInCohort. True otherwise.
+    labelRange is (0, numberOfSegments)
+    """
+    labelRange = (0, numberOfSegments)
+    if self.labelRangeInCohort != (-1, -1) and labelRange != self.labelRangeInCohort:
+      logging.error('Label range {} does not match with the existing label range in cohort {}.'.format(labelRange, self.labelRangeInCohort))
+      return False, labelRange
+
+    return True, labelRange
+
   def importLabelMap(self, path):
     """
     Populate labelMapDict, segmentationDict, labelRangeInCohort
     Fails if number of labels is different than pre-existing value for labelRangeInCohort
     Returns false if errors, and no class variable is modified.
     """
-    # load each file
     directory, fileName = os.path.split(path)
 
-    labelMapVolume = slicer.util.loadLabelVolume(path, returnNode=True)[1]
-    if labelMapVolume is None:
+    labelMapNode = slicer.util.loadLabelVolume(path, returnNode=True)[1]
+    if labelMapNode is None:
       logging.error('Failed to load ' + fileName + 'as a labelmap')
       # make sure each one is a labelmap
       return False
 
-    segmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode", labelMapVolume.GetName() + '_allSegments' )
+    segmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode", labelMapNode.GetName() + '_allSegments')
     segmentationNode.SetDisplayVisibility(False)
     segmentationLogic = slicer.modules.segmentations.logic()
-    segmentationLogic.ImportLabelmapToSegmentationNode(labelMapVolume,
+    segmentationLogic.ImportLabelmapToSegmentationNode(labelMapNode,
                                                        segmentationNode)
     closedSurface = segmentationNode.CreateClosedSurfaceRepresentation()
     if closedSurface is False:
-      logging.error('Failed to create closed surface representation')
+      logging.error('Failed to create closed surface representation for filename: {}.'.format(path))
       return False
 
-    # find how many labels each file has
-    # XXX: What happen if different number of labels? just fail is ok?
-    labelRange = labelMapVolume.GetImageData().GetScalarRange()
-    labelRange = (int(labelRange[0]), int(labelRange[1]))
-    logging.debug('Cohort label range for ' + str(fileName) + ': ' + str(labelRange))
-    if self.labelRangeInCohort != (-1, -1) and labelRange != self.labelRangeInCohort:
-      logging.error('Number of labels do not match in the cohort')
+    labelRangeConsistent, labelRange = self.checkLabelRangeConsistency(segmentationNode.GetSegmentation().GetNumberOfSegments())
+    if not labelRangeConsistent:
+      logging.warning('LabelMap in path: {} has not been loaded'.format(path))
       return False
 
     # Add to the dicts only if succesful
-    self.labelMapDict[fileName] = labelMapVolume
+    self.labelMapDict[fileName] = labelMapNode
+    self.segmentationDict[fileName] = segmentationNode
+    self.labelRangeInCohort = labelRange
+    return True
+
+  def importModel(self, path):
+    """
+    Create segmentation from a model (with only one shape). The labelRangeInCohort would be (0,1), just one segment.
+    If your model is a model hierarchy (containing different shapes in the same file), use
+    importModelHierarchy.
+    Populate segmentationDict and set labelRangeInCohort to (0,1)
+    """
+    directory, fileName = os.path.split(path)
+
+    modelNode = slicer.util.loadModel(path, returnNode=True)[1]
+    if modelNode is None:
+      logging.error('Failed to load ' + fileName + 'as a model')
+      return False
+
+    segmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode", modelNode.GetName() + '_allSegments')
+    segmentationNode.SetDisplayVisibility(False)
+    segmentationLogic = slicer.modules.segmentations.logic()
+    segmentationLogic.ImportModelToSegmentationNode(modelNode,
+                                                    segmentationNode)
+    closedSurface = segmentationNode.CreateClosedSurfaceRepresentation()
+    if closedSurface is False:
+      logging.error('Failed to create closed surface representation for filename: {}.'.format(path))
+      return False
+
+    labelRangeConsistent, labelRange = self.checkLabelRangeConsistency(segmentationNode.GetSegmentation().GetNumberOfSegments())
+    if not labelRangeConsistent:
+      logging.warning('Model in path: {} has not been loaded'.format(path))
+      return False
+
+    # Add to the dicts only if succesful
+    self.modelDict[fileName] = modelNode
     self.segmentationDict[fileName] = segmentationNode
     self.labelRangeInCohort = labelRange
     return True
@@ -130,22 +180,17 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     Fails if number of labels is different than pre-existing value for labelRangeInCohort
     Returns false if errors, and no class variable is modified.
     """
-    # load each file
     directory, fileName = os.path.split(path)
 
     segmentationNode = slicer.util.loadSegmentation(path, returnNode=True)[1]
     if segmentationNode is None:
       logging.error('Failed to load ' + fileName + 'as a segmentation')
-      # make sure each one is a labelmap
       return False
     segmentationNode.SetDisplayVisibility(False)
 
-    # find how many labels each file has
-    # XXX: What happen if different number of labels? just fail is ok?
-    labelRange = (0, segmentationNode.GetSegmentation().GetNumberOfSegments())
-    logging.debug('Cohort label range for ' + str(fileName) + ': ' + str(labelRange))
-    if self.labelRangeInCohort != (-1, -1) and labelRange != self.labelRangeInCohort:
-      logging.error('Label range {} do not match with the existing cohort {}.'.format(labelRange, self.labelRangeInCohort))
+    labelRangeConsistent, labelRange = self.checkLabelRangeConsistency(segmentationNode.GetSegmentation().GetNumberOfSegments())
+    if not labelRangeConsistent:
+      logging.warning('Segmentation in path: {} has not been loaded'.format(path))
       return False
 
     # Add to the dicts only if succesful
@@ -157,6 +202,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     """
     Call the appropiate import function from a heteregeneous list of file paths.
     Raises TypeError if not existent file or unhandled filetype by this module.
+    Files with a different number of labels/segments than the first one loaded are ignored with a warning.
     """
     for path in filePaths:
       fileType = slicer.app.ioManager().fileType(path)
@@ -165,6 +211,8 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
         self.importLabelMap(path)
       elif fileType == 'SegmentationFile':
         self.importSegmentation(path)
+      elif fileType == 'ModelFile':
+        self.importModel(path)
       elif fileType == 'NoFile':
         raise TypeError("Path [{}] is not existent or has an unknown file type for Slicer [{}]".format(path, fileType))
       else:
@@ -193,9 +241,12 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
   #
   def populateTopologyDictionary(self):
     """
-    PRE: Requires segmentationDict, labelRangeInCohort populated from files with importXXX
+    PRE: Requires segmentationDict populated from files with importXXX
     POST: populate topologyDict, polyDataDict
     return void
+    Note that this is independent of labelRangeInCohort, the keys of the two level dictionary would be:
+    [nodeName][SegmentId]
+    SegmentId might not be alphanumerical.
     """
 
     # Create vtk objects that will be used to clean the geometries
@@ -203,14 +254,16 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
       # Topology table is a dictionary of dictionaries.
       self.topologyDict[nodeName] = {}
       self.polyDataDict[nodeName] = {}
-      for segmentNum in range(self.labelRangeInCohort[0], self.labelRangeInCohort[1] + 1):
-        # 0 label is assumed to be the background.
-        if segmentNum == 0:
+      segmentationNode = self.segmentationDict[nodeName]
+      for segmentIndex in range(segmentationNode.GetSegmentation().GetNumberOfSegments()):
+        segmentId = segmentationNode.GetSegmentation().GetNthSegmentID(segmentIndex)
+        # logging.debug("segmentIndex: ", segmentIndex, "; segmentId: ", segmentId)
+        # 0 label is assumed to be the background. XXX PHC: assumed where?
+        if segmentId == "0":
           continue
-        segmentId = str(segmentNum)
-        polydata = self.segmentationDict[nodeName].GetClosedSurfaceRepresentation(segmentId)
+        polydata = segmentationNode.GetClosedSurfaceRepresentation(segmentId)
         if polydata is None:
-          logging.info('Ignoring segment id ' + segmentId + ' for case: ' + nodeName)
+          logging.warning('Ignoring segment id ' + segmentId + ' for case: ' + nodeName)
           continue
 
         polydataCleaner = vtk.vtkCleanPolyData()
@@ -241,12 +294,12 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
         # calculate the numbers
         topologyNumber = cleanData.GetNumberOfPoints() - edges.GetNumberOfLines() + cleanData.GetNumberOfPolys()
-        self.topologyDict[nodeName][segmentNum] = topologyNumber
+        self.topologyDict[nodeName][segmentId] = topologyNumber
 
         if self.saveCleanData:
-          self.polyDataDict[nodeName][segmentNum] = cleanData
+          self.polyDataDict[nodeName][segmentId] = cleanData
         else:
-          self.polyDataDict[nodeName][segmentNum] = polydata
+          self.polyDataDict[nodeName][segmentId] = polydata
 
         del edges
         del largestComponent
@@ -257,7 +310,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
   def checkTopologyConsistency(self, inputTopologyDictionary, expectedTopologyType = None):
     """
-    return list with (boolean, dict of dicts of inconsistent entries: { nodeName: {segmentNumber, inconsistentTopology} } )
+    return list with (boolean, dict of dicts of inconsistent entries: { nodeName: {segmentId, inconsistentTopology} } )
     the boolean says if there are or not inconsistencies
     if expectedTopologyType is "", the expectedTopologyType is set to the mode of the values in input dictionary.
     """
@@ -279,10 +332,10 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
       expectedTopologyType = long(self._computeModeOfNestedDict(inputTopologyDictionary))
 
     for nameNode, segmentsDict in inputTopologyDictionary.iteritems():
-      for segmentNum, topologyType in segmentsDict.iteritems():
+      for segmentId, topologyType in segmentsDict.iteritems():
         if topologyType != expectedTopologyType:
           inconsistentSegments[nameNode] = {}
-          inconsistentSegments[nameNode][segmentNum] = topologyType
+          inconsistentSegments[nameNode][segmentId] = topologyType
 
     if inconsistentSegments:
       inconsistenciesExist = True
@@ -323,20 +376,20 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     self.singleDisplayedSegmentation.GetDisplayNode().SetColor(color[0:3])
     self.reset3dView()
 
-  def getTopologyAndConsistencyString(self, nodeName, segmentId):
+  def getTopologyAndConsistencyString(self, nodeName, inputSegmentId):
     """
     Rturn strings with topology type and consistency of a segment.
     """
-    segmentNum = int(segmentId)
+    segmentId = str(inputSegmentId)
     topologyString = 'n/a'
     consistentTopologyString = 'Consistent'
 
-    if nodeName in self.topologyDict and segmentNum in self.topologyDict[nodeName]:
-      topologyNum = self.topologyDict[nodeName][segmentNum]
+    if nodeName in self.topologyDict and segmentId in self.topologyDict[nodeName]:
+      topologyNum = self.topologyDict[nodeName][segmentId]
       topologyString = self.TOPOLOGY_TYPES.get(topologyNum, 'n/a')
 
     if nodeName in self.inconsistentTopologyDict:
-      if segmentNum in self.inconsistentTopologyDict[nodeName]:
+      if segmentId in self.inconsistentTopologyDict[nodeName]:
         consistentTopologyString = 'Inconsistent'
 
     return topologyString, consistentTopologyString
@@ -560,6 +613,9 @@ class DataImporterTest(ScriptedLoadableModuleTest):
       'case01_allSegments.seg.nrrd',
       'case02_allSegments.seg.vtm',
     )
+    self.casesModel = (
+      'sample_model.vtk',
+    )
 
     # create dir if non-existant
     if not os.path.isdir(self.testDir):
@@ -579,6 +635,7 @@ class DataImporterTest(ScriptedLoadableModuleTest):
         ('https://data.kitware.com/api/v1/item/5b7c5b798d777f06857c8910/download', 'case02.nrrd', slicer.util.loadLabelVolume),
         ('https://data.kitware.com/api/v1/item/5b7f43eb8d777f06857cb204/download', 'case01_allSegments.seg.nrrd', slicer.util.loadSegmentation),
         ('https://data.kitware.com/api/v1/item/5b802f178d777f06857cb665/download', 'case02_allSegments.seg.vtm.zip', 'Unzip'),
+        ('https://data.kitware.com/api/v1/item/5b8d65aa8d777f43cc9850f4/download', 'sample_model.vtk', slicer.util.loadModel),
     )
 
     for url, name, loader in self.downloads:
@@ -586,7 +643,7 @@ class DataImporterTest(ScriptedLoadableModuleTest):
       if not os.path.exists(filePath) or os.stat(filePath).st_size == 0:
         logging.info('Requesting download %s from %s...\n' % (name, url))
         urllib.urlretrieve(url, filePath)
-      if loader == 'Unzip' and not os.path.exists(filePath[:-4]) :
+      if loader == 'Unzip' and not os.path.exists(filePath[:-4]):
         slicer.app.applicationLogic().Unzip(filePath, self.testDir)
         logging.info("Unzipping done")
 
@@ -604,6 +661,10 @@ class DataImporterTest(ScriptedLoadableModuleTest):
     for fileName in self.casesSegmentation:
       self.test_importSegmentationFromFile(fileName)
 
+    ##### importModel #####
+    for fileName in self.casesModel:
+      self.test_importModelFromFile(fileName)
+
     ##### importFromDirectory #####
     self.test_importFiles()
 
@@ -617,7 +678,6 @@ class DataImporterTest(ScriptedLoadableModuleTest):
     print 'topologyDict', logic.topologyDict
     print 'inconsistentTopologyDict', logic.inconsistentTopologyDict
     print 'polyDataDict', logic.polyDataDict
-
 
   def test_importLabelMapFromFile(self, fileName):
     """
@@ -641,7 +701,7 @@ class DataImporterTest(ScriptedLoadableModuleTest):
       self.assertNotEqual(logic.labelMapDict, dict())
       self.check_case02(logic, fileName)
 
-    logging.info('-- Test for %s passed! --' % (fileName))
+    logging.info('-- Test for %s passed (importLabelMap)! --' % (fileName))
 
   def check_case01(self, logic, fileName):
     logging.info('-- Checking case01 --')
@@ -653,12 +713,12 @@ class DataImporterTest(ScriptedLoadableModuleTest):
     self.assertNotEqual(logic.polyDataDict, dict())
     self.assertNotEqual(logic.inconsistentTopologyDict, dict())
 
-    segmentId = 1 # Disk
+    segmentId = "1" # Disk
     topologyString, consistentTopologyString = logic.getTopologyAndConsistencyString(fileName, segmentId)
     self.assertEqual(topologyString, logic.TOPOLOGY_TYPES[0])
     self.assertEqual(consistentTopologyString, 'Inconsistent')
 
-    segmentId = 2 # Sphere
+    segmentId = "2" # Sphere
     topologyString, consistentTopologyString = logic.getTopologyAndConsistencyString(fileName, segmentId)
     self.assertEqual(topologyString, logic.TOPOLOGY_TYPES[2])
     self.assertEqual(consistentTopologyString, 'Consistent')
@@ -676,7 +736,7 @@ class DataImporterTest(ScriptedLoadableModuleTest):
     # All consistent
     self.assertEqual(logic.inconsistentTopologyDict, dict())
 
-    segmentId = 2 # Sphere
+    segmentId = "2" # Sphere
     topologyString, consistentTopologyString = logic.getTopologyAndConsistencyString(fileName, segmentId)
     self.assertEqual(topologyString, logic.TOPOLOGY_TYPES[2])
     self.assertEqual(consistentTopologyString, 'Consistent')
@@ -698,12 +758,33 @@ class DataImporterTest(ScriptedLoadableModuleTest):
 
     self.printMembers(logic)
 
-    if fileName == 'case01_allSegments.seg.nrrd' :
+    if fileName == 'case01_allSegments.seg.nrrd':
       self.check_case01(logic, fileName)
-    elif fileName == 'case02_allSegments.seg.vtm' :
+    elif fileName == 'case02_allSegments.seg.vtm':
       self.check_case02(logic, fileName)
 
-    logging.info('-- Test for %s passed! --' % (fileName))
+    logging.info('-- Test for %s passed (importSegmentation)! --' % (fileName))
+
+  def test_importModelFromFile(self, fileName):
+    logging.info('-- Starting model test for %s --' % (fileName))
+    filePath = os.path.join(self.testDir, fileName)
+    logic = DataImporterLogic()
+    self.assertTrue(logic.importModel(filePath))
+    logic.populateTopologyDictionary()
+    self.printMembers(logic)
+
+    self.assertNotEqual(logic.modelDict, dict())
+    self.assertEqual(logic.labelRangeInCohort, (0, 1))
+    self.assertNotEqual(logic.topologyDict, dict())
+    self.assertNotEqual(logic.polyDataDict, dict())
+    # All consistent
+    self.assertEqual(logic.inconsistentTopologyDict, dict())
+    segmentId = "sample_model" # Sphere
+    topologyString, consistentTopologyString = logic.getTopologyAndConsistencyString(fileName, segmentId)
+    self.assertEqual(topologyString, logic.TOPOLOGY_TYPES[2])
+    self.assertEqual(consistentTopologyString, 'Consistent')
+
+    logging.info('-- Test for %s passed (importModel) ! --' % (fileName))
 
   def test_importFiles(self):
     """
@@ -717,15 +798,24 @@ class DataImporterTest(ScriptedLoadableModuleTest):
     preNumberOfNodesLabelMapVolume = slicer.mrmlScene.GetNumberOfNodesByClass("vtkMRMLLabelMapVolumeNode")
     preNumberOfNodesSegmentation = slicer.mrmlScene.GetNumberOfNodesByClass("vtkMRMLSegmentationNode")
     filePaths = [os.path.join(self.testDir, self.casesLabelMap[0]),
-                 os.path.join(self.testDir, self.casesSegmentation[1])
+                 os.path.join(self.testDir, self.casesSegmentation[1]),
                  ]
     logic.importFiles(filePaths)
     self.assertEqual(slicer.mrmlScene.GetNumberOfNodesByClass("vtkMRMLLabelMapVolumeNode"), preNumberOfNodesLabelMapVolume + 1)
     self.assertEqual(slicer.mrmlScene.GetNumberOfNodesByClass("vtkMRMLSegmentationNode"), preNumberOfNodesSegmentation + 2)
 
     # Try to load not existing file
-    filePaths = [os.path.join(self.testDir, 'not_existing_for_sure.nrrd'),]
+    filePaths = [os.path.join(self.testDir, 'not_existing_for_sure.nrrd'), ]
     self.assertRaises(TypeError, logic.importFiles, filePaths)
+
+    # Try to file with different label cohort
+    numberOfKeys = len(logic.topologyDict.keys())
+    numberOfModels = len(logic.modelDict.keys())
+    filePaths = [os.path.join(self.testDir, self.casesModel[0]), ]
+    logic.importFiles(filePaths)
+    # Warning to console, file is not loaded, and no member is modified.
+    self.assertEqual(numberOfKeys, len(logic.topologyDict.keys()))
+    self.assertEqual(numberOfModels, len(logic.modelDict.keys()))
 
     logging.info('-- test_importFiles passed! --')
 
