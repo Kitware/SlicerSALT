@@ -110,6 +110,18 @@ set(Slicer_EXTENSION_SOURCE_DIRS
   ${SlicerSALT_SOURCE_DIR}/Modules/Scripted/ShapeAnalysisToolBox
   )
 
+# Add Eigen3 (required by at least SRepExtension)
+set(extension_name "Eigen3")
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/eigenteam/eigen-git-mirror
+  GIT_TAG        origin/branches/3.3
+  GIT_PROGRESS   1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
 # Add remote extension source directories
 
 # MeshToLabelMap
@@ -142,7 +154,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/SRepExtension
-  GIT_TAG        df8b732c16da93a43faaec9cce99382ed5fb0059
+  GIT_TAG        d649bc812a4e90d16ae8ab4e4c23d166d775f4cd # 2018-09-05 Fix with eigen3
   GIT_PROGRESS   1
   QUIET
   )
