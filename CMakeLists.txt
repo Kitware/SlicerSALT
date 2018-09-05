@@ -19,7 +19,7 @@ if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
     GIT_REPOSITORY https://github.com/Slicer/Slicer
-    GIT_TAG        c88b17d38acf99c66892f867aff163a9c07d073a # 2018-08-10
+    GIT_TAG        1a1d6b0b632ec75b6ea1dc4d0dab2916562900ce # 2018-08-28
     GIT_PROGRESS   1
     )
 else()
@@ -143,6 +143,18 @@ FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/SRepExtension
   GIT_TAG        df8b732c16da93a43faaec9cce99382ed5fb0059
+  GIT_PROGRESS   1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+# GROUPS
+set(extension_name "GROUPS")
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/GROUPS
+  GIT_TAG        ea0df6dc017c793ddec2fbba0678b976561b730a # fix-modernize-simplify-buildsystem-NIRALUser
   GIT_PROGRESS   1
   QUIET
   )
