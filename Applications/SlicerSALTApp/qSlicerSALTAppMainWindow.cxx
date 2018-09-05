@@ -46,6 +46,9 @@ qSlicerSALTAppMainWindowPrivate::~qSlicerSALTAppMainWindowPrivate()
 //-----------------------------------------------------------------------------
 void qSlicerSALTAppMainWindowPrivate::init()
 {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 7, 0))
+  QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+#endif
   Q_Q(qSlicerSALTAppMainWindow);
   this->Superclass::init();
 }
@@ -72,12 +75,7 @@ void qSlicerSALTAppMainWindowPrivate::setupUi(QMainWindow * mainWindow)
   // Configure
   //----------------------------------------------------------------------------
   mainWindow->setWindowIcon(QIcon(":/Icons/Medium/DesktopIcon.png"));
-
   QPixmap logo(":/LogoFull.png");
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
-  qreal dpr = sqrt(qApp->desktop()->logicalDpiX()*qreal(qApp->desktop()->logicalDpiY()) / (qApp->desktop()->physicalDpiX()*qApp->desktop()->physicalDpiY()));
-  logo.setDevicePixelRatio(dpr);
-#endif
   this->LogoLabel->setAlignment(Qt::AlignCenter); // XXX Synx with template ?
   this->LogoLabel->setPixmap(logo);
 
