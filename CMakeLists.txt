@@ -110,7 +110,7 @@ set(Slicer_EXTENSION_SOURCE_DIRS
   ${SlicerSALT_SOURCE_DIR}/Modules/Scripted/ShapeAnalysisToolBox
   )
 
-# Add Eigen3 (required by at least SRepExtension)
+# Add Eigen3 (required by at least SlicerSkeletalRepresentation)
 set(extension_name "Eigen3")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
@@ -149,12 +149,12 @@ FetchContent_Populate(${extension_name}
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
 # Srep
-set(extension_name "SRepExtension")
+set(extension_name "SlicerSkeletalRepresentation")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/SRepExtension
-  GIT_TAG        d649bc812a4e90d16ae8ab4e4c23d166d775f4cd # 2018-09-05 Fix with eigen3
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/SlicerSkeletalRepresentation
+  GIT_TAG        dfb8cab5cf9a2422ac69fd0b37f82f88e8c969dd # 2018-09-07 Rename
   GIT_PROGRESS   1
   QUIET
   )
