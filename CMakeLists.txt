@@ -111,12 +111,19 @@ set(Slicer_EXTENSION_SOURCE_DIRS
   )
 
 # Add Eigen3 (required by at least SlicerSkeletalRepresentation)
+# Disable testing of Eigen
+if(NOT DEFINED EIGEN_BUILD_TESTING)
+  set(EIGEN_BUILD_TESTING OFF)
+endif()
+mark_as_superbuild(EIGEN_BUILD_TESTING)
+
+# XXX: Using branch meanwhile upstream merge proposed cmake fixes
 set(extension_name "Eigen3")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/eigenteam/eigen-git-mirror
-  GIT_TAG        origin/branches/3.3
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/eigen-git-mirror
+  GIT_TAG        582908bca0d23136ac9ef8241f1aa51691ea4b47 # slicersalt-3.3-2018-09-07-2fd9e7447
   GIT_PROGRESS   1
   QUIET
   )
