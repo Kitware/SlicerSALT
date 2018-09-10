@@ -3,6 +3,7 @@ from slicer.ScriptedLoadableModule import (ScriptedLoadableModule,
                                            ScriptedLoadableModuleLogic,
                                            ScriptedLoadableModuleWidget,
                                            ScriptedLoadableModuleTest)
+import csv
 import logging
 import os
 
@@ -44,7 +45,6 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     self.segmentationDict = {}
     self.labelRangeInCohort = (-1, -1)
     self.topologyDict = {}
-    self.inconsistentTopologyDict = {}
     self.polyDataDict = {}
     self.TOPOLOGY_TYPES = {
         0: 'Circle/Torus/Mobius Strip',
@@ -53,7 +53,26 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
         -2: 'Double Torus',
         -4: 'Triple Torus',
     }
+    # help variable to map continious indices to TOPOLOGY_TYPES. Used in comboBoxes
+    self.topologyTypeToIndex = {
+        0: 0,
+        1: 1,
+        2: 2,
+        -2: 3,
+        -4: 4,
+    }
+    self.indexToTopologyType = {
+        0: 0,
+        1: 1,
+        2: 2,
+        3: -2,
+        4: -4,
+    }
+    self.expectedTopologiesBySegment = {}
+    self.inconsistentTopologyDict = {}
 
+    self.numberOfDifferentSegments = 0
+    self.dictSegmentNamesWithIntegers = dict()
     self.singleDisplayedSegmentation = None
     self.createSingleDisplaySegmentModelNode()
 
@@ -70,16 +89,16 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
   # Reset all the data for data import
   #
   def cleanup(self):
-    logging.info('Deleting nodes')
+    logging.debug('Deleting nodes')
     if self.labelMapDict is not None:
       for nodeName in self.labelMapDict.keys():
-        logging.info('Deleting node: ' + nodeName)
+        logging.debug('Deleting label map node: ' + nodeName)
         slicer.mrmlScene.RemoveNode(self.labelMapDict[nodeName])
         slicer.mrmlScene.RemoveNode(self.segmentationDict[nodeName])
 
     if self.modelDict is not None:
       for nodeName in self.modelDict.keys():
-        logging.info('Deleting node: ' + nodeName)
+        logging.debug('Deleting model node: ' + nodeName)
         slicer.mrmlScene.RemoveNode(self.modelDict[nodeName])
         slicer.mrmlScene.RemoveNode(self.segmentationDict[nodeName])
 
@@ -91,14 +110,16 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     self.topologyDict = {}
     self.inconsistentTopologyDict = {}
     self.polyDataDict = {} # Dictionary that has all the segmentations.
+    self.numberOfDifferentSegments = 0
 
-  def checkLabelRangeConsistency(self, numberOfSegments):
+  def checkLabelRangeConsistency(self, inputNumberOfSegments):
     """
+    Check that the input number of segments is the same than the current number of segments in the cohort.
     Return tuple [boolean, labelRange].
     boolean is false if not consistent with current self.labelRangeInCohort. True otherwise.
-    labelRange is (0, numberOfSegments)
+    labelRange is (0, inputNumberOfSegments)
     """
-    labelRange = (0, numberOfSegments)
+    labelRange = (0, inputNumberOfSegments)
     if self.labelRangeInCohort != (-1, -1) and labelRange != self.labelRangeInCohort:
       logging.error('Label range {} does not match with the existing label range in cohort {}.'.format(labelRange, self.labelRangeInCohort))
       return False, labelRange
@@ -131,7 +152,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
     labelRangeConsistent, labelRange = self.checkLabelRangeConsistency(segmentationNode.GetSegmentation().GetNumberOfSegments())
     if not labelRangeConsistent:
-      logging.warning('LabelMap in path: {} has not been loaded'.format(path))
+      logging.warning('LabelMap in path: {} has not been loaded into segmentationDict.'.format(path))
       return False
 
     # Add to the dicts only if succesful
@@ -144,7 +165,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     """
     Create segmentation from a model (with only one shape). The labelRangeInCohort would be (0,1), just one segment.
     If your model is a model hierarchy (containing different shapes in the same file), use
-    importModelHierarchy.
+    importModelHierarchy (not implemented).
     Populate segmentationDict and set labelRangeInCohort to (0,1)
     """
     directory, fileName = os.path.split(path)
@@ -159,6 +180,10 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     segmentationLogic = slicer.modules.segmentations.logic()
     segmentationLogic.ImportModelToSegmentationNode(modelNode,
                                                     segmentationNode)
+    # To allow better mixing with label maps.
+    # We change the name of the model (originally set to the filename in vtkSlicerSegmentationModuleLogic)
+    # XXX Better option would be to use terminologies, see: https://discourse.slicer.org/t/finding-corresponding-segments-in-segmentations/4055/4
+    segmentationNode.GetSegmentation().GetSegment(modelNode.GetName()).SetName('1')
     closedSurface = segmentationNode.CreateClosedSurfaceRepresentation()
     if closedSurface is False:
       logging.error('Failed to create closed surface representation for filename: {}.'.format(path))
@@ -166,7 +191,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
     labelRangeConsistent, labelRange = self.checkLabelRangeConsistency(segmentationNode.GetSegmentation().GetNumberOfSegments())
     if not labelRangeConsistent:
-      logging.warning('Model in path: {} has not been loaded'.format(path))
+      logging.warning('Model in path: {} has not been loaded into segmentationDict.'.format(path))
       return False
 
     # Add to the dicts only if succesful
@@ -191,7 +216,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
     labelRangeConsistent, labelRange = self.checkLabelRangeConsistency(segmentationNode.GetSegmentation().GetNumberOfSegments())
     if not labelRangeConsistent:
-      logging.warning('Segmentation in path: {} has not been loaded'.format(path))
+      logging.warning('Segmentation in path: {} has not been loaded into segmentationDict.'.format(path))
       return False
 
     # Add to the dicts only if succesful
@@ -199,6 +224,31 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     self.labelRangeInCohort = labelRange
     return True
 
+  def filePathsFromCSVFile(self, csvFileName):
+    """
+    Return filePaths from CSV.
+    It assumes that csvFileName contains one filepath per row.
+    """
+    filePaths = []
+    with open(csvFileName, 'r') as csvfile:
+      has_header = csv.Sniffer().has_header(csvfile.read(1024))
+      csvfile.seek(0) # Rewind
+      reader = csv.reader(csvfile)
+      # ignore the header
+      if has_header:
+        next(reader, None)
+      # assuming that each row is just a file path.
+      for row in reader:
+        if len(row) > 0:
+          filePaths.append(row[0])
+
+    return filePaths
+
+
+        # Depending on the mode fill the structures table.
+        # TODO: add directory parsing based on mode
+    # else:
+    #   logging.error("Importing from directory is not yet supported")
   def importFiles(self, filePaths):
     """
     Call the appropiate import function from a heteregeneous list of file paths.
@@ -222,20 +272,62 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
     return True
 
-  def _computeModeOfNestedDict(self, dictOfDicts):
+  def _computeModeOfSegment(self, inputTopologyDict, inputSegmentName):
     """
-    Compute the mode of the ultimate leaf from a dict of dict
-    Returns the mode, or none if dict is empty.
-    { firstKey: {nestKey0: '0', nestKey1: '0', nestKey2: '1'} }
-    It would return '0' in the example.
+    Compute the mode of the segmentName among the population
+    Raise error if input dict is empty or not nested.
+    Returns the mode value, or
+    None if inputSegmentName is not found in the dictionary.
+
+    Example:
+    {
+    name0:
+      {'segmentName0': '0', 'segmentName1': '1'},
+    name1:
+      {'segmentName0': '1', 'segmentName1': '0'}
+    name2:
+      {'segmentName0': '1', 'segmentName1': '0'}
+    }
+    It would return '1' if inputSegmentName == 'segmentName0'
+                    '0' if inputSegmentName == 'segmentName1'
     """
     from collections import Counter
     # Check is a nested dictionary
-    if not isinstance(dictOfDicts[next(iter(dictOfDicts))], dict):
-      raise ValueError('Input is not a nested dictionary', dictOfDicts)
+    if not isinstance(inputTopologyDict[next(iter(inputTopologyDict))], dict):
+      raise ValueError('Input is not a nested dictionary', inputTopologyDict)
     # Use the first key...
-    firstKey = next(iter(dictOfDicts))
-    return Counter(list(dictOfDicts[firstKey].values())).most_common(1)[0][0]
+    segmentTopologies = list()
+    for name in inputTopologyDict:
+      if inputSegmentName in inputTopologyDict[name]:
+        segmentTopologies.append(inputTopologyDict[name][inputSegmentName])
+
+    if not segmentTopologies:
+      logging.warning('There is no segments with segmentName {} in input dict {}.'.format(inputSegmentName, inputTopologyDict))
+      return None
+
+    # dev: in most_common elements with equal counts are ordered arbitrarily
+    return Counter(segmentTopologies).most_common(1)[0][0]
+
+  def initExpectedTopologyBySegmentWithModes(self, inputTopologyDictionary):
+    """
+    Compute the mode of each segment, populating the dict:
+    Example:
+    {'segmentName0' : 2, 'segmentName1': 0'}
+    Where the integers correspond to the enum TOPOLOGY_TYPES
+    """
+    self.expectedTopologiesBySegment = {}
+    segmentNames = set()
+    for name in inputTopologyDictionary:
+      for segmentName in inputTopologyDictionary[name]:
+        segmentNames.add(segmentName)
+
+    for segmentName in segmentNames:
+      topologyType = self._computeModeOfSegment(inputTopologyDictionary, segmentName)
+      validTopologyType = (topologyType in self.TOPOLOGY_TYPES)
+      if not validTopologyType:
+        logging.error("Topology type: {} for segmentName {}, is invalid, use a key from {}".format(topologyType, segmentName, self.TOPOLOGY_TYPES))
+        return
+      self.expectedTopologiesBySegment[segmentName] = long(topologyType)
 
   #
   # Function to estimate topology of segmentations, and check for consistencies.
@@ -246,8 +338,9 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     POST: populate topologyDict, polyDataDict
     return void
     Note that this is independent of labelRangeInCohort, the keys of the two level dictionary would be:
-    [nodeName][SegmentId]
-    SegmentId might not be alphanumerical.
+    [nodeName][SegmentName]
+    SegmentName might not be alphanumerical, create a map self.dictSegmentNamesWithIntegers
+    between strings and ints.
     """
 
     # Create vtk objects that will be used to clean the geometries
@@ -257,14 +350,13 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
       self.polyDataDict[nodeName] = {}
       segmentationNode = self.segmentationDict[nodeName]
       for segmentIndex in range(segmentationNode.GetSegmentation().GetNumberOfSegments()):
-        segmentId = segmentationNode.GetSegmentation().GetNthSegmentID(segmentIndex)
-        # logging.debug("segmentIndex: ", segmentIndex, "; segmentId: ", segmentId)
-        # 0 label is assumed to be the background. XXX PHC: assumed where?
-        if segmentId == "0":
+        segmentName = segmentationNode.GetSegmentation().GetNthSegmentID(segmentIndex)
+        # 0 label is assumed to be the background. XXX Pablo: assumed where?
+        if segmentName == "0":
           continue
-        polydata = segmentationNode.GetClosedSurfaceRepresentation(segmentId)
+        polydata = segmentationNode.GetClosedSurfaceRepresentation(segmentName)
         if polydata is None:
-          logging.warning('Ignoring segment id ' + segmentId + ' for case: ' + nodeName)
+          logging.warning('Ignoring segment id ' + segmentName + ' for case: ' + nodeName)
           continue
 
         polydataCleaner = vtk.vtkCleanPolyData()
@@ -295,48 +387,60 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
         # calculate the numbers
         topologyNumber = cleanData.GetNumberOfPoints() - edges.GetNumberOfLines() + cleanData.GetNumberOfPolys()
-        self.topologyDict[nodeName][segmentId] = topologyNumber
+        self.topologyDict[nodeName][segmentName] = topologyNumber
 
         if self.saveCleanData:
-          self.polyDataDict[nodeName][segmentId] = cleanData
+          self.polyDataDict[nodeName][segmentName] = cleanData
         else:
-          self.polyDataDict[nodeName][segmentId] = polydata
+          self.polyDataDict[nodeName][segmentName] = polydata
 
         del edges
         del largestComponent
         del cleanData
 
-    consistent, self.inconsistentTopologyDict = self.checkTopologyConsistency(self.topologyDict,
-                                                                              expectedTopologyType = self._computeModeOfNestedDict(self.topologyDict))
+  def populateInconsistentTopologyDict(self):
+    """
+    PRE: Requires topologyDict to be populated
+    Uses checkTopologyConsistency to populate self.inconsistentTopologyDict
+    """
+    if not self.topologyDict:
+      logging.error('Topology Dict is not populated')
+      return
 
-  def checkTopologyConsistency(self, inputTopologyDictionary, expectedTopologyType = None):
+    consistent, self.inconsistentTopologyDict = self.checkTopologyConsistency(self.topologyDict)
+
+  def populateDictSegmentNamesWithIntegers(self):
     """
-    return list with (boolean, dict of dicts of inconsistent entries: { nodeName: {segmentId, inconsistentTopology} } )
-    the boolean says if there are or not inconsistencies
-    if expectedTopologyType is "", the expectedTopologyType is set to the mode of the values in input dictionary.
+    Populate numberOfDifferentSegments and dictSegmentNamesWithIntegers from existing topologyDict.
     """
+    if self.topologyDict is None:
+      logging.warning("Cannot populate dictSegmentNamesWithIntegers without topologyDict")
+      return
+    self.numberOfDifferentSegments = 0
+    for nodeName in self.topologyDict:
+      for segmentName in self.topologyDict[nodeName]:
+        if not segmentName in self.dictSegmentNamesWithIntegers:
+          self.numberOfDifferentSegments+=1
+          self.dictSegmentNamesWithIntegers[segmentName] = self.numberOfDifferentSegments
+
+
+  def checkTopologyConsistency(self, inputTopologyDictionary):
+    """
+    Return list with (boolean, dict of dicts of inconsistent entries: { nodeName: {segmentName, inconsistentTopology} } )
+    the boolean reflects existence of inconsistencies
+    It uses the dictionary expectedTopologiesBySegment. If empty, it automatically init it computing the mode by segment.
+    """
+    if not self.expectedTopologiesBySegment:
+      self.initExpectedTopologyBySegmentWithModes(inputTopologyDictionary)
+
     inconsistenciesExist = False
     inconsistentSegments = {}
 
-    # Check input expectedTopologyType is valid, if default, provide one.
-    # Convert to long if not None
-    expectedTopologyType = long(expectedTopologyType) if expectedTopologyType else expectedTopologyType
-    if expectedTopologyType is not None:
-      validExpectedTopology = (expectedTopologyType in self.TOPOLOGY_TYPES)
-      if not validExpectedTopology:
-        logging.error("Provided expected topology key: {}, is invalid, use a key from {}".format(expectedTopologyType, self.TOPOLOGY_TYPES))
-        return
-      else:
-        logging.debug("Provided expected topology key: {}, is valid ({})".format(expectedTopologyType, self.TOPOLOGY_TYPES[expectedTopologyType]))
-
-    else: #  Compute the expectedTopologyType to be the mode of the topologies
-      expectedTopologyType = long(self._computeModeOfNestedDict(inputTopologyDictionary))
-
     for nameNode, segmentsDict in inputTopologyDictionary.iteritems():
-      for segmentId, topologyType in segmentsDict.iteritems():
-        if topologyType != expectedTopologyType:
+      for segmentName, topologyType in segmentsDict.iteritems():
+        if topologyType != self.expectedTopologiesBySegment[segmentName]:
           inconsistentSegments[nameNode] = {}
-          inconsistentSegments[nameNode][segmentId] = topologyType
+          inconsistentSegments[nameNode][segmentName] = topologyType
 
     if inconsistentSegments:
       inconsistenciesExist = True
@@ -349,21 +453,20 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     threeDView = threeDWidget.threeDView()
     threeDView.resetFocalPoint()
 
-  def displaySegment(self, nodeName, segmentId):
-    if segmentId == '0':
-      self.segmentationDict[nodeName].SetDisplayVisibility(True)
-      self.reset3dView()
-      return
-
-    if self.segmentationDict[nodeName].GetDisplayVisibility() is 1:
+  def displaySegment(self, nodeName, segmentName):
+    # if segmentName == '0':
+    #   self.segmentationDict[nodeName].SetDisplayVisibility(True)
+    #   self.reset3dView()
+    #   return
+    if self.segmentationDict[nodeName].GetDisplayVisibility():
       self.segmentationDict[nodeName].SetDisplayVisibility(False)
 
     polydata = None
 
-    if nodeName in self.polyDataDict.keys() and segmentId in self.polyDataDict[nodeName].keys():
-      polydata = self.polyDataDict[nodeName][segmentId] #elf.segmentationDict[nodeName].GetClosedSurfaceRepresentation(segmentId)
+    if nodeName in self.polyDataDict and segmentName in self.polyDataDict[nodeName]:
+      polydata = self.polyDataDict[nodeName][segmentName] #elf.segmentationDict[nodeName].GetClosedSurfaceRepresentation(segmentName)
     if polydata is None:
-      logging.error('Polydata for ' + nodeName + ' and ' + segmentId + ' does not exist!!')
+      logging.error('Polydata for ' + nodeName + ' and ' + segmentName + ' does not exist!!')
       return
 
     self.createSingleDisplaySegmentModelNode()
@@ -372,31 +475,42 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     self.singleDisplayedSegmentation.SetDisplayVisibility(1)
     color = [0, 0, 0, 0]
 
-    segmentIdNum = int(segmentId)
-    slicer.util.getNode('GenericAnatomyColors').GetColor(segmentIdNum, color)
+    segmentNameNum = int(segmentName)
+    slicer.util.getNode('GenericAnatomyColors').GetColor(segmentNameNum, color)
     self.singleDisplayedSegmentation.GetDisplayNode().SetColor(color[0:3])
     self.reset3dView()
+
 
   def getLabelRangeInCohort(self):
     return self.labelRangeInCohort
 
-  def getTopologyAndConsistencyString(self, nodeName, inputSegmentId):
-    """
-    Rturn strings with topology type and consistency of a segment.
-    """
-    segmentId = str(inputSegmentId)
+  def getTopologyString(self, nodeName, inputSegmentName):
+    segmentName = str(inputSegmentName)
     topologyString = 'n/a'
+    if nodeName in self.topologyDict and segmentName in self.topologyDict[nodeName]:
+      topologyNum = self.topologyDict[nodeName][segmentName]
+      topologyString = self.TOPOLOGY_TYPES.get(topologyNum, 'n/a')
+    return topologyString
+
+  def getConsistencyString(self, nodeName, inputSegmentName):
+    """
+    Return 'Consistent' or 'Inconsistent' depending if the nodeName and segmentName are in
+    the inconsistentTopologyDict.
+    """
+    segmentName = str(inputSegmentName)
     consistentTopologyString = 'Consistent'
 
-    if nodeName in self.topologyDict and segmentId in self.topologyDict[nodeName]:
-      topologyNum = self.topologyDict[nodeName][segmentId]
-      topologyString = self.TOPOLOGY_TYPES.get(topologyNum, 'n/a')
-
     if nodeName in self.inconsistentTopologyDict:
-      if segmentId in self.inconsistentTopologyDict[nodeName]:
+      if segmentName in self.inconsistentTopologyDict[nodeName]:
         consistentTopologyString = 'Inconsistent'
 
-    return topologyString, consistentTopologyString
+    return consistentTopologyString
+
+  def getTopologyAndConsistencyString(self, nodeName, inputSegmentName):
+    """
+    Return strings with topology type and consistency of a segment.
+    """
+    return self.getTopologyString(nodeName, inputSegmentName), self.getConsistencyString(nodeName, inputSegmentName)
 
 #
 # DataImporterWidget
@@ -407,6 +521,13 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
   https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py
   """
 
+  def resetGlobalVariables(self):
+    self.logic.cleanup()
+    self.logic = DataImporterLogic()
+    self.directoryPath = ''
+    self.filteredFilePathsList = list()
+    self.currentSubjectNameShowingInSegmentTable = ''
+
   def setup(self):
     ScriptedLoadableModuleWidget.setup(self)
 
@@ -416,6 +537,9 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.logic = DataImporterLogic()
     self.directoryPath = ''
     self.filteredFilePathsList = list()
+    # Store the name to avoid re-drawing the table
+    self.currentSubjectNameShowingInSegmentTable = ''
+    self.tableWidgetItemDefaultFlags = qt.Qt.NoItemFlags | qt.Qt.ItemIsSelectable | qt.Qt.ItemIsEnabled
 
     #
     #  Interface
@@ -433,25 +557,24 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.layout.addWidget(widget)
 
     self.InputFolderNameLineEdit = self.getWidget('InputFolderNameLineEdit')
-    self.DirectoryButton = self.getWidget('DirectoryButton')
-    self.DirectoryButton.connect('directoryChanged(QString)', self.onDirectoryChanged)
+    self.FolderDirectoryButton = self.getWidget('FolderDirectoryButton')
+    self.FolderDirectoryButton.connect('directoryChanged(QString)', self.onDirectoryChanged)
+
+    self.InputCSVFileNameLineEdit = self.getWidget('InputCSVFileNameLineEdit')
+    self.CSVBrowseFilePushButton = self.getWidget('CSVBrowseFilePushButton')
+    self.CSVBrowseFilePushButton.setIcon(qt.QApplication.style().standardIcon(qt.QStyle.SP_DirIcon))
+    self.CSVBrowseFilePushButton.connect('clicked(bool)', self.onClickCSVBrowseFilePushButton)
 
     self.ImportButton = self.getWidget('ImportButton')
     self.ImportButton.connect('clicked(bool)', self.onClickImportButton)
     self.DataInputTypeGroupBox = self.getWidget('DataInputTypeGroupBox')
     self.SubjectsTableWidget = self.getWidget('SubjectsTableWidget')
-    self.SubjectsTableWidget.horizontalHeader().setSectionResizeMode(qt.QHeaderView.Stretch)
-    self.StructuresSliderWidget = self.getWidget('StructuresSliderWidget')
-    self.CurrentStructureTopologyLineEdit = self.getWidget('CurrentStructureTopologyLineEdit')
-    self.CohortTopologyLineEdit = self.getWidget('CohortTopologyLineEdit')
+    self.SegmentsTableWidget = self.getWidget('SegmentsTableWidget')
     self.SaveCleanDataCheckBox = self.getWidget('checkBoxSaveCleanData')
     self.SaveCleanDataCheckBox.setChecked(True)
     self.SaveCleanDataCheckBox.connect('toggled(bool)', self.onSaveCleanDataCheckBoxToggled)
 
-    self.SubjectsTableWidget.connect('cellClicked(int, int)', self.onSubjectTableWidgetClicked)
-    self.StructuresSliderWidget.connect('valueChanged(double)', self.onStructuresSliderWidgetChanged)
-    self.StructuresSliderWidget.minimum = 0
-    self.StructuresSliderWidget.maximum = 0
+    self.SubjectsTableWidget.connect('cellClicked(int, int)', self.onSubjectsTableWidgetClicked)
 
     # Initialize the beginning input type.
     self.onSaveCleanDataCheckBoxToggled()
@@ -459,11 +582,11 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
   #
   # Reset all the data for data import
   #
-  # def cleanup(self):
-  #   logging.debug('Deleting nodes')
-  #   if self.SubjectsTableWidget is not None:
-  #     self.SubjectsTableWidget.setRowCount(0)
-  #   self.logic.cleanup()
+  def cleanup(self):
+    logging.debug('Cleaning up widget')
+    self.resetSubjectsTable()
+    self.resetSegmentsTable()
+    self.resetGlobalVariables()
 
   #
   # Functions to recover the widget in the .ui file
@@ -481,44 +604,188 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
           return resulting_widget
     return None
 
-  #
-  # Routine to import the segmentation files given file names
-  # This right now only handles the csv mode.
-  # TODO: should also handle cases when surface files are given
-  #
-  def importFiles(self, filePaths):
-
-    numCases = 0
-    self.SubjectsTableWidget.setColumnCount(1)
-    self.SubjectsTableWidget.setHorizontalHeaderLabels(['Subject name'])
+  def initSubjectsTable(self):
+    """
+    Set options and headers of SubjectsTable.
+    Does not require any other data structure populated.
+    """
+    ##### Subjects Table
+    nameColumn = 0
+    consistencyColumn = 1
+    nameColumnLabel = 'Subject name'
+    consistencyColumnLabel = 'Consistency'
+    self.SubjectsTableWidget.setColumnCount(2)
+    self.SubjectsTableWidget.setHorizontalHeaderLabels([
+      nameColumnLabel,
+      consistencyColumnLabel
+    ])
+    self.SubjectsTableWidget.horizontalHeader().setSectionResizeMode(qt.QHeaderView.Stretch)
+    # Keep the column fixed
+    # self.SubjectsTableWidget.horizontalHeader().setSectionResizeMode(consistencyColumn, qt.QHeaderView.Fixed)
+    # self.SubjectsTableWidget.horizontalHeader().resizeSection(consistencyColumn, 50);
     self.SubjectsTableWidget.verticalHeader().setVisible(False)
     self.SubjectsTableWidget.setSelectionBehavior(qt.QAbstractItemView.SelectRows)
-    self.SubjectsTableWidget.setSelectionMode(qt.QAbstractItemView.SingleSelection)
+    # self.SubjectsTableWidget.setSelectionMode(qt.QAbstractItemView.SingleSelection)
 
-    if self.logic.importFiles(filePaths):
-      for path in filePaths:
-        # load each file
-        pathPair = os.path.split(path)
-        fileName = pathPair[1]
+  def initSegmentsTable(self):
+    """
+    Set options and headers of SegmentsTable.
+    Does not require any other data structure populated.
+    """
+    segmentNameColumn = 0
+    topologyCurrentColumn = 1
+    topologyExpectedColumn = 2
+    segmentNameColumnLabel = 'SegmentID'
+    topologyCurrentColumnLabel = 'Current Segment Topology'
+    topologyExpectedColumnLabel = 'Expected Cohort Topology'
+    self.SegmentsTableWidget.setColumnCount(3)
+    self.SegmentsTableWidget.setHorizontalHeaderLabels([
+      segmentNameColumnLabel,
+      topologyCurrentColumnLabel,
+      topologyExpectedColumnLabel
+    ])
+    self.SegmentsTableWidget.horizontalHeader().setSectionResizeMode(qt.QHeaderView.Stretch)
+    # self.SegmentsTableWidget.horizontalHeader().setSectionResizeMode(viewColumn, qt.QHeaderView.Fixed)
+    # self.SegmentsTableWidget.horizontalHeader().resizeSection(viewColumn, 35); # Keep the view column fixed
+    self.SegmentsTableWidget.verticalHeader().setVisible(False)
+    self.SegmentsTableWidget.setSelectionBehavior(qt.QAbstractItemView.SelectRows)
+    # self.SegmentsTableWidget.setSelectionMode(qt.QAbstractItemView.SingleSelection)
 
-        # extract just the filename, and populate the tablewidget
-        rowPosition = self.SubjectsTableWidget.rowCount
-        self.SubjectsTableWidget.insertRow(rowPosition)
-        self.SubjectsTableWidget.setItem(rowPosition, 0, qt.QTableWidgetItem(fileName))
-        numCases = numCases + 1
-      self.SubjectsTableWidget.setCurrentCell(0, 0)
-    else:
+  def resetSubjectsTable(self):
+    if self.SubjectsTableWidget is not None:
+      self.SubjectsTableWidget.setRowCount(0)
+
+  def resetSegmentsTable(self):
+    if self.SegmentsTableWidget is not None:
+      self.SegmentsTableWidget.setRowCount(0)
+
+  def populateSubjectsTable(self):
+    """
+    PRE: Requires self.logic.topologyDict, and self.logic.inconsistentTopologyDict populated.
+    POST: Populate SubjectTable with the names of the files
+    """
+    if not self.logic.topologyDict:
+      logging.error("Trying to populateSubjectsTable with non existant topologyDict.")
       return
 
-    labelRangeInCohort = self.logic.getLabelRangeInCohort()
-    self.StructuresSliderWidget.minimum = int(labelRangeInCohort[0])
-    self.StructuresSliderWidget.maximum = int(labelRangeInCohort[1])
-    self.StructuresSliderWidget.setValue(0)
+    # Required to safely populate table when sorting is enabled, restored later.
+    self.SubjectsTableWidget.setSortingEnabled(False)
+
+    nameColumn = 0
+    consistencyColumn = 1
+    # XXX: Let the user choose what is the expected topology?
+    inconsistenciesExist, inconsistentDict = self.logic.checkTopologyConsistency(self.logic.topologyDict)
+    print inconsistenciesExist, inconsistentDict
+    for name in self.logic.topologyDict:
+      # Populate subject names
+      rowPosition = self.SubjectsTableWidget.rowCount
+      self.SubjectsTableWidget.insertRow(rowPosition)
+      nameItem = qt.QTableWidgetItem(name)
+      nameItem.setFlags(self.tableWidgetItemDefaultFlags)
+      self.SubjectsTableWidget.setItem(rowPosition, nameColumn, nameItem)
+
+      # Populate consistency row
+      consistency = 'Consistent'
+      countInconsistencies = 0
+      if name in inconsistentDict:
+        countInconsistencies = len(inconsistentDict[name])
+      if countInconsistencies > 0:
+        consistency = '# Inconsistencies: ' + str(countInconsistencies)
+      consistencyItem = qt.QTableWidgetItem(consistency)
+      consistencyItem.setFlags(self.tableWidgetItemDefaultFlags)
+      self.SubjectsTableWidget.setItem(rowPosition, consistencyColumn, consistencyItem)
+      if countInconsistencies > 0:
+        consistencyItem.setBackground(qt.QBrush(qt.QColor(255, 204, 203))) # light red
+
+    # Restore sorting
+    self.SubjectsTableWidget.setSortingEnabled(True)
+
+  def populateSegmentsTable(self, nameKey):
+    """
+    Given the name acting as first key for self.logic.topologyDict,
+    populates the segment table for the subject with such a name.
+    PRE: topologyDict has to have a key equal to input nameKey
+    POST: Populates SegmentsTable for given name.
+    """
+    if not self.logic.topologyDict:
+      logging.error("Trying to populateSegmentsTable with non existant topologyDict.")
+      return
+    if not nameKey in self.logic.topologyDict:
+      logging.error("Input nameKey: {} does not exist in topologyDict.".format(nameKey))
+      return
+    if nameKey == self.currentSubjectNameShowingInSegmentTable:
+      return
+    # Required to safely populate table when sorting is enabled, restored later.
+    self.SegmentsTableWidget.setSortingEnabled(False)
+
+    segmentNameColumn = 0
+    topologyCurrentColumn = 1
+    topologyExpectedColumn = 2
+    # cohortConsistencyColumn = 2
+    for segmentName in self.logic.topologyDict[nameKey]:
+      # Populate segmentName row
+      rowPosition = self.SegmentsTableWidget.rowCount
+      self.SegmentsTableWidget.insertRow(rowPosition)
+      segmentNameItem = qt.QTableWidgetItem(segmentName)
+      segmentNameItem.setFlags(self.tableWidgetItemDefaultFlags)
+      self.SegmentsTableWidget.setItem(rowPosition, segmentNameColumn, segmentNameItem )
+
+      # Get topology and consistency of segment
+      topologyCurrent, consistency = self.logic.getTopologyAndConsistencyString(nameKey, segmentName)
+      # Populate topology row
+      topologyCurrentItem = qt.QTableWidgetItem(topologyCurrent)
+      topologyCurrentItem.setFlags(self.tableWidgetItemDefaultFlags)
+      self.SegmentsTableWidget.setItem(rowPosition, topologyCurrentColumn, topologyCurrentItem)
+      if consistency == 'Inconsistent':
+        topologyCurrentItem.setBackground(qt.QBrush(qt.QColor(255, 204, 203))) # light red
+
+      topologyExpected = self.logic.expectedTopologiesBySegment[segmentName]
+      comboBox = self._createTopologyTypesComboBox()
+      comboBox.setCurrentIndex(self.logic.topologyTypeToIndex[topologyExpected])
+      # XXX
+      # XXX connect currentIndexChanged combo box to modify self.logic.expectedTopologies, and then re-populateSubjectTable
+      # XXX
+      self.SegmentsTableWidget.setCellWidget(rowPosition, topologyExpectedColumn, comboBox)
+
+    # Restore sorting
+    self.SegmentsTableWidget.setSortingEnabled(True)
+    # Order by id name
+    # self.SegmentsTableWidget.sortItems(segmentNameColumn)
+    # Store the name to avoid re-drawing in future calls
+    self.currentSubjectNameShowingInSegmentTable = nameKey
+
+  def _createTopologyTypesComboBox(self):
+    """
+    Return ComboBox with values from enum TOPOLOGY_TYPES
+    """
+    comboBox = qt.QComboBox()
+    for string_value in self.logic.TOPOLOGY_TYPES.values():
+      comboBox.addItem(string_value)
+
+    return comboBox
+
+  def importFiles(self, filePaths):
+    """
+    Use logic.importFiles, populateTopologyDict and populate tables.
+    """
+
+    if not self.logic.importFiles(filePaths):
+      logging.warning("logic.importFiles issues, see raised errors.")
+      return
 
     # Populate the topology table
     self.logic.populateTopologyDictionary()
+    self.logic.populateInconsistentTopologyDict()
 
-    self.onSubjectTableWidgetClicked(0, 0)
+    ######### Init Tables ##########
+    self.initSubjectsTable()
+    self.initSegmentsTable()
+
+    ######### Populate Tables ##########
+    self.populateSubjectsTable()
+
+    self.SubjectsTableWidget.setCurrentCell(0, 0)
+    self.onSubjectsTableWidgetClicked(0, 0)
 
   '''
   GUI Callback functions
@@ -529,31 +796,30 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
 
   def onClickImportButton(self):
     if not self.filteredFilePathsList:
-      logging.warning('List of files is empty, choose a folder to import first.')
+      logging.warning('List of files is empty, choose a folder or a csv file to import first.')
       return
 
     self.importFiles(self.filteredFilePathsList)
 
-    # filenames = []
-    # self.cleanup()
-    # if self.importFromCSV:
-    #   with open(self.csvFileName, 'r') as csvfile:
-    #     reader = csv.reader(csvfile)
-    #     # ignore the header
-    #     next(reader, None)
-    #     # assuming that each row is just a file path.
-    #     for row in reader:
-    #       if len(row) > 0:
-    #         filenames.append(row[0])
-    #     # Import all files
-    #     self.importFiles(filenames)
+  def filterFilePaths(self, filePathsList):
+    """
+    Return filtered filePaths of files that are readable by this module.
+    """
+    filteredFilePathsList = list()
+    for filePath in filePathsList:
+      fileType = slicer.app.ioManager().fileType(filePath)
+      if fileType == 'VolumeFile' or fileType == 'SegmentationFile' or fileType == 'ModelFile':
+        filteredFilePathsList.append(filePath)
+      # else:
+      #   logging.debug("File: {} with fileType {} is not readable by this module.".format(filePath, fileType))
 
-        # Depending on the mode fill the structures table.
-        # TODO: add directory parsing based on mode
-    # else:
-    #   logging.error("Importing from directory is not yet supported")
+    return filteredFilePathsList
 
-  # def onClickDirectoryButton(self):
+  def onClickCSVBrowseFilePushButton(self):
+    csvFileName = qt.QFileDialog.getOpenFileName(self.widget, "Open CSV File", ".", "CSV Files (*.csv)")
+    self.InputCSVFileNameLineEdit.text = csvFileName
+    filePathsList = self.logic.filePathsFromCSVFile(csvFileName)
+    self.filteredFilePathsList = self.filterFilePaths(filePathsList)
 
   def onDirectoryChanged(self, directoryPath):
     """
@@ -561,7 +827,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     containing a list of files contained in the directoryPath
     that can be used in this module.
     """
-    logging.info("onDirectoryChanged: {}".format(directoryPath))
+    logging.debug("onDirectoryChanged: {}".format(directoryPath))
     # Create a list of files from the directory
     directory = qt.QDir(directoryPath)
     if not directory.exists():
@@ -577,39 +843,37 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     for name in fileNameList:
       filePathsList.append(os.path.join(directoryPath, name))
 
-    filteredFilePathsList = list()
-    for filePath in filePathsList:
-      fileType = slicer.app.ioManager().fileType(filePath)
-      if fileType == 'VolumeFile' or fileType == 'SegmentationFile' or fileType == 'ModelFile':
-        filteredFilePathsList.append(filePath)
-
-    self.filteredFilePathsList = filteredFilePathsList
-
-    # logging.debug(filteredFilePathsList)
-    # self.logic.importFiles(filteredFilePathsList)
-
-    # self.folderName = self.DirectoryButton.getOpenFileName(self.widget, "Select a directory", ".")
-    # self.CSVFileNameLineEdit.text = self.csvFileName
-    # self.csvFileName = qt.QFileDialog.getOpenFileName(self.widget, "Open CSV File", ".", "CSV Files (*.csv)")
-    # self.CSVFileNameLineEdit.text = self.csvFileName
-    # self.importFromCSV = True
+    self.filteredFilePathsList = self.filterFilePaths(filePathsList)
 
   def onInputType_chosen(self, b):
     inputTypeText = b.text
     if b.isChecked():
       self.inputType = inputTypeText
 
-  def onSubjectTableWidgetClicked(self, row, column):
-    nodeName = self.SubjectsTableWidget.item(row, column).text()
-    segmentId = str(int(self.StructuresSliderWidget.value))
-    self.logic.displaySegment(nodeName, segmentId)
-    self.updateTopologyDisplay(nodeName, segmentId)
+  def onSubjectsTableWidgetClicked(self, row, column):
+    """
+    On click in Subject table populates segment table.
+    """
+    if self.SubjectsTableWidget.rowCount == 0:
+      return
 
-  def onStructuresSliderWidgetChanged(self, value):
-    nodeName = self.SubjectsTableWidget.currentItem().text()
-    segmentId = str(int(value))
-    self.logic.displaySegment(nodeName, segmentId)
-    self.updateTopologyDisplay(nodeName, segmentId)
+    nameColumn = 0
+    nodeName = self.SubjectsTableWidget.item(row, nameColumn).text()
+    self.resetSegmentsTable()
+    self.populateSegmentsTable(nodeName)
+    # segmentName = str(int(self.SegmentsSliderWidget.value))
+    # self.logic.displaySegment(nodeName, segmentName)
+    # self.updateTopologyDisplay(nodeName, segmentName)
+
+  def onSegmentsTableWidgetClicked(self, row, column):
+    # TODO
+    pass
+
+  # def onSegmentsSliderWidgetChanged(self, value):
+  #   nodeName = self.SubjectsTableWidget.currentItem().text()
+  #   segmentName = str(int(value))
+  #   self.logic.displaySegment(nodeName, segmentName)
+  #   self.updateTopologyDisplay(nodeName, segmentName)
 
   def onSaveCleanDataCheckBoxToggled(self):
     self.logic.setSaveCleanData(self.SaveCleanDataCheckBox.isChecked())
@@ -618,9 +882,9 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
   Supplemental functions to update the visualizations
   '''
 
-  def updateTopologyDisplay(self, nodeName, segmentId):
-    topologyString, consistentTopologyString = self.logic.getTopologyAndConsistencyString(nodeName, segmentId)
-    self.CurrentStructureTopologyLineEdit.setText(topologyString)
+  def updateTopologyDisplay(self, nodeName, segmentName):
+    topologyString, consistentTopologyString = self.logic.getTopologyAndConsistencyString(nodeName, segmentName)
+    self.CurrentSegmentTopologyLineEdit.setText(topologyString)
     self.CohortTopologyLineEdit.setText(consistentTopologyString)
 
   def __del__(self):
@@ -691,20 +955,28 @@ class DataImporterTest(ScriptedLoadableModuleTest):
     self.delayDisplay('Starting...')
     self.setUp()
 
-    ##### importLabelMap #####
+    ##### LabelMap #####
     for fileName in self.casesLabelMap:
       self.test_importLabelMapFromFile(fileName)
 
-    ##### importSegmentation #####
+    ##### Segmentation #####
     for fileName in self.casesSegmentation:
       self.test_importSegmentationFromFile(fileName)
 
-    ##### importModel #####
+    ##### Model #####
     for fileName in self.casesModel:
+      print "**************************"
       self.test_importModelFromFile(fileName)
 
-    ##### importFromDirectory #####
+    ##### CSV #####
+    self.test_filenamesFromCSVFile()
+
+    ##### All #####
     self.test_importFiles()
+
+    ##########
+    self.test_populateDictSegmentNamesWithIntegers()
+    self.test_computeMode()
 
     self.delayDisplay('All tests passed!')
 
@@ -729,6 +1001,7 @@ class DataImporterTest(ScriptedLoadableModuleTest):
     self.assertTrue(logic.importLabelMap(filePath))
 
     logic.populateTopologyDictionary()
+    logic.populateInconsistentTopologyDict()
 
     self.printMembers(logic)
 
@@ -749,17 +1022,14 @@ class DataImporterTest(ScriptedLoadableModuleTest):
     self.assertEqual(logic.labelRangeInCohort, (0, 5))
     self.assertNotEqual(logic.topologyDict, dict())
     self.assertNotEqual(logic.polyDataDict, dict())
-    self.assertNotEqual(logic.inconsistentTopologyDict, dict())
 
-    segmentId = "1" # Disk
-    topologyString, consistentTopologyString = logic.getTopologyAndConsistencyString(fileName, segmentId)
+    segmentName = "1" # Disk
+    topologyString = logic.getTopologyString(fileName, segmentName)
     self.assertEqual(topologyString, logic.TOPOLOGY_TYPES[0])
-    self.assertEqual(consistentTopologyString, 'Inconsistent')
 
-    segmentId = "2" # Sphere
-    topologyString, consistentTopologyString = logic.getTopologyAndConsistencyString(fileName, segmentId)
+    segmentName = "2" # Sphere
+    topologyString = logic.getTopologyString(fileName, segmentName)
     self.assertEqual(topologyString, logic.TOPOLOGY_TYPES[2])
-    self.assertEqual(consistentTopologyString, 'Consistent')
 
     logging.info('-- case01 passed! --')
 
@@ -771,13 +1041,10 @@ class DataImporterTest(ScriptedLoadableModuleTest):
     self.assertEqual(logic.labelRangeInCohort, (0, 5))
     self.assertNotEqual(logic.topologyDict, dict())
     self.assertNotEqual(logic.polyDataDict, dict())
-    # All consistent
-    self.assertEqual(logic.inconsistentTopologyDict, dict())
 
-    segmentId = "2" # Sphere
-    topologyString, consistentTopologyString = logic.getTopologyAndConsistencyString(fileName, segmentId)
+    segmentName = "2" # Sphere
+    topologyString = logic.getTopologyString(fileName, segmentName)
     self.assertEqual(topologyString, logic.TOPOLOGY_TYPES[2])
-    self.assertEqual(consistentTopologyString, 'Consistent')
 
     logging.info('-- case02 passed! --')
 
@@ -793,6 +1060,8 @@ class DataImporterTest(ScriptedLoadableModuleTest):
     self.assertTrue(logic.importSegmentation(filePath))
 
     logic.populateTopologyDictionary()
+    logic.populateInconsistentTopologyDict()
+
 
     self.printMembers(logic)
 
@@ -809,6 +1078,8 @@ class DataImporterTest(ScriptedLoadableModuleTest):
     logic = DataImporterLogic()
     self.assertTrue(logic.importModel(filePath))
     logic.populateTopologyDictionary()
+    logic.populateInconsistentTopologyDict()
+
     self.printMembers(logic)
 
     self.assertNotEqual(logic.modelDict, dict())
@@ -817,8 +1088,8 @@ class DataImporterTest(ScriptedLoadableModuleTest):
     self.assertNotEqual(logic.polyDataDict, dict())
     # All consistent
     self.assertEqual(logic.inconsistentTopologyDict, dict())
-    segmentId = "sample_model" # Sphere
-    topologyString, consistentTopologyString = logic.getTopologyAndConsistencyString(fileName, segmentId)
+    segmentName = "sample_model" # Sphere
+    topologyString, consistentTopologyString = logic.getTopologyAndConsistencyString(fileName, segmentName)
     self.assertEqual(topologyString, logic.TOPOLOGY_TYPES[2])
     self.assertEqual(consistentTopologyString, 'Consistent')
 
@@ -846,7 +1117,7 @@ class DataImporterTest(ScriptedLoadableModuleTest):
     filePaths = [os.path.join(self.testDir, 'not_existing_for_sure.nrrd'), ]
     self.assertRaises(TypeError, logic.importFiles, filePaths)
 
-    # Try to file with different label cohort
+    # Try file with different label cohort
     numberOfKeys = len(logic.topologyDict.keys())
     numberOfModels = len(logic.modelDict.keys())
     filePaths = [os.path.join(self.testDir, self.casesModel[0]), ]
@@ -856,4 +1127,50 @@ class DataImporterTest(ScriptedLoadableModuleTest):
     self.assertEqual(numberOfModels, len(logic.modelDict.keys()))
 
     logging.info('-- test_importFiles passed! --')
+
+  def test_populateDictSegmentNamesWithIntegers(self):
+    logging.info('-- Starting test_populateDictSegmentNamesWithIntegers --')
+    filePath = os.path.join(self.testDir, self.casesModel[0])
+    logic = DataImporterLogic()
+    logic.importFiles([filePath])
+    logic.populateTopologyDictionary()
+    logic.populateInconsistentTopologyDict()
+    logic.populateDictSegmentNamesWithIntegers()
+    self.assertEqual(len(logic.dictSegmentNamesWithIntegers.keys()), 1)
+    for name in logic.topologyDict:
+      for segmentName in logic.topologyDict[name]:
+        self.assertTrue(segmentName in logic.dictSegmentNamesWithIntegers)
+        self.assertEqual(logic.dictSegmentNamesWithIntegers[segmentName], 1)
+
+  def test_computeMode(self):
+    exampleDict = {
+      'name0':
+      {'segmentName0': '0', 'segmentName1': '1'},
+      'name1':
+      {'segmentName0': '1', 'segmentName1': '0'},
+      'name2':
+      {'segmentName0': '1', 'segmentName1': '0'}
+    }
+    logic = DataImporterLogic()
+    mode0 = logic._computeModeOfSegment(exampleDict, 'segmentName0')
+    mode1 = logic._computeModeOfSegment(exampleDict, 'segmentName1')
+    self.assertEqual(mode0, str(1))
+    self.assertEqual(mode1, str(0))
+    mode_none = logic._computeModeOfSegment(exampleDict, 'non_existing')
+    self.assertEqual(mode_none, None)
+
+  def test_filenamesFromCSVFile(self):
+    # Create the file:
+    csvFilePath = ''
+    with open(os.path.join(self.testDir, 'filePaths.csv'), 'w') as fileCsv:
+      fileCsv.write(os.path.join(self.testDir, self.casesLabelMap[0]) + '\n')
+      fileCsv.write(os.path.join(self.testDir, self.casesLabelMap[1]))
+      csvFilePath = fileCsv.name
+    logging.info("csvFilePath: {}".format(csvFilePath))
+    logic = DataImporterLogic()
+    filePaths = logic.filePathsFromCSVFile(csvFilePath)
+    logging.info(filePaths)
+    self.assertTrue(len(filePaths), 2)
+    self.assertTrue(self.casesLabelMap[0] in filePaths[0])
+    self.assertTrue(self.casesLabelMap[1] in filePaths[1])
 
