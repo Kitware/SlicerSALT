@@ -31,6 +31,8 @@ set(${proj}_EXTENSIONS
   ShapeRegressionExtension
   )
 
+set(APPLICATION_NAME "SlicerSALT")
+
 #-----------------------------------------------------------------------------
 # This variable is updated at *CONFIGURE* time in each extension external projects
 # and is expected to contain list of paths of this form:
