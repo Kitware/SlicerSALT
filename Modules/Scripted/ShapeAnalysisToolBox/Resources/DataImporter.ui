@@ -38,7 +38,7 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <property name="tabsClosable">
          <bool>false</bool>
@@ -214,7 +214,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="DisplayOnSelectionCheckBox">
+       <widget class="QCheckBox" name="DisplayOnClickCheckBox">
         <property name="toolTip">
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;lt;html&amp;gt;&amp;lt;head/&amp;gt;&amp;lt;body&amp;gt;&amp;lt;p&amp;gt;Toggle to display the segments when clicking. If off, segments will only be displayed when clicking the display button&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;You can use the key shift for multi-selection.&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;&amp;lt;br/&amp;gt;&amp;lt;/p&amp;gt;&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
