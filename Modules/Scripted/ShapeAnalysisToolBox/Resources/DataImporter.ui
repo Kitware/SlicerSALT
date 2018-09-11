@@ -6,60 +6,23 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>417</width>
+    <width>459</width>
     <height>682</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2">
-   <item row="0" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout_3">
+   <item>
     <widget class="ctkCollapsibleButton" name="DataImportCollapsibleButton">
      <property name="text">
       <string>Import Data Properties</string>
      </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
-      <item>
-       <widget class="QGroupBox" name="DataInputTypeGroupBox">
-        <property name="title">
-         <string>Data input source type</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_3">
-         <item row="0" column="3">
-          <widget class="QRadioButton" name="FreeSurferInputType">
-           <property name="text">
-            <string>FreeSurfer</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QRadioButton" name="FSLInputType">
-           <property name="text">
-            <string>FSL</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QRadioButton" name="AutoSegInputType">
-           <property name="text">
-            <string>Autoseg</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="4">
-          <widget class="QRadioButton" name="GeneralInputType">
-           <property name="text">
-            <string>General VTK</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
       <item>
        <widget class="QTabWidget" name="ImporterTypeTabWidget">
         <property name="sizePolicy">
@@ -75,51 +38,11 @@
          <enum>QTabWidget::Rounded</enum>
         </property>
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <property name="tabsClosable">
          <bool>false</bool>
         </property>
-        <widget class="QWidget" name="CSVImportTab">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <attribute name="title">
-          <string>Import from csv</string>
-         </attribute>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
-            <item>
-             <widget class="QLabel" name="label_2">
-              <property name="text">
-               <string>Input File: </string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLineEdit" name="CSVFileNameLineEdit"/>
-            </item>
-            <item>
-             <widget class="QPushButton" name="CSVFileBrowsePushButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="text">
-               <string>...</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
         <widget class="QWidget" name="DirectoryImportTab">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -132,26 +55,68 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <widget class="ctkDirectoryButton" name="DirectoryButton">
+           <widget class="ctkDirectoryButton" name="FolderDirectoryButton">
             <property name="directory">
              <string>.</string>
             </property>
             <property name="text">
-             <string>Choose Data Directory</string>
+             <string> Choose Data Directory</string>
             </property>
            </widget>
           </item>
           <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
+           <layout class="QHBoxLayout" name="FolderHorizontalLayout">
             <item>
-             <widget class="QLabel" name="label">
+             <widget class="QLabel" name="InputFolderNameLabel">
               <property name="text">
-               <string>File Name: </string>
+               <string>Folder:</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="InputFileNameLineEdit"/>
+             <widget class="QLineEdit" name="InputFolderNameLineEdit">
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="CSVImportTab">
+         <property name="minimumSize">
+          <size>
+           <width>374</width>
+           <height>0</height>
+          </size>
+         </property>
+         <attribute name="title">
+          <string>Import from CSV</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_6">
+          <item>
+           <widget class="QPushButton" name="CSVBrowseFilePushButton">
+            <property name="text">
+             <string>Choose CSV File</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="CSVHorizontalLayout">
+            <item>
+             <widget class="QLabel" name="InputCSVFileNameLabel">
+              <property name="text">
+               <string>CSV FIle:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="InputCSVFileNameLineEdit">
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -182,19 +147,19 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0">
+   <item>
     <widget class="ctkCollapsibleButton" name="SubjectsCollapsibleButton">
      <property name="text">
       <string>Imported Subjects</string>
-     </property>
-     <property name="contentsFrameShape">
-      <enum>QFrame::StyledPanel</enum>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="QTableWidget" name="SubjectsTableWidget">
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="sortingEnabled">
+         <bool>true</bool>
         </property>
         <property name="rowCount">
          <number>0</number>
@@ -210,53 +175,56 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="ctkCollapsibleButton" name="StructuresCollapsibleButton">
+   <item>
+    <widget class="ctkCollapsibleButton" name="SegmentsCollapsibleButton">
      <property name="text">
-      <string>Structures In All Subjects</string>
-     </property>
-     <property name="contentsFrameShape">
-      <enum>QFrame::StyledPanel</enum>
+      <string>Segments in Selected Subject</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
-       <widget class="ctkSliderWidget" name="StructuresSliderWidget">
-        <property name="decimals">
-         <number>0</number>
+       <widget class="QTableWidget" name="SegmentsTableWidget">
+        <property name="sortingEnabled">
+         <bool>true</bool>
         </property>
+        <attribute name="verticalHeaderVisible">
+         <bool>true</bool>
+        </attribute>
        </widget>
       </item>
      </layout>
     </widget>
    </item>
-   <item row="4" column="0">
-    <widget class="ctkCollapsibleButton" name="CohortMetricsCollapsibleButton">
-     <property name="text">
-      <string>Cohort metrics</string>
-     </property>
-     <property name="contentsFrameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_4">
-      <item row="0" column="2">
-       <widget class="QLineEdit" name="CurrentStructureTopologyLineEdit"/>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_3">
+   <item>
+    <widget class="QWidget" name="DisplayButtonsWidget" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QPushButton" name="DisplaySelectedPushButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;lt;html&amp;gt;&amp;lt;head/&amp;gt;&amp;lt;body&amp;gt;&amp;lt;p&amp;gt;Display the selection made on Subjects and Segment tables.&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;You can use the key shift for multi-selection.&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;&amp;lt;br/&amp;gt;&amp;lt;/p&amp;gt;&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
         <property name="text">
-         <string>Current Structure Topology:</string>
+         <string>Display Selected</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_4">
+      <item>
+       <widget class="QCheckBox" name="DisplayOnClickCheckBox">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;lt;html&amp;gt;&amp;lt;head/&amp;gt;&amp;lt;body&amp;gt;&amp;lt;p&amp;gt;Toggle to display the segments when clicking. If off, segments will only be displayed when clicking the display button&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;You can use the key shift for multi-selection.&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;&amp;lt;br/&amp;gt;&amp;lt;/p&amp;gt;&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
         <property name="text">
-         <string>Structure Cohort Topology:</string>
+         <string>Display on click</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLineEdit" name="CohortTopologyLineEdit"/>
       </item>
      </layout>
     </widget>
@@ -280,11 +248,6 @@
    <class>ctkDirectoryButton</class>
    <extends>QWidget</extends>
    <header>ctkDirectoryButton.h</header>
-  </customwidget>
-  <customwidget>
-   <class>ctkSliderWidget</class>
-   <extends>QWidget</extends>
-   <header>ctkSliderWidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
