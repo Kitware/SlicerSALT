@@ -53,8 +53,8 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   set(${proj}_PACKAGE_DIR ${${proj}_DIR}/${proj}-build)
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
-    GIT_REPOSITORY "${EP_GIT_PROTOCOL}://github.com/NIRALUser/SPHARM-PDM.git"
-    GIT_TAG "91c11c62f3658183b2d20d3c57d6506765fbced8" # release branch
+    GIT_REPOSITORY "${EP_GIT_PROTOCOL}://github.com/jcfr/SPHARM-PDM.git"
+    GIT_TAG "408cfeab3798176c362b16107081696ffff9d407" # fix-modernize-simplify-buildsystem-2-lapacke
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${${proj}_DIR}
     INSTALL_COMMAND ${CMAKE_COMMAND} --build ${${proj}_PACKAGE_DIR} --config ${config} --target package
