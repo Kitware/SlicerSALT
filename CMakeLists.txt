@@ -116,17 +116,26 @@ set(Slicer_EXTENSION_SOURCE_DIRS
   ${SlicerSALT_SOURCE_DIR}/Modules/Scripted/ShapeAnalysisToolBox
   )
 
+#-----------------------------------------------------------------------------
 # Add Eigen3 (required by at least SlicerSkeletalRepresentation)
+
+# Eigen3 is not a regular Slicer extension but its sources are added to
+# Slicer in a similar way. This ensures that extension bundled into Slicer
+# and using the target "Eigen3::Eigen" can do so after simply calling
+# "find_package(Eigen3 REQUIRED)".
+
+# we are using a branch meanwhile upstream merge proposed cmake fixes
+
 # Disable testing of Eigen
 if(NOT DEFINED EIGEN_BUILD_TESTING)
   set(EIGEN_BUILD_TESTING OFF)
 endif()
 mark_as_superbuild(EIGEN_BUILD_TESTING)
+
 # Do not add convenience blas/lapack target to avoid conflict with "lapack" project
 set(EIGEN_ADD_BLAS_LAPACK_TARGETS 0)
 mark_as_superbuild(EIGEN_ADD_BLAS_LAPACK_TARGETS)
 
-# XXX: Using branch meanwhile upstream merge proposed cmake fixes
 set(extension_name "Eigen3")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
@@ -138,8 +147,10 @@ FetchContent_Populate(${extension_name}
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
+#-----------------------------------------------------------------------------
 # Add remote extension source directories
 
+#-----------------------------------------------------------------------------
 # MeshToLabelMap
 set(extension_name "MeshToLabelMap")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
@@ -152,6 +163,7 @@ FetchContent_Populate(${extension_name}
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
+#-----------------------------------------------------------------------------
 # Sequences
 set(extension_name "Sequences")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
@@ -164,6 +176,7 @@ FetchContent_Populate(${extension_name}
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
+#-----------------------------------------------------------------------------
 # Srep
 set(extension_name "SlicerSkeletalRepresentation")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/SRep")
@@ -176,6 +189,7 @@ FetchContent_Populate(${extension_name}
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
+#-----------------------------------------------------------------------------
 # GROUPS
 set(extension_name "GROUPS")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
@@ -188,9 +202,11 @@ FetchContent_Populate(${extension_name}
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
+#-----------------------------------------------------------------------------
 # Add Slicer sources
 add_subdirectory(${slicersources_SOURCE_DIR} ${slicersources_BINARY_DIR})
 
+#-----------------------------------------------------------------------------
 # Considering that
 #  (1) extensions like "SPHARM-PDM" have a SuperBuild-like structure,
 #  (2) they can conditionally include external projects like VTK when build as standalone package and
