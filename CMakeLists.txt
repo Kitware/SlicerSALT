@@ -18,8 +18,8 @@ include(FetchContent)
 if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
-    GIT_REPOSITORY https://github.com/Slicer/Slicer
-    GIT_TAG        7b5b6dea38c38155422619ddcab23ac910aa8821 # 2018-09-07
+    GIT_REPOSITORY https://github.com/vicory/Slicer
+    GIT_TAG        837f8ba9219a00bf101d2e26126dd566f58ac7ca # 2018-09-07
     GIT_PROGRESS   1
     )
 else()
@@ -79,6 +79,8 @@ option(Slicer_BUILD_BRAINSTOOLS                 "Build application with BRAINSTo
 option(Slicer_BUILD_DataStore                   "Build application with DataStore module"             OFF)
 option(Slicer_BUILD_CompareVolumes              "Build application with ChangeTrackerPy module"       OFF)
 option(Slicer_BUILD_LandmarkRegistration        "Build application with LandmarkRegistration module"  OFF)
+
+set(Slicer_ADDITIONAL_DEPENDENCIES python-scipy python-pandas python-statsmodels)
 
 # Enable Slicer built-in modules
 set(Slicer_CLIMODULES_ENABLED
@@ -201,6 +203,7 @@ FetchContent_Populate(${extension_name}
   QUIET
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+list(APPEND EXTERNAL_PROJECT_ADDITIONAL_DIRS ${${extension_name}_SOURCE_DIR}/SuperBuild)
 
 #-----------------------------------------------------------------------------
 # Add Slicer sources
