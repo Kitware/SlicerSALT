@@ -12,19 +12,19 @@ class Home:
         parent.title = "Home"
         parent.categories = ["Shape Analysis Toolbox"]
         parent.dependencies = []
-        parent.contributors = ["Hina Shah (Kitware Inc), Laura Pascal (Kitware Inc), Beatriz Paniagua (Kitware Inc), ."]
+        parent.contributors = ["Kitware, Inc., The University of North Carolina at Chapel Hill, and NYU Tandon School of Engineering"]
         parent.helpText = """<center>
         <br>
         <b>Welcome to SlicerSALT!</b><br>
         <br>
-        Visit <a href="https://bpaniagua.github.io/slicersalt.github.io/">slicersalt.github.io</a> for more information about SlicerSALT.<br>
+        Visit <a href="https://salt.slicer.org">salt.slicer.org</a> for more information about SlicerSALT.<br>
         <br>
-        Documentation and tutorials can be found at: <a href="https://bpaniagua.github.io/slicersalt.github.io/docs/">slicersalt.github.io/docs</a><br>
+        Documentation and tutorials can be found at: <a href="https://salt.slicer.org/docs/">salt.slicer.org/docs/</a><br>
         </center>
         """
         parent.acknowledgementText = """
         <center> <br>SlicerSALT is an open source software package for doing shape analysis of image segmentations using different methods. <br>
-        <br> Ongoing development, maintenance, distribution, and training is managed by UNC Chapel Hill, M.D. Cancer Center at The University of Texas, NYU Tandon School of Engineering and Kitware Inc.<br>
+        <br> Ongoing development, maintenance, distribution, and training is managed by UNC Chapel Hill, NYU Tandon School of Engineering and Kitware Inc.<br>
         <br> The project is funded by NIH grant: NIBIB R01EB021391 (Paniagua B). <br>
         <br> SlicerSALT is supported by NIH and the Slicer Community. <br>
         </center>
