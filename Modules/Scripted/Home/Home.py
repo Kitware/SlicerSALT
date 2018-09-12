@@ -12,19 +12,19 @@ class Home:
         parent.title = "Home"
         parent.categories = ["Shape Analysis Toolbox"]
         parent.dependencies = []
-        parent.contributors = ["Hina Shah (Kitware Inc), Laura Pascal (Kitware Inc), Beatriz Paniagua (Kitware Inc), ."]
+        parent.contributors = ["Kitware, Inc., The University of North Carolina at Chapel Hill, and NYU Tandon School of Engineering"]
         parent.helpText = """<center>
         <br>
         <b>Welcome to SlicerSALT!</b><br>
         <br>
-        Visit <a href="https://bpaniagua.github.io/slicersalt.github.io/">slicersalt.github.io</a> for more information about SlicerSALT.<br>
+        Visit <a href="https://salt.slicer.org">salt.slicer.org</a> for more information about SlicerSALT.<br>
         <br>
-        Documentation and tutorials can be found at: <a href="https://bpaniagua.github.io/slicersalt.github.io/docs/">slicersalt.github.io/docs</a><br>
+        Documentation and tutorials can be found at: <a href="https://salt.slicer.org/docs/">salt.slicer.org/docs/</a><br>
         </center>
         """
         parent.acknowledgementText = """
         <center> <br>SlicerSALT is an open source software package for doing shape analysis of image segmentations using different methods. <br>
-        <br> Ongoing development, maintenance, distribution, and training is managed by UNC Chapel Hill, M.D. Cancer Center at The University of Texas, NYU Tandon School of Engineering and Kitware Inc.<br>
+        <br> Ongoing development, maintenance, distribution, and training is managed by UNC Chapel Hill, NYU Tandon School of Engineering and Kitware Inc.<br>
         <br> The project is funded by NIH grant: NIBIB R01EB021391 (Paniagua B). <br>
         <br> SlicerSALT is supported by NIH and the Slicer Community. <br>
         </center>
@@ -64,11 +64,11 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
 &nbsp; 1. Use the <a href="#"><b>Data importer</b></a> module to load your segmentations from FreeSurf, FSL, Autoseg, or a bunch of vtp's<br><br>
 &nbsp; 2. Use <a href="#"><b>Shape Population Viewer</b></a> to do a quality check on the imported data<br><br>
 &nbsp; 3. Use <a href="#"><b>SPHARM Shape Analysis Module</b></a> to do spherical harmonics based analysis<br><br>
-&nbsp; 4. Use <a href="#"><b>Shape Regressions</b></a> module to do regression based analysis.<br><br>
-&nbsp; 5. Use the <a href="#"><b>Study-specific Shape Analysis</b></a> module.<br><br>
-&nbsp; 6. Use the <a href="#"><b>Shape Statistics</b></a> module.<br><br>
-&nbsp; 7. Use the <a href="#"><b>S-Rep Shape Analysis</b></a> module to do shape analysis via skeletal representations.<br><br>
-&nbsp; 8. Use the <a href="#"><b>Save Results</b></a> module to generate a NIRFAST-compatible mesh from the segmented tissue (label maps)<br><br>
+&nbsp; 4. Use the <a href="#"><b>Study-specific Shape Analysis</b></a> module.<br><br>
+&nbsp; 5. Use the <a href="#"><b>S-Rep Shape Analysis</b></a> module to do shape analysis via skeletal representations.<br><br>
+&nbsp; 6. Use the <a href="#"><b>Shape Evaluator</b></a> module to compute a mean shape and see how the population varies.<br><br>
+&nbsp; 7. Use <a href="#"><b>Shape Regressions</b></a> module to do regression based analysis.<br><br>
+&nbsp; 8. Use the <a href="#"><b>Shape Statistics</b></a> module.<br><br>
 """
 
         # TEXTEDIT
@@ -85,19 +85,19 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
     def slot(self):
         pos = self.HomeTextSection.textCursor().position()
 
-        if pos >= 264 and pos <= 270 :
+        if pos >= 181 and pos <= 194 :
             slicer.util.selectModule(slicer.moduleNames.DataImporter)
-        elif pos >= 317 and pos <= 334 :
-            slicer.util.selectModule(slicer.moduleNames.VolumeRendering)
-        elif pos >= 384 and pos <= 389 :
-            slicer.util.selectModule(slicer.moduleNames.CropVolume)
-        elif pos >= 499 and pos <= 533 :
-            slicer.util.selectModule(slicer.moduleNames.SegmentEditor)
-        elif pos >= 662 and pos <= 676 :
-            slicer.util.selectModule(slicer.moduleNames.Segmentations)
-        elif pos >= 748 and pos <= 756 :
-            slicer.util.selectModule(slicer.moduleNames.Markups)
-        elif pos >= 825 and pos <= 837 :
-            slicer.util.selectModule(slicer.moduleNames.Image2Mesh)
-	elif pos >= 1081 and pos <= 1107 :
-             slicer.util.selectModule(slicer.moduleNames.Mesh2Image)
+        elif pos >= 288 and pos <= 311 :
+            slicer.util.selectModule(slicer.moduleNames.ShapePopulationViewer)
+        elif pos >= 365 and pos <= 393 :
+            slicer.util.selectModule(slicer.moduleNames.ShapeAnalysisModule)
+        elif pos >= 449 and pos <= 478 :
+            slicer.util.selectModule(slicer.moduleNames.GroupWiseRegistrationModule)
+        elif pos >= 501 and pos <= 522 :
+            slicer.util.selectModule(slicer.moduleNames.SkeletalRepresentationVisualizer)
+        elif pos >= 594 and pos <= 610 :
+            slicer.util.selectModule(slicer.moduleNames.Home) #SVA
+        elif pos >= 686 and pos <= 703 :
+            slicer.util.selectModule(slicer.moduleNames.RegressionComputation)
+        elif pos >= 758 and pos <= 774 :
+             slicer.util.selectModule(slicer.moduleNames.Home) #MFSDA
