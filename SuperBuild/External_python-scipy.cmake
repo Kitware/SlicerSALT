@@ -28,18 +28,21 @@ if(NOT Slicer_USE_SYSTEM_SciPy)
   ExternalProject_Write_SetBuildEnv_Commands(${_env_script})
   ExternalProject_Write_SetPythonSetupEnv_Commands(${_env_script} APPEND)
   if(WIN32)
+    # flang
+    set(Fortran_COMPILER_ID "Flang")
+    find_package(Fortran REQUIRED)
+
+    get_filename_component(flang_bin_path ${Fortran_Flang_EXECUTABLE} DIRECTORY)
+
     file(APPEND ${_env_script}
 "#------------------------------------------------------------------------------
 # Added by '${CMAKE_CURRENT_LIST_FILE}'
 
-set(ENV{CONDA_INSTALL_LOCN} \"C:/Miniconda3/envs/flang-env\")
-set(ENV{FLANG_BIN_PATH} \"C:/Miniconda3/envs/flang-env/Library/bin\")
-set(ENV{FLANG_LIB_PATH} \"C:/Miniconda3/envs/flang-env/Library/lib\")
-set(ENV{LIB} \"\$ENV{LIB};\$ENV{FLANG_LIB_PATH}\")
-set(ENV{PATH} \"\$ENV{PATH};\$ENV{FLANG_BIN_PATH}\")
-set(ENV{CC} \"C:/Miniconda3/envs/flang-env/Library/bin/clang-cl.exe\")
-set(ENV{CXX} \"C:/Miniconda3/envs/flang-env/Library/bin/clang-cl.exe\")
-set(ENV{FC} \"C:/Miniconda3/envs/flang-env/Library/bin/flang.exe\")
+set(ENV{LIB} \"\$ENV{LIB};${Fortran_Flang_IMPLICIT_LINK_DIRECTORIES}\")
+set(ENV{PATH} \"${flang_bin_path}\")
+set(ENV{CC} \"${Fortran_Flang_CLANG_CL_EXECUTABLE}\")
+set(ENV{CXX} \"${Fortran_Flang_CLANG_CL_EXECUTABLE}\")
+set(ENV{FC} \"${Fortran_Flang_EXECUTABLE}\")
 
 set(ENV{BLAS} \"${LAPACK_DIR}/lib/blas.lib\")
 set(ENV{LAPACK} \"${LAPACK_DIR}/lib/lapack.lib\")
