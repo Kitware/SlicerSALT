@@ -11,20 +11,22 @@ endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-project(SlicerSALT)
-
 # Slicer sources
 include(FetchContent)
 if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
-    GIT_REPOSITORY https://github.com/Slicer/Slicer
-    GIT_TAG        7b5b6dea38c38155422619ddcab23ac910aa8821 # 2018-09-07
+    GIT_REPOSITORY https://github.com/jcfr/Slicer
+    GIT_TAG        0998e29128bba68e2594c2ebe8883083b7e84456 # slicersalt-1.0-2018-09-13-8c19c293c
     GIT_PROGRESS   1
     )
 else()
   set(slicersources_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/slicersources-subbuild)
 endif()
+
+# macOS initialization
+set(CMAKE_MODULE_PATH ${slicersources_SOURCE_DIR}/CMake ${CMAKE_MODULE_PATH})
+include(SlicerInitializeOSXVariables)
 
 # Update CMake module path
 set(SlicerSALT_CMAKE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
@@ -32,8 +34,7 @@ list(INSERT CMAKE_MODULE_PATH 0 ${SlicerSALT_CMAKE_DIR})
 add_subdirectory(${SlicerSALT_CMAKE_DIR})
 list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_BINARY_DIR}/CMake")
 
-set(CMAKE_MODULE_PATH ${slicersources_SOURCE_DIR}/CMake ${CMAKE_MODULE_PATH})
-include(SlicerInitializeOSXVariables)
+project(SlicerSALT)
 
 # Configure Application
 set(Slicer_APPLICATIONS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Applications)
@@ -58,6 +59,10 @@ endif()
 include(SlicerInitializeBuildType)
 include(SlicerInitializeReleaseType)
 
+# SlicerSALT options
+option(SlicerSALT_BUILD_MFSDA                   "Build and bundle MFSDA extension" OFF)
+
+
 # Slicer options
 option(BUILD_TESTING                            "Build application test suite"                        ON)
 option(Slicer_BUILD_DOCUMENTATION               "Build documentation (Doxygen, sphinx, ...)"          OFF)
@@ -79,6 +84,10 @@ option(Slicer_BUILD_BRAINSTOOLS                 "Build application with BRAINSTo
 option(Slicer_BUILD_DataStore                   "Build application with DataStore module"             OFF)
 option(Slicer_BUILD_CompareVolumes              "Build application with ChangeTrackerPy module"       OFF)
 option(Slicer_BUILD_LandmarkRegistration        "Build application with LandmarkRegistration module"  OFF)
+
+# Addition Slicer dependencies
+set(Slicer_ADDITIONAL_DEPENDENCIES
+  )
 
 # Enable Slicer built-in modules
 set(Slicer_CLIMODULES_ENABLED
@@ -195,12 +204,34 @@ set(extension_name "GROUPS")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/vicory/GROUPS
-  GIT_TAG        e85dd4f2dad796aaa06212f10bea7eea769db639
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/GROUPS
+  GIT_TAG        a8281d7e3f8d9fc5f4b6d321921eeeb678c176e0
   GIT_PROGRESS   1
   QUIET
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+list(APPEND EXTERNAL_PROJECT_ADDITIONAL_DIRS ${${extension_name}_SOURCE_DIR}/SuperBuild)
+
+#-----------------------------------------------------------------------------
+# MFSDA
+if(SlicerSALT_BUILD_MFSDA)
+  set(extension_name "MFSDA_Python")
+  set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+  FetchContent_Populate(${extension_name}
+    SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
+    GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/vicory/MFSDA_Python
+    GIT_TAG        a4d6b6ad94d91bfe4895f1bf8565561c38240e3b
+    GIT_PROGRESS   1
+    QUIET
+    )
+  list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+  list(APPEND Slicer_ADDITIONAL_DEPENDENCIES
+    python-scipy
+    python-pandas
+    python-statsmodels
+    )
+endif()
 
 #-----------------------------------------------------------------------------
 # Add Slicer sources
