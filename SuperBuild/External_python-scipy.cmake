@@ -39,7 +39,7 @@ if(NOT Slicer_USE_SYSTEM_SciPy)
 # Added by '${CMAKE_CURRENT_LIST_FILE}'
 
 set(ENV{LIB} \"\$ENV{LIB};${Fortran_Flang_IMPLICIT_LINK_DIRECTORIES}\")
-set(ENV{PATH} \"${flang_bin_path}\")
+set(ENV{PATH} \"\$ENV{PATH};${flang_bin_path}\")
 set(ENV{CC} \"${Fortran_Flang_CLANG_CL_EXECUTABLE}\")
 set(ENV{CXX} \"${Fortran_Flang_CLANG_CL_EXECUTABLE}\")
 set(ENV{FC} \"${Fortran_Flang_EXECUTABLE}\")
