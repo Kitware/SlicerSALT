@@ -59,6 +59,10 @@ endif()
 include(SlicerInitializeBuildType)
 include(SlicerInitializeReleaseType)
 
+# SlicerSALT options
+option(SlicerSALT_BUILD_MFSDA                   "Build and bundle MFSDA extension" OFF)
+
+
 # Slicer options
 option(BUILD_TESTING                            "Build application test suite"                        ON)
 option(Slicer_BUILD_DOCUMENTATION               "Build documentation (Doxygen, sphinx, ...)"          OFF)
@@ -83,9 +87,6 @@ option(Slicer_BUILD_LandmarkRegistration        "Build application with Landmark
 
 # Addition Slicer dependencies
 set(Slicer_ADDITIONAL_DEPENDENCIES
-  python-scipy
-  python-pandas
-  python-statsmodels
   )
 
 # Enable Slicer built-in modules
@@ -213,16 +214,24 @@ list(APPEND EXTERNAL_PROJECT_ADDITIONAL_DIRS ${${extension_name}_SOURCE_DIR}/Sup
 
 #-----------------------------------------------------------------------------
 # MFSDA
-set(extension_name "MFSDA_Python")
-set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
-FetchContent_Populate(${extension_name}
-  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/vicory/MFSDA_Python
-  GIT_TAG        a4d6b6ad94d91bfe4895f1bf8565561c38240e3b
-  GIT_PROGRESS   1
-  QUIET
-  )
-list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+if(SlicerSALT_BUILD_MFSDA)
+  set(extension_name "MFSDA_Python")
+  set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+  FetchContent_Populate(${extension_name}
+    SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
+    GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/vicory/MFSDA_Python
+    GIT_TAG        a4d6b6ad94d91bfe4895f1bf8565561c38240e3b
+    GIT_PROGRESS   1
+    QUIET
+    )
+  list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+  list(APPEND Slicer_ADDITIONAL_DEPENDENCIES
+    python-scipy
+    python-pandas
+    python-statsmodels
+    )
+endif()
 
 #-----------------------------------------------------------------------------
 # Add Slicer sources
