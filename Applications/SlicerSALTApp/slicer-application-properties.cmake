@@ -4,10 +4,10 @@ set(APPLICATION_NAME
   )
 
 set(VERSION_MAJOR
-  0
+  1
   )
 set(VERSION_MINOR
-  1
+  0
   )
 set(VERSION_PATCH
   0
