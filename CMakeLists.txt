@@ -11,8 +11,6 @@ endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-project(SlicerSALT)
-
 # Slicer sources
 include(FetchContent)
 if(NOT DEFINED slicersources_SOURCE_DIR)
@@ -26,14 +24,17 @@ else()
   set(slicersources_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR}/slicersources-subbuild)
 endif()
 
+# macOS initialization
+set(CMAKE_MODULE_PATH ${slicersources_SOURCE_DIR}/CMake ${CMAKE_MODULE_PATH})
+include(SlicerInitializeOSXVariables)
+
 # Update CMake module path
 set(SlicerSALT_CMAKE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
 list(INSERT CMAKE_MODULE_PATH 0 ${SlicerSALT_CMAKE_DIR})
 add_subdirectory(${SlicerSALT_CMAKE_DIR})
 list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_BINARY_DIR}/CMake")
 
-set(CMAKE_MODULE_PATH ${slicersources_SOURCE_DIR}/CMake ${CMAKE_MODULE_PATH})
-include(SlicerInitializeOSXVariables)
+project(SlicerSALT)
 
 # Configure Application
 set(Slicer_APPLICATIONS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Applications)
