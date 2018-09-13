@@ -40,6 +40,10 @@ set(ENV{PATH} \"\$ENV{PATH};\$ENV{FLANG_BIN_PATH}\")
 set(ENV{CC} \"C:/Miniconda3/envs/flang-env/Library/bin/clang-cl.exe\")
 set(ENV{CXX} \"C:/Miniconda3/envs/flang-env/Library/bin/clang-cl.exe\")
 set(ENV{FC} \"C:/Miniconda3/envs/flang-env/Library/bin/flang.exe\")
+
+set(ENV{BLAS} \"${LAPACK_DIR}/lib/blas.lib\")
+set(ENV{LAPACK} \"${LAPACK_DIR}/lib/lapack.lib\")
+set(ENV{ATLAS} \"\")
 ")
   else()
     file(APPEND ${_env_script}
