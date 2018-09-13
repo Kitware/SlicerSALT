@@ -47,6 +47,7 @@ set(ENV{FC} \"C:/Miniconda3/envs/flang-env/Library/bin/flang.exe\")
 # Added by '${CMAKE_CURRENT_LIST_FILE}'
 set(ENV{BLAS} \"${LAPACK_DIR}/lib/libblas.a\")
 set(ENV{LAPACK} \"${LAPACK_DIR}/lib/liblapack.a\")
+set(ENV{ATLAS} \"\")
 ")
   endif()
 
