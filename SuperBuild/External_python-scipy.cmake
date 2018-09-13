@@ -46,9 +46,17 @@ set(ENV{LAPACK} \"${LAPACK_DIR}/lib/lapack.lib\")
 set(ENV{ATLAS} \"\")
 ")
   else()
+    # gfortran
+    set(Fortran_COMPILER_ID "GNU")
+    find_package(Fortran REQUIRED)
+
+    get_filename_component(gnu_bin_path ${Fortran_GNU_EXECUTABLE} DIRECTORY)
+
     file(APPEND ${_env_script}
 "#------------------------------------------------------------------------------
 # Added by '${CMAKE_CURRENT_LIST_FILE}'
+set(ENV{PATH} \"${gnu_bin_path}:\$ENV{PATH}\")
+
 set(ENV{BLAS} \"${LAPACK_DIR}/lib/libblas.a\")
 set(ENV{LAPACK} \"${LAPACK_DIR}/lib/liblapack.a\")
 set(ENV{ATLAS} \"\")
