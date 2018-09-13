@@ -28,7 +28,7 @@ if(NOT Slicer_USE_SYSTEM_SciPy)
   ExternalProject_Write_SetBuildEnv_Commands(${_env_script})
   ExternalProject_Write_SetPythonSetupEnv_Commands(${_env_script} APPEND)
   if(WIN32)
-  file(APPEND ${_env_script}
+    file(APPEND ${_env_script}
 "#------------------------------------------------------------------------------
 # Added by '${CMAKE_CURRENT_LIST_FILE}'
 
@@ -41,21 +41,22 @@ set(ENV{CC} \"C:/Miniconda3/envs/flang-env/Library/bin/clang-cl.exe\")
 set(ENV{CXX} \"C:/Miniconda3/envs/flang-env/Library/bin/clang-cl.exe\")
 set(ENV{FC} \"C:/Miniconda3/envs/flang-env/Library/bin/flang.exe\")
 ")
+  else()
+    file(APPEND ${_env_script}
+"#------------------------------------------------------------------------------
+# Added by '${CMAKE_CURRENT_LIST_FILE}'
+set(ENV{BLAS} \"${LAPACK_DIR}/lib/libblas.a\")
+set(ENV{LAPACK} \"${LAPACK_DIR}/lib/liblapack.a\")
+")
   endif()
 
   # configure step
-  set(_configure_script ${CMAKE_BINARY_DIR}/${proj}_configure_step.cmake)
-  file(WRITE ${_configure_script}
-"include(\"${_env_script}\")
-set(${proj}_WORKING_DIR \"${EP_SOURCE_DIR}\")
-file(WRITE \"${EP_SOURCE_DIR}/site.cfg\" \"\")
-ExternalProject_Execute(${proj} \"configure\" \"${PYTHON_EXECUTABLE}\" setup.py config)
-")
+  # NA
 
 if(WIN32)
   set(_fortran_compiler "flang")
 else()
-  set(_fortran_compiler "gfortran")
+  set(_fortran_compiler "gnu95")
 endif()
 
   # build step
@@ -84,7 +85,7 @@ ExternalProject_Execute(${proj} \"install\" \"${PYTHON_EXECUTABLE}\" setup.py in
     DOWNLOAD_DIR ${CMAKE_BINARY_DIR}
     SOURCE_DIR ${EP_SOURCE_DIR}
     BUILD_IN_SOURCE 1
-    CONFIGURE_COMMAND ${CMAKE_COMMAND} -P ${_configure_script}
+    CONFIGURE_COMMAND ""
     BUILD_COMMAND ${CMAKE_COMMAND} -P ${_build_script}
     INSTALL_COMMAND ${CMAKE_COMMAND} -P ${_install_script}
     DEPENDS
