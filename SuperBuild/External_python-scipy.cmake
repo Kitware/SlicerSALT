@@ -69,10 +69,12 @@ set(ENV{ATLAS} \"\")
   endif()
 
   # configure step
+  # Need to move the blas and lapack libs to python-install/lib so they can be linked
+  # May not be necessary on Mac/Linux
   set(_config_script ${CMAKE_BINARY_DIR}/${proj}_config_step.cmake)
   file(WRITE ${_config_script}
-"file(COPY ${BLAS_LIB} DESTINATION ${python_DIR}/libs/)
-file(COPY ${LAPACK_LIB} DESTINATION ${python_DIR}/libs/)
+"file(COPY ${BLAS_LIB} DESTINATION ${python_DIR}/lib/)
+file(COPY ${LAPACK_LIB} DESTINATION ${python_DIR}/lib/)
 ")
 
 if(WIN32)
