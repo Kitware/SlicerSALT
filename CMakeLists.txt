@@ -17,7 +17,7 @@ if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
     GIT_REPOSITORY https://github.com/jcfr/Slicer
-    GIT_TAG        109d50f883726d283c48406b196b339705558d34 # slicersalt-4.9-2018-09-13-8c19c293c
+    GIT_TAG        e08d28f2e8ced063b55c541142be86e10a94f218 # slicersalt-4.9-2018-09-13-8c19c293c
     GIT_PROGRESS   1
     )
 else()
@@ -192,7 +192,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/SRep")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/SlicerSkeletalRepresentation
-  GIT_TAG        dfb8cab5cf9a2422ac69fd0b37f82f88e8c969dd # 2018-09-07 Rename
+  GIT_TAG        f163fcb264b16af0b8f2a8348f9dd959b14cca23 # fix-window-build-error
   GIT_PROGRESS   1
   QUIET
   )
@@ -205,7 +205,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/GROUPS
-  GIT_TAG        47ae1842394984576be759880ffc11d13d4cfbcd
+  GIT_TAG        eccc12094d2a9abd756a1b76450d9bd5af0772f6
   GIT_PROGRESS   1
   QUIET
   )
