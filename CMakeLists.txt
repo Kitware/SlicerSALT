@@ -192,7 +192,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/SRep")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/SlicerSkeletalRepresentation
-  GIT_TAG        dfb8cab5cf9a2422ac69fd0b37f82f88e8c969dd # 2018-09-07 Rename
+  GIT_TAG        f163fcb264b16af0b8f2a8348f9dd959b14cca23 # fix-window-build-error
   GIT_PROGRESS   1
   QUIET
   )
