@@ -32,6 +32,9 @@ if(NOT Slicer_USE_SYSTEM_SciPy)
     set(Fortran_COMPILER_ID "Flang")
     find_package(Fortran REQUIRED)
 
+    set(BLAS_LIB ${LAPACK_DIR}/lib/blas.lib)
+    set(LAPACK_LIB ${LAPACK_DIR}/lib/lapack.lib)
+
     get_filename_component(flang_bin_path ${Fortran_Flang_EXECUTABLE} DIRECTORY)
 
     file(APPEND ${_env_script}
@@ -44,14 +47,15 @@ set(ENV{CC} \"${Fortran_Flang_CLANG_CL_EXECUTABLE}\")
 set(ENV{CXX} \"${Fortran_Flang_CLANG_CL_EXECUTABLE}\")
 set(ENV{FC} \"${Fortran_Flang_EXECUTABLE}\")
 
-set(ENV{BLAS} \"${LAPACK_DIR}/lib/blas.lib\")
-set(ENV{LAPACK} \"${LAPACK_DIR}/lib/lapack.lib\")
 set(ENV{ATLAS} \"\")
 ")
   else()
     # gfortran
     set(Fortran_COMPILER_ID "GNU")
     find_package(Fortran REQUIRED)
+
+    set(BLAS_LIB ${LAPACK_DIR}/lib/libblas.a)
+    set(LAPACK_LIB ${LAPACK_DIR}/lib/liblapack.a)
 
     get_filename_component(gnu_bin_path ${Fortran_GNU_EXECUTABLE} DIRECTORY)
 
@@ -60,14 +64,16 @@ set(ENV{ATLAS} \"\")
 # Added by '${CMAKE_CURRENT_LIST_FILE}'
 set(ENV{PATH} \"${gnu_bin_path}:\$ENV{PATH}\")
 
-set(ENV{BLAS} \"${LAPACK_DIR}/lib/libblas.a\")
-set(ENV{LAPACK} \"${LAPACK_DIR}/lib/liblapack.a\")
 set(ENV{ATLAS} \"\")
 ")
   endif()
 
   # configure step
-  # NA
+  set(_config_script ${CMAKE_BINARY_DIR}/${proj}_config_step.cmake)
+  file(WRITE ${_config_script}
+"file(COPY ${BLAS_LIB} DESTINATION ${python_DIR}/libs/)
+file(COPY ${LAPACK_LIB} DESTINATION ${python_DIR}/libs/)
+")
 
 if(WIN32)
   set(_fortran_compiler "flang")
