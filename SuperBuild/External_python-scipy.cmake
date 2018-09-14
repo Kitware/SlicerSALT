@@ -109,7 +109,7 @@ ExternalProject_Execute(${proj} \"install\" \"${PYTHON_EXECUTABLE}\" setup.py in
     DOWNLOAD_DIR ${CMAKE_BINARY_DIR}
     SOURCE_DIR ${EP_SOURCE_DIR}
     BUILD_IN_SOURCE 1
-    CONFIGURE_COMMAND ""
+    CONFIGURE_COMMAND ${CMAKE_COMMAND} -P ${_config_script}
     BUILD_COMMAND ${CMAKE_COMMAND} -P ${_build_script}
     INSTALL_COMMAND ${CMAKE_COMMAND} -P ${_install_script}
     DEPENDS
