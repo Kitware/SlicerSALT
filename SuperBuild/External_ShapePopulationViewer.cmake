@@ -54,7 +54,7 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY "${EP_GIT_PROTOCOL}://github.com/NIRALUser/ShapePopulationViewer.git"
-    GIT_TAG "deb14cdcaef475d5e545c94600d3bd7b02b6fe07"
+    GIT_TAG "724374ca71ce58ec12bbe179debee93fb97ec118"
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${${proj}_DIR}
     INSTALL_COMMAND ${CMAKE_COMMAND} --build ${${proj}_PACKAGE_DIR} --config ${config} --target package
