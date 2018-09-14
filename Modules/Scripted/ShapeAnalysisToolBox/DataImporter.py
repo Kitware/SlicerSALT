@@ -41,12 +41,14 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
   TOPOLOGY_SPHERE_TYPE = 2
   TOPOLOGY_DOUBLE_TORUS_TYPE = -2
   TOPOLOGY_TRIPLE_TORUS_TYPE = -4
+  TOPOLOGY_MULTIPLE_HOLES_TYPE = -9999
   TOPOLOGY_TYPES = {
     TOPOLOGY_STRIP_TYPE : 'Circle/Torus/Mobius Strip',
     TOPOLOGY_DISK_TYPE : 'Disk',
     TOPOLOGY_SPHERE_TYPE : 'Sphere',
     TOPOLOGY_DOUBLE_TORUS_TYPE : 'Double Torus',
     TOPOLOGY_TRIPLE_TORUS_TYPE : 'Triple Torus',
+    TOPOLOGY_MULTIPLE_HOLES_TYPE : 'Multiple Holes',
   }
 
   def __init__(self):
@@ -66,6 +68,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
       self.TOPOLOGY_SPHERE_TYPE : 2,
       self.TOPOLOGY_DOUBLE_TORUS_TYPE : 3,
       self.TOPOLOGY_TRIPLE_TORUS_TYPE : 4,
+      self.TOPOLOGY_MULTIPLE_HOLES_TYPE : 5,
     }
     self.indexToTopologyType = {index: topologyType for topologyType, index in self.topologyTypeToIndex.items()}
     self.expectedTopologiesBySegment = {}
@@ -323,8 +326,9 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
       topologyType = self._computeModeOfSegment(inputTopologyDictionary, segmentName)
       validTopologyType = (topologyType in self.TOPOLOGY_TYPES)
       if not validTopologyType:
-        logging.error("Topology type: {} for segmentName {}, is invalid, use a key from {}".format(topologyType, segmentName, self.TOPOLOGY_TYPES))
-        return
+        logging.warning("Topology: [{}] for segmentName: '{}', shows multiple holes. Use a key from {}".format(topologyType, segmentName, self.TOPOLOGY_TYPES))
+        topologyType = self.TOPOLOGY_MULTIPLE_HOLES_TYPE
+
       self.expectedTopologiesBySegment[segmentName] = long(topologyType)
 
   #
@@ -456,7 +460,11 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     topologyString = 'n/a'
     if nodeName in self.topologyDict and segmentName in self.topologyDict[nodeName]:
       topologyNum = self.topologyDict[nodeName][segmentName]
-      topologyString = self.TOPOLOGY_TYPES.get(topologyNum, 'n/a')
+      if not topologyNum in self.TOPOLOGY_TYPES:
+        topologyString = str(topologyNum) + ': '
+        topologyString += self.TOPOLOGY_TYPES[self.TOPOLOGY_MULTIPLE_HOLES_TYPE]
+      else:
+        topologyString = self.TOPOLOGY_TYPES[topologyNum]
     return topologyString
 
   def getConsistencyString(self, nodeName, inputSegmentName):
