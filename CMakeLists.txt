@@ -238,6 +238,8 @@ endif()
 add_subdirectory(${slicersources_SOURCE_DIR} ${slicersources_BINARY_DIR})
 
 #-----------------------------------------------------------------------------
+# Bundle non-conventional extensions
+#
 # Considering that
 #  (1) extensions like "SPHARM-PDM" have a SuperBuild-like structure,
 #  (2) they can conditionally include external projects like VTK when build as standalone package and
