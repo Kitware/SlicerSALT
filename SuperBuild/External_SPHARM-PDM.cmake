@@ -71,6 +71,7 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       -DSlicer_DIR:PATH=${Slicer_INNER_BUILD_DIR}
       # Options
       -D${proj}_BUILD_SLICER_EXTENSION:BOOL=ON
+      -DBUILD_TESTING:BOOL=OFF
     DEPENDS
       ${${proj}_DEPENDENCIES}
     )
