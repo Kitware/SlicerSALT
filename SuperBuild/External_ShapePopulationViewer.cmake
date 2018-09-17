@@ -53,8 +53,8 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   set(${proj}_PACKAGE_DIR ${${proj}_DIR})
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
-    GIT_REPOSITORY "${EP_GIT_PROTOCOL}://github.com/NIRALUser/ShapePopulationViewer.git"
-    GIT_TAG "76d356d44f0d0bc9f4901b05452d692d846c2636" # 2018-09-14
+    GIT_REPOSITORY "${EP_GIT_PROTOCOL}://github.com/jcfr/ShapePopulationViewer.git"
+    GIT_TAG "3a39e526238f5b5f55928e41369f9a4cb751d145" # slicersalt-2018-09-14-76d356d44
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${${proj}_DIR}
     INSTALL_COMMAND ${CMAKE_COMMAND} --build ${${proj}_PACKAGE_DIR} --config ${config} --target package
@@ -71,6 +71,7 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
       -DSlicer_DIR:PATH=${Slicer_INNER_BUILD_DIR}
       # Options
       -D${proj}_BUILD_SLICER_EXTENSION:BOOL=ON
+      -DBUILD_TESTING:BOOL=OFF
     DEPENDS
       ${${proj}_DEPENDENCIES}
     )

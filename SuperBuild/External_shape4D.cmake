@@ -19,11 +19,11 @@
 # External project for the project.
 #
 
-set(proj ShapeRegressionExtension)
+set(proj shape4D)
 
 # Set dependency list
 set(${proj}_DEPENDENCIES
-  shape4D
+  ""
   )
 
 # Include dependent projects if any
@@ -55,8 +55,8 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   set(${proj}_PACKAGE_DIR ${${proj}_DIR}/${proj}-build)
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
-    GIT_REPOSITORY "${EP_GIT_PROTOCOL}://github.com/jcfr/ShapeRegressionExtension.git"
-    GIT_TAG "35bbc25d185689bdf71798e7a6ff212873dc4969 " # 2018-09-13 (master)
+    GIT_REPOSITORY "${EP_GIT_PROTOCOL}://github.com/jcfr/shape4D.git"
+    GIT_TAG "3f47cf711a3d21a441c1e46ea992b0f0480b5cf8" # slicersalt-2018-01-22-c74c766a4c
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${${proj}_DIR}
     INSTALL_COMMAND ${CMAKE_COMMAND} --build ${${proj}_PACKAGE_DIR} --config ${config} --target package
@@ -81,7 +81,6 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   list(APPEND ${APPLICATION_NAME}_EXTENSION_CPACK_PACKAGE_DIRS
     ${${proj}_PACKAGE_DIR}/_CPack_Packages
     )
-
 else()
   ExternalProject_Add_Empty(${proj} DEPENDS ${${proj}_DEPENDENCIES})
 endif()

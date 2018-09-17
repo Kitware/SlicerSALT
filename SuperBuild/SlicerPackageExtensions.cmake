@@ -28,6 +28,7 @@ set(proj SlicerPackageExtensions)
 set(${proj}_EXTENSIONS
   SPHARM-PDM
   ShapePopulationViewer
+  shape4D
   ShapeRegressionExtension
   )
 
