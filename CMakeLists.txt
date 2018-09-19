@@ -204,8 +204,8 @@ set(extension_name "GROUPS")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/GROUPS
-  GIT_TAG        b8888e0ab7e42acda50882debb3a7ce15bc4a5be # slicersalt-2018-09-14-212af76
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/NIRALUser/GROUPS
+  GIT_TAG        d33f578ec73339bf97bdac510a826d01cc7b5fb4 # 2018-09-14 (master)
   GIT_PROGRESS   1
   QUIET
   )
@@ -220,7 +220,7 @@ if(SlicerSALT_BUILD_MFSDA)
   FetchContent_Populate(${extension_name}
     SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
     GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/vicory/MFSDA_Python
-    GIT_TAG        a4d6b6ad94d91bfe4895f1bf8565561c38240e3b
+    GIT_TAG        a4d6b6ad94d91bfe4895f1bf8565561c38240e3b # branch: fix_extension_build
     GIT_PROGRESS   1
     QUIET
     )
