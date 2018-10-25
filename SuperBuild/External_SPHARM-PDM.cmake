@@ -54,7 +54,7 @@ if(NOT DEFINED ${proj}_DIR AND NOT ${CMAKE_PROJECT_NAME}_USE_SYSTEM_${proj})
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
     GIT_REPOSITORY "${EP_GIT_PROTOCOL}://github.com/NIRALUser/SPHARM-PDM.git"
-    GIT_TAG "a483d8106a0c44a70ada51aeb63ac3875c0a1e80" # 2018-09-17 (master)
+    GIT_TAG "f2a0f16b56d3437ab3ba048fec6b1a47c9687b09" # 2018-10-25 (master)
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BINARY_DIR ${${proj}_DIR}
     INSTALL_COMMAND ${CMAKE_COMMAND} --build ${${proj}_PACKAGE_DIR} --config ${config} --target package
