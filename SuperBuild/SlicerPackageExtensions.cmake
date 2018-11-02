@@ -26,6 +26,7 @@ set(proj SlicerPackageExtensions)
 # directory.
 #
 set(${proj}_EXTENSIONS
+  ModelToModelDistance
   SPHARM-PDM
   ShapePopulationViewer
   shape4D
