@@ -204,8 +204,8 @@ set(extension_name "GROUPS")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/NIRALUser/GROUPS
-  GIT_TAG        d33f578ec73339bf97bdac510a826d01cc7b5fb4 # 2018-09-14 (master)
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/GROUPS
+  GIT_TAG        e0154e95d4a3930158799bafcf202c314d9e18ff # slicersalt-2018-10-29-15c897e
   GIT_PROGRESS   1
   QUIET
   )
