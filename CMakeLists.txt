@@ -174,12 +174,16 @@ list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
 #-----------------------------------------------------------------------------
 # Sequences
+
+set(SEQUENCES_ENABLE_SAMPLEDATA_MODULE OFF)
+mark_as_superbuild(SEQUENCES_ENABLE_SAMPLEDATA_MODULE:BOOL)
+
 set(extension_name "Sequences")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/phcerdan/Sequences.git
-  GIT_TAG        origin/disable_sampledata # Temporary workaround, see @SlicerSALT#50
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/SlicerRt/Sequences.git
+  GIT_TAG        ea6ce4b80c41160aceb1cbea52a858973a25fa9e
   GIT_PROGRESS   1
   QUIET
   )
