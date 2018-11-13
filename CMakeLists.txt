@@ -238,6 +238,23 @@ if(SlicerSALT_BUILD_MFSDA)
 endif()
 
 #-----------------------------------------------------------------------------
+# ShapePopulationViewer
+
+set(ShapePopulationViewer_BUILD_TESTING OFF)
+mark_as_superbuild(ShapePopulationViewer_BUILD_TESTING:BOOL)
+
+set(extension_name "ShapePopulationViewer")
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/ShapePopulationViewer
+  GIT_TAG        e7ea3d7a4a436a12bda56bbacb00ed324e3d04e3 # reusable-widget
+  GIT_PROGRESS   1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+#-----------------------------------------------------------------------------
 # Add Slicer sources
 add_subdirectory(${slicersources_SOURCE_DIR} ${slicersources_BINARY_DIR})
 

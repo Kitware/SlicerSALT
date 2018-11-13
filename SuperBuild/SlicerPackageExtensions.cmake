@@ -28,7 +28,6 @@ set(proj SlicerPackageExtensions)
 set(${proj}_EXTENSIONS
   ModelToModelDistance
   SPHARM-PDM
-  ShapePopulationViewer
   shape4D
   ShapeRegressionExtension
   )
