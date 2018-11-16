@@ -17,7 +17,7 @@ if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
     GIT_REPOSITORY https://github.com/jcfr/Slicer
-    GIT_TAG        cd7d51ce9b613bdf966281d9a841017473ec0c07 # slicersalt-4.9-2018-09-13-8c19c293c
+    GIT_TAG        4e8b8ddc5de713fdfb7b2fb15c472a4b31c19b84 # slicersalt-4.11-2018-11-12-e93ec804c
     GIT_PROGRESS   1
     )
 else()
@@ -174,12 +174,16 @@ list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
 #-----------------------------------------------------------------------------
 # Sequences
+
+set(SEQUENCES_ENABLE_SAMPLEDATA_MODULE OFF)
+mark_as_superbuild(SEQUENCES_ENABLE_SAMPLEDATA_MODULE:BOOL)
+
 set(extension_name "Sequences")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/phcerdan/Sequences.git
-  GIT_TAG        origin/disable_sampledata # Temporary workaround, see @SlicerSALT#50
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/SlicerRt/Sequences.git
+  GIT_TAG        ea6ce4b80c41160aceb1cbea52a858973a25fa9e
   GIT_PROGRESS   1
   QUIET
   )
@@ -204,8 +208,8 @@ set(extension_name "GROUPS")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/NIRALUser/GROUPS
-  GIT_TAG        d33f578ec73339bf97bdac510a826d01cc7b5fb4 # 2018-09-14 (master)
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/GROUPS
+  GIT_TAG        e0154e95d4a3930158799bafcf202c314d9e18ff # slicersalt-2018-10-29-15c897e
   GIT_PROGRESS   1
   QUIET
   )
@@ -232,6 +236,23 @@ if(SlicerSALT_BUILD_MFSDA)
     python-statsmodels
     )
 endif()
+
+#-----------------------------------------------------------------------------
+# ShapePopulationViewer
+
+set(ShapePopulationViewer_BUILD_TESTING OFF)
+mark_as_superbuild(ShapePopulationViewer_BUILD_TESTING:BOOL)
+
+set(extension_name "ShapePopulationViewer")
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/ShapePopulationViewer
+  GIT_TAG        e7ea3d7a4a436a12bda56bbacb00ed324e3d04e3 # reusable-widget
+  GIT_PROGRESS   1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
 #-----------------------------------------------------------------------------
 # Add Slicer sources
