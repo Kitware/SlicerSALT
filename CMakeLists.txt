@@ -17,7 +17,7 @@ if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
     GIT_REPOSITORY https://github.com/jcfr/Slicer
-    GIT_TAG        57f3aac8d348a6f10a03da1a85a3decb4c216b50 # slicersalt-4.11-2018-11-16-51dffa182
+    GIT_TAG        da20682d236bc558a40637c93c03674ef6cc7d17 # slicersalt-4.11-2018-11-16-e09865bc8
     GIT_PROGRESS   1
     )
 else()
@@ -244,6 +244,7 @@ set(ShapePopulationViewer_BUILD_TESTING OFF)
 mark_as_superbuild(ShapePopulationViewer_BUILD_TESTING:BOOL)
 
 set(extension_name "ShapePopulationViewer")
+set(${extension_name}_EXTERNAL_PROJECT_EXCLUDE_ALL TRUE)
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
