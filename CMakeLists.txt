@@ -238,6 +238,35 @@ if(SlicerSALT_BUILD_MFSDA)
 endif()
 
 #-----------------------------------------------------------------------------
+# ModelToModelDistance
+
+# Notes:
+#
+# (1) Naming is not consistent: "ModelToModelDistance" is the extension name
+#     and "3DMetricTools" is both the repository and cmake project name.
+#
+# (2) The project provides two tools: "ModelToModelDistance" licensed under Apache 2.0
+#     and "3DMeshMetric" licensed under GPLv3.
+#
+# (3) SlicerSALT integrates only "ModelToModelDistance" CLI
+#
+
+set(3DMetricTools_BUILD_TESTING 0)
+mark_as_superbuild(3DMetricTools_BUILD_TESTING:BOOL)
+
+set(extension_name "ModelToModelDistance")
+set(${extension_name}_EXTERNAL_PROJECT_EXCLUDE_ALL TRUE)
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/3DMetricTools
+  GIT_TAG        e197d10bab3dbaf8744c0e79dedee32cf354bb09 # branch: slicersalt-2017-10-06-dbd3b88a2
+  GIT_PROGRESS   1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+#-----------------------------------------------------------------------------
 # ShapePopulationViewer
 
 set(ShapePopulationViewer_BUILD_TESTING OFF)

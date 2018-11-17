@@ -26,7 +26,6 @@ set(proj SlicerPackageExtensions)
 # directory.
 #
 set(${proj}_EXTENSIONS
-  ModelToModelDistance
   SPHARM-PDM
   shape4D
   ShapeRegressionExtension
