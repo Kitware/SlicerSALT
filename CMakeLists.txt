@@ -165,7 +165,7 @@ set(extension_name "MeshToLabelMap")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/NIRALUser/MeshToLabelMap.git
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/NIRALUser/${extension_name}
   GIT_TAG        9e2e199b99396c570f5f26c0ccfd5e149f6b9d34
   GIT_PROGRESS   1
   QUIET
@@ -182,7 +182,7 @@ set(extension_name "Sequences")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/SlicerRt/Sequences.git
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/SlicerRt/${extension_name}
   GIT_TAG        ea6ce4b80c41160aceb1cbea52a858973a25fa9e
   GIT_PROGRESS   1
   QUIET
@@ -208,7 +208,7 @@ set(extension_name "GROUPS")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/GROUPS
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/${extension_name}
   GIT_TAG        e0154e95d4a3930158799bafcf202c314d9e18ff # slicersalt-2018-10-29-15c897e
   GIT_PROGRESS   1
   QUIET
@@ -223,7 +223,7 @@ if(SlicerSALT_BUILD_MFSDA)
   set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
   FetchContent_Populate(${extension_name}
     SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-    GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/vicory/MFSDA_Python
+    GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/vicory/${extension_name}
     GIT_TAG        a4d6b6ad94d91bfe4895f1bf8565561c38240e3b # branch: fix_extension_build
     GIT_PROGRESS   1
     QUIET
@@ -277,7 +277,7 @@ set(${extension_name}_EXTERNAL_PROJECT_EXCLUDE_ALL TRUE)
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/ShapePopulationViewer
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/${extension_name}
   GIT_TAG        a422dbfbeea4f9ed258f679cd874b20f215a9d50 # slicersalt-2018-09-16-6de7a0409
   GIT_PROGRESS   1
   QUIET
