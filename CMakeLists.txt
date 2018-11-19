@@ -145,6 +145,10 @@ mark_as_superbuild(EIGEN_BUILD_TESTING)
 set(EIGEN_ADD_BLAS_LAPACK_TARGETS 0)
 mark_as_superbuild(EIGEN_ADD_BLAS_LAPACK_TARGETS)
 
+# Disable Qt based test to avoid finding the wrong Qt version
+set(EIGEN_TEST_NOQT 1)
+mark_as_superbuild(EIGEN_TEST_NOQT)
+
 set(extension_name "Eigen3")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
