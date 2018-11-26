@@ -27,7 +27,6 @@ set(proj SlicerPackageExtensions)
 #
 set(${proj}_EXTENSIONS
   shape4D
-  ShapeRegressionExtension
   )
 
 set(APPLICATION_NAME "SlicerSALT")

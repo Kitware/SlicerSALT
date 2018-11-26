@@ -289,6 +289,24 @@ FetchContent_Populate(${extension_name}
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
 #-----------------------------------------------------------------------------
+# ShapeRegressionExtension
+
+set(ShapeRegressionExtension_BUILD_TESTING OFF)
+mark_as_superbuild(ShapeRegressionExtension_BUILD_TESTING:BOOL)
+
+set(extension_name "ShapeRegressionExtension")
+set(${extension_name}_EXTERNAL_PROJECT_EXCLUDE_ALL TRUE)
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/${extension_name}
+  GIT_TAG        c186eeb30a99a20c12cc706d2e392552992d479a # slicersalt-2018-09-17-ff44744
+  GIT_PROGRESS   1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+#-----------------------------------------------------------------------------
 # SPHARM-PDM
 
 set(SPHARM-PDM_BUILD_TESTING OFF)
