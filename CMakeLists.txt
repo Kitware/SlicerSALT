@@ -271,6 +271,23 @@ FetchContent_Populate(${extension_name}
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
 #-----------------------------------------------------------------------------
+# shape4D
+
+set(shape4D_BUILD_TESTING OFF)
+mark_as_superbuild(shape4D_BUILD_TESTING:BOOL)
+
+set(extension_name "shape4D")
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/${extension_name}
+  GIT_TAG        dfae0f6826dd2f92250d9b1a92174e832c2140fd # slicersalt-2018-09-27-e6c242627
+  GIT_PROGRESS   1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+#-----------------------------------------------------------------------------
 # ShapePopulationViewer
 
 set(ShapePopulationViewer_BUILD_TESTING OFF)
@@ -327,18 +344,3 @@ list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 #-----------------------------------------------------------------------------
 # Add Slicer sources
 add_subdirectory(${slicersources_SOURCE_DIR} ${slicersources_BINARY_DIR})
-
-#-----------------------------------------------------------------------------
-# Bundle non-conventional extensions
-#
-# Considering that
-#  (1) extensions like "SPHARM-PDM" have a SuperBuild-like structure,
-#  (2) they can conditionally include external projects like VTK when build as standalone package and
-#  (3) the Slicer build-system collect the list of external project only based on filenames,
-# we can not simply bundle them like any other SuperBuild-like extensions (e.g SlicerOpenIGTLink).
-# Trying to do so would lead to re-building unwanted projects that would conflict with Slicer own projects.
-#
-# For these reasons, we use "SlicerPackageExtensions" module to first package each extension
-# and then re-configure Slicer to package the associated directories.
-include(SuperBuild/SlicerPackageExtensions.cmake)
-
