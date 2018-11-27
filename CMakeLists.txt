@@ -283,12 +283,18 @@ list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 set(shape4D_BUILD_TESTING OFF)
 mark_as_superbuild(shape4D_BUILD_TESTING:BOOL)
 
+set(shape4D_USE_SEM ON)
+mark_as_superbuild(shape4D_USE_SEM:BOOL)
+
+set(shape4D_USE_VTK ON)
+mark_as_superbuild(shape4D_USE_VTK:BOOL)
+
 set(extension_name "shape4D")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/${extension_name}
-  GIT_TAG        411bc51474a8ae507f74cdc731b683b80689f21c # slicersalt-2018-09-27-e6c242627
+  GIT_TAG        b175600fc38671a0d139dfbaaa61165aab12bdbc # slicersalt-2018-09-27-e6c242627
   GIT_PROGRESS   1
   QUIET
   )
