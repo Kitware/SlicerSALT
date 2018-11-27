@@ -273,6 +273,13 @@ list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 #-----------------------------------------------------------------------------
 # shape4D
 
+# Notes:
+#
+# shape4D executable depends on FFTW. FFTW is available under two licenses:
+# (1) GPLv2 or any later version.
+# (2) Commercial license removing the GPL restrictions.
+# For more details, see  http://www.fftw.org/doc/License-and-Copyright.html
+
 set(shape4D_BUILD_TESTING OFF)
 mark_as_superbuild(shape4D_BUILD_TESTING:BOOL)
 
@@ -281,7 +288,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/${extension_name}
-  GIT_TAG        dfae0f6826dd2f92250d9b1a92174e832c2140fd # slicersalt-2018-09-27-e6c242627
+  GIT_TAG        73e9fc2c66e5ff583fe4af0aa8ed331bb07a97e8 # slicersalt-2018-09-27-e6c242627
   GIT_PROGRESS   1
   QUIET
   )
