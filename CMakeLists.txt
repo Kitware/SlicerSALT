@@ -264,7 +264,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/3DMetricTools
-  GIT_TAG        e197d10bab3dbaf8744c0e79dedee32cf354bb09 # branch: slicersalt-2017-10-06-dbd3b88a2
+  GIT_TAG        a323e0bcfffd112e517cf28bf6a96dca10d32047 # branch: slicersalt-2017-10-06-dbd3b88a2
   GIT_PROGRESS   1
   QUIET
   )
@@ -348,7 +348,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/${extension_name}
-  GIT_TAG        4424e34389a3243099236d7a13a238387480307a # support-direct-integration-in-custom-slicer-app
+  GIT_TAG        f78ef12958847d35fb46c1eab3a2e2b59f22c437 # support-direct-integration-in-custom-slicer-app
   GIT_PROGRESS   1
   QUIET
   )
