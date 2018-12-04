@@ -17,7 +17,7 @@ if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
     GIT_REPOSITORY https://github.com/jcfr/Slicer
-    GIT_TAG        4e8b8ddc5de713fdfb7b2fb15c472a4b31c19b84 # slicersalt-4.11-2018-11-12-e93ec804c
+    GIT_TAG        57cf303f19cce128022752c12e2af7c5af3afb92 # slicersalt-4.11-2018-11-19-559e3deb0
     GIT_PROGRESS   1
     )
 else()
@@ -145,6 +145,10 @@ mark_as_superbuild(EIGEN_BUILD_TESTING)
 set(EIGEN_ADD_BLAS_LAPACK_TARGETS 0)
 mark_as_superbuild(EIGEN_ADD_BLAS_LAPACK_TARGETS)
 
+# Disable Qt based test to avoid finding the wrong Qt version
+set(EIGEN_TEST_NOQT 1)
+mark_as_superbuild(EIGEN_TEST_NOQT)
+
 set(extension_name "Eigen3")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
@@ -165,7 +169,7 @@ set(extension_name "MeshToLabelMap")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/NIRALUser/MeshToLabelMap.git
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/NIRALUser/${extension_name}
   GIT_TAG        9e2e199b99396c570f5f26c0ccfd5e149f6b9d34
   GIT_PROGRESS   1
   QUIET
@@ -182,7 +186,7 @@ set(extension_name "Sequences")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/SlicerRt/Sequences.git
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/SlicerRt/${extension_name}
   GIT_TAG        ea6ce4b80c41160aceb1cbea52a858973a25fa9e
   GIT_PROGRESS   1
   QUIET
@@ -208,8 +212,8 @@ set(extension_name "GROUPS")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/GROUPS
-  GIT_TAG        e0154e95d4a3930158799bafcf202c314d9e18ff # slicersalt-2018-10-29-15c897e
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/vicory/${extension_name}
+  GIT_TAG        cba8671e95d379bc2ad2389fc1bb63e7d4cda76f # slicersalt-2018-11-16-15c897e
   GIT_PROGRESS   1
   QUIET
   )
@@ -223,7 +227,7 @@ if(SlicerSALT_BUILD_MFSDA)
   set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
   FetchContent_Populate(${extension_name}
     SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-    GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/vicory/MFSDA_Python
+    GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/vicory/${extension_name}
     GIT_TAG        a4d6b6ad94d91bfe4895f1bf8565561c38240e3b # branch: fix_extension_build
     GIT_PROGRESS   1
     QUIET
@@ -238,17 +242,113 @@ if(SlicerSALT_BUILD_MFSDA)
 endif()
 
 #-----------------------------------------------------------------------------
+# ModelToModelDistance
+
+# Notes:
+#
+# (1) Naming is not consistent: "ModelToModelDistance" is the extension name
+#     and "3DMetricTools" is both the repository and cmake project name.
+#
+# (2) The project provides two tools: "ModelToModelDistance" licensed under Apache 2.0
+#     and "3DMeshMetric" licensed under GPLv3.
+#
+# (3) SlicerSALT integrates only "ModelToModelDistance" CLI
+#
+
+set(3DMetricTools_BUILD_TESTING 0)
+mark_as_superbuild(3DMetricTools_BUILD_TESTING:BOOL)
+
+set(extension_name "ModelToModelDistance")
+set(${extension_name}_EXTERNAL_PROJECT_EXCLUDE_ALL TRUE)
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/3DMetricTools
+  GIT_TAG        a323e0bcfffd112e517cf28bf6a96dca10d32047 # branch: slicersalt-2017-10-06-dbd3b88a2
+  GIT_PROGRESS   1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+#-----------------------------------------------------------------------------
+# shape4D
+
+# Notes:
+#
+# shape4D executable depends on FFTW. FFTW is available under two licenses:
+# (1) GPLv2 or any later version.
+# (2) Commercial license removing the GPL restrictions.
+# For more details, see  http://www.fftw.org/doc/License-and-Copyright.html
+
+set(shape4D_BUILD_TESTING OFF)
+mark_as_superbuild(shape4D_BUILD_TESTING:BOOL)
+
+set(shape4D_USE_SEM ON)
+mark_as_superbuild(shape4D_USE_SEM:BOOL)
+
+set(shape4D_USE_VTK ON)
+mark_as_superbuild(shape4D_USE_VTK:BOOL)
+
+set(extension_name "shape4D")
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/${extension_name}
+  GIT_TAG        b175600fc38671a0d139dfbaaa61165aab12bdbc # slicersalt-2018-09-27-e6c242627
+  GIT_PROGRESS   1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+#-----------------------------------------------------------------------------
 # ShapePopulationViewer
 
 set(ShapePopulationViewer_BUILD_TESTING OFF)
 mark_as_superbuild(ShapePopulationViewer_BUILD_TESTING:BOOL)
 
 set(extension_name "ShapePopulationViewer")
+set(${extension_name}_EXTERNAL_PROJECT_EXCLUDE_ALL TRUE)
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/ShapePopulationViewer
-  GIT_TAG        e7ea3d7a4a436a12bda56bbacb00ed324e3d04e3 # reusable-widget
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/${extension_name}
+  GIT_TAG        8112d7b1253a94426b510a53779c20118e483c1a # slicersalt-2018-11-26-92fb222
+  GIT_PROGRESS   1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+#-----------------------------------------------------------------------------
+# ShapeRegressionExtension
+
+set(ShapeRegressionExtension_BUILD_TESTING OFF)
+mark_as_superbuild(ShapeRegressionExtension_BUILD_TESTING:BOOL)
+
+set(extension_name "ShapeRegressionExtension")
+set(${extension_name}_EXTERNAL_PROJECT_EXCLUDE_ALL TRUE)
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/${extension_name}
+  GIT_TAG        c186eeb30a99a20c12cc706d2e392552992d479a # slicersalt-2018-09-17-ff44744
+  GIT_PROGRESS   1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+#-----------------------------------------------------------------------------
+# SPHARM-PDM
+
+set(SPHARM-PDM_BUILD_TESTING OFF)
+mark_as_superbuild(SPHARM-PDM_BUILD_TESTING:BOOL)
+
+set(extension_name "SPHARM-PDM")
+set(${extension_name}_EXTERNAL_PROJECT_DEPENDENCIES LAPACK)
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/${extension_name}
+  GIT_TAG        f78ef12958847d35fb46c1eab3a2e2b59f22c437 # support-direct-integration-in-custom-slicer-app
   GIT_PROGRESS   1
   QUIET
   )
@@ -257,18 +357,3 @@ list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 #-----------------------------------------------------------------------------
 # Add Slicer sources
 add_subdirectory(${slicersources_SOURCE_DIR} ${slicersources_BINARY_DIR})
-
-#-----------------------------------------------------------------------------
-# Bundle non-conventional extensions
-#
-# Considering that
-#  (1) extensions like "SPHARM-PDM" have a SuperBuild-like structure,
-#  (2) they can conditionally include external projects like VTK when build as standalone package and
-#  (3) the Slicer build-system collect the list of external project only based on filenames,
-# we can not simply bundle them like any other SuperBuild-like extensions (e.g SlicerOpenIGTLink).
-# Trying to do so would lead to re-building unwanted projects that would conflict with Slicer own projects.
-#
-# For these reasons, we use "SlicerPackageExtensions" module to first package each extension
-# and then re-configure Slicer to package the associated directories.
-include(SuperBuild/SlicerPackageExtensions.cmake)
-
