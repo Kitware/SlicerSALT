@@ -200,7 +200,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/SRep")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/SlicerSkeletalRepresentation
-  GIT_TAG        f163fcb264b16af0b8f2a8348f9dd959b14cca23 # fix-window-build-error
+  GIT_TAG        027a1b8a85784ad55d08874318be46a0c76c6522 # initialize and visualize s-rep
   GIT_PROGRESS   1
   QUIET
   )
