@@ -538,14 +538,21 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.widget = widget
     self.layout.addWidget(widget)
 
+    #Browse Directory 
     self.InputFolderNameLineEdit = self.getWidget('InputFolderNameLineEdit')
     self.FolderDirectoryButton = self.getWidget('FolderDirectoryButton')
     self.FolderDirectoryButton.connect('directoryChanged(QString)', self.onDirectoryChanged)
 
+    #Browse CSV 
     self.InputCSVFileNameLineEdit = self.getWidget('InputCSVFileNameLineEdit')
     self.CSVBrowseFilePushButton = self.getWidget('CSVBrowseFilePushButton')
     self.CSVBrowseFilePushButton.setIcon(qt.QApplication.style().standardIcon(qt.QStyle.SP_DirIcon))
     self.CSVBrowseFilePushButton.connect('clicked(bool)', self.onClickCSVBrowseFilePushButton)
+
+    #Browse FreeSurfer Directory 
+    self.InputFreeSurferFolderNameLineEdit = self.getWidget('InputFreeSurferFolderNameLineEdit')
+    self.FreeSurferBrowseFolderPushButton = self.getWidget('FreeSurferBrowseFolderPushButton')
+    self.FreeSurferBrowseFolderPushButton.connect('directoryChanged(QString)', self.onFreeSurferDirectoryChanged)
 
     self.ImportButton = self.getWidget('ImportButton')
     self.ImportButton.connect('clicked(bool)', self.onClickImportButton)
@@ -568,6 +575,11 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
 
     # Initialize the beginning input type.
     self.onSaveCleanDataCheckBoxToggled()
+
+    #look for freesurfer subjects default path
+    if ('SUBJECTS_DIR' in os.environ.keys()):
+      freesurfer_subjects_path = os.environ['SUBJECTS_DIR']
+      self.FreeSurferBrowseFolderPushButton.directory=freesurfer_subjects_path
 
   #
   # Reset all the data for data import
@@ -913,6 +925,13 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
   #
   #  Handle request to import data
   #
+
+  def onFreeSurferDirectoryChanged(self, directoryPath):
+    ''' 
+    Look for freesurfer surfer subjects in the directoryPath,
+
+    '''
+    print('not implemented')
 
   def onClickImportButton(self):
     if not self.filteredFilePathsList:
