@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>459</width>
+    <width>503</width>
     <height>682</height>
    </rect>
   </property>
@@ -15,11 +15,11 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
-    <widget class="ctkCollapsibleButton" name="DataImportCollapsibleButton">
-     <property name="text">
+    <widget class="ctkCollapsibleButton" name="DataImportCollapsibleButton" native="true">
+     <property name="text" stdset="0">
       <string>Import Data Properties</string>
      </property>
-     <property name="checked">
+     <property name="checked" stdset="0">
       <bool>true</bool>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -55,11 +55,11 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <item>
-           <widget class="ctkDirectoryButton" name="FolderDirectoryButton">
-            <property name="directory">
+           <widget class="ctkDirectoryButton" name="FolderDirectoryButton" native="true">
+            <property name="directory" stdset="0">
              <string>.</string>
             </property>
-            <property name="text">
+            <property name="text" stdset="0">
              <string> Choose Data Directory</string>
             </property>
            </widget>
@@ -122,6 +122,47 @@
           </item>
          </layout>
         </widget>
+        <widget class="QWidget" name="FreeSurferImportTab">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <attribute name="title">
+          <string>Import from FreeSurfer</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item>
+           <widget class="ctkDirectoryButton" name="FreeSurferBrowseFolderPushButton" native="true">
+            <property name="directory" stdset="0">
+             <string>.</string>
+            </property>
+            <property name="text" stdset="0">
+             <string> Choose Data Directory</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="FreeSurferHorizontalLayout">
+            <item>
+             <widget class="QLabel" name="InputFreeSurferFolderNameLabel">
+              <property name="text">
+               <string>FreeSurfer Folder:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="InputFreeSurferFolderNameLineEdit">
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
        </widget>
       </item>
       <item>
@@ -148,8 +189,8 @@
     </widget>
    </item>
    <item>
-    <widget class="ctkCollapsibleButton" name="SubjectsCollapsibleButton">
-     <property name="text">
+    <widget class="ctkCollapsibleButton" name="SubjectsCollapsibleButton" native="true">
+     <property name="text" stdset="0">
       <string>Imported Subjects</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -176,8 +217,8 @@
     </widget>
    </item>
    <item>
-    <widget class="ctkCollapsibleButton" name="SegmentsCollapsibleButton">
-     <property name="text">
+    <widget class="ctkCollapsibleButton" name="SegmentsCollapsibleButton" native="true">
+     <property name="text" stdset="0">
       <string>Segments in Selected Subject</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_5">
