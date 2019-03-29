@@ -196,11 +196,12 @@ list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 #-----------------------------------------------------------------------------
 # Srep
 set(extension_name "SlicerSkeletalRepresentation")
-set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/SRep")
-FetchContent_Populate(${extension_name}
+set(short_extension_name "SRep") # Use shorter extension name to avoid issues with too long paths on windows
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${short_extension_name}")
+FetchContent_Populate(${short_extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/SlicerSkeletalRepresentation
-  GIT_TAG        027a1b8a85784ad55d08874318be46a0c76c6522 # initialize and visualize s-rep
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/SlicerSkeletalRepresentation.git
+  GIT_TAG        7be23feb8bef52e9e319637c37acf68f12d73ceb
   GIT_PROGRESS   1
   QUIET
   )
