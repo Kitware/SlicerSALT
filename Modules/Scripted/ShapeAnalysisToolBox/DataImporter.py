@@ -77,6 +77,10 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     self.numberOfDifferentSegments = 0
     self.dictSegmentNamesWithIntegers = dict()
 
+    self.freesurfer_importation=False
+    self.freesurfer_wanted_segments=[]
+
+
   def setSaveCleanData(self, save):
     self.saveCleanData = save
 
@@ -129,22 +133,84 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     Fails if number of labels is different than pre-existing value for labelRangeInCohort
     Returns false if errors, and no class variable is modified.
     """
+
     directory, fileName = os.path.split(path)
 
     labelMapNode = slicer.util.loadLabelVolume(path, returnNode=True)[1]
+
+
     if labelMapNode is None:
       logging.error('Failed to load ' + fileName + 'as a labelmap')
       # make sure each one is a labelmap
       return False
-    labelMapNode.SetDisplayVisibility(False)
 
-    segmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode", labelMapNode.GetName() + '_allSegments')
+    labelMapNode.SetDisplayVisibility(False)
+    if self.freesurfer_importation == True:
+      subject_name = os.path.split(os.path.split(directory)[0])[1]
+      file_name = os.path.splitext(fileName)[0]
+      segmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode", subject_name+' '+file_name+'_SelectedSegments')
+    else:
+      segmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode", labelMapNode.GetName() + '_allSegments')
     segmentationLogic = slicer.modules.segmentations.logic()
     segmentationLogic.ImportLabelmapToSegmentationNode(labelMapNode,
                                                        segmentationNode)
+
+    #if importing from freesurfer
+    if self.freesurfer_importation == True:
+      to_remove_ids=[]
+      freesurfer_found_segments=[]
+      
+
+      for segmentIndex in range(segmentationNode.GetSegmentation().GetNumberOfSegments()):
+        segmentId = segmentationNode.GetSegmentation().GetNthSegmentID(segmentIndex)
+        segmentName = segmentationNode.GetSegmentation().GetSegment(segmentId).GetName()
+        if segmentName not in self.freesurfer_wanted_segments:
+          to_remove_ids.append(segmentId)
+        else:
+          freesurfer_found_segments.append(segmentName)
+          label_id=segmentName.split('_')[1]
+          seg_name=self.freesurfer_lut_dict[label_id]['name']
+          color=self.freesurfer_lut_dict[label_id]['color']
+          segment = segmentationNode.GetSegmentation().GetSegment(segmentId)
+
+          
+          segment_name=subject_name+' '+file_name+' '+seg_name
+          segment.SetName(segment_name)
+          # segment.SetName(seg_name)
+          segment.SetColor(color)
+
+      if len(freesurfer_found_segments)!=len(self.freesurfer_wanted_segments):
+        unpresent_segments=self.freesurfer_wanted_segments[:]
+        for seg in freesurfer_found_segments:
+          del unpresent_segments[unpresent_segments.index(seg)]
+        unpresent_segments = map(lambda x: self.freesurfer_lut_dict[x.split('_')[1]]['name'], unpresent_segments) 
+        logging.warning('Unable to find all segments, {} have not been found.'.format(unpresent_segments))
+        logging.warning('LabelMap in path: {} has not been loaded into segmentationDict.'.format(path))
+        return False
+
+      for segmentId in to_remove_ids:
+        segmentationNode.GetSegmentation().RemoveSegment(segmentId)
+
+      
+
+
     closedSurface = segmentationNode.CreateClosedSurfaceRepresentation()
+
+    # m_h = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLModelHierarchyNode", subject_name+' '+file_name+' Segments')
+    # segmentationLogic.ExportAllSegmentsToModelHierarchy(segmentationNode,m_h)
+
+    # collec=vtk.vtkCollection()
+    # m_h.GetChildrenModelNodes(collec)
+
+    # for i in range(collec.GetNumberOfItems()):
+    #   m_n = collec.GetItemAsObject(i)
+    #   displaynode=m_n.GetDisplayNode()
+    #   displaynode.BackfaceCullingOff()
+    #   displaynode.SetVisibility(False)
+
     segmentationNode.SetDisplayVisibility(False)
-    # segmentationNode.GetDisplayNode().SetAllSegmentsVisibility(False)
+    segmentationNode.GetDisplayNode().SetAllSegmentsVisibility(False)
+
     if closedSurface is False:
       logging.error('Failed to create closed surface representation for filename: {}.'.format(path))
       return False
@@ -155,9 +221,19 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
       return False
 
     # Add to the dicts only if succesful
-    self.labelMapDict[fileName] = labelMapNode
-    self.segmentationDict[fileName] = segmentationNode
-    self.labelRangeInCohort = labelRange
+    if self.freesurfer_importation == True:
+      subject_name = os.path.split(os.path.split(directory)[0])[1]
+      file_name = os.path.splitext(fileName)[0]
+      name = subject_name+' '+file_name
+
+      self.labelMapDict[name] = labelMapNode
+      self.segmentationDict[name] = segmentationNode
+      self.labelRangeInCohort = labelRange
+    else:
+      self.labelMapDict[fileName] = labelMapNode
+      self.segmentationDict[fileName] = segmentationNode
+      self.labelRangeInCohort = labelRange
+
     return True
 
   def importModel(self, path):
@@ -168,8 +244,8 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     Populate segmentationDict and set labelRangeInCohort to (0,1)
     """
     directory, fileName = os.path.split(path)
-
     modelNode = slicer.util.loadModel(path, returnNode=True)[1]
+
     if modelNode is None:
       logging.error('Failed to load ' + fileName + 'as a model')
       return False
@@ -251,6 +327,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
         # TODO: add directory parsing based on mode
     # else:
     #   logging.error("Importing from directory is not yet supported")
+ 
   def importFiles(self, filePaths):
     """
     Call the appropiate import function from a heteregeneous list of file paths.
@@ -258,19 +335,33 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     Files with a different number of labels/segments than the first one loaded are ignored with a warning.
     Return true if success, raise error otherwise.
     """
+    self.found_segments =[]
     for path in filePaths:
       fileType = slicer.app.ioManager().fileType(path)
       logging.debug("Path [{}] has file type [{}]".format(path, fileType))
+
       if fileType == 'VolumeFile':
         self.importLabelMap(path)
+
       elif fileType == 'SegmentationFile':
         self.importSegmentation(path)
+
       elif fileType == 'ModelFile':
         self.importModel(path)
+
       elif fileType == 'NoFile':
         raise TypeError("Path [{}] is not existent or has an unknown file type for Slicer [{}]".format(path, fileType))
       else:
         raise TypeError("Path [{}] has file type [{}], but this module does not handle it".format(path, fileType))
+        
+
+    segmentationLogic = slicer.modules.segmentations.logic()
+    for name,segmentation_node in self.segmentationDict.items():
+      labelmaptest=slicer.mrmlScene.AddNewNodeByClass("vtkMRMLLabelMapVolumeNode", 'labelmaptest')
+      segmentationLogic.ExportAllSegmentsToLabelmapNode(segmentation_node,labelmaptest)
+      slicer.util.saveNode(labelmaptest, os.path.join('/work/lpzmateo/data/dataImporter',name+'.nrrd'))
+      loadtest = slicer.util.loadLabelVolume(os.path.join('/work/lpzmateo/data/dataImporter',name+'.nrrd'), returnNode=True)[1]
+      print(loadtest)
 
     return True
 
@@ -331,6 +422,11 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
       self.expectedTopologiesBySegment[segmentName] = long(topologyType)
 
+  def setFreeSurferImportation(self,bool):
+    if bool:
+      self.freesurfer_importation=True
+    else:
+      self.freesurfer_importation=False
   #
   # Function to estimate topology of segmentations, and check for consistencies.
   #
@@ -354,6 +450,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
       for segmentIndex in range(segmentationNode.GetSegmentation().GetNumberOfSegments()):
         segmentId = segmentationNode.GetSegmentation().GetNthSegmentID(segmentIndex)
         segmentName = segmentationNode.GetSegmentation().GetSegment(segmentId).GetName()
+
         # 0 label is assumed to be the background. XXX Pablo: assumed where?
         if segmentName == "0":
           continue
@@ -390,8 +487,8 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
         # calculate the numbers
         topologyNumber = cleanData.GetNumberOfPoints() - edges.GetNumberOfLines() + cleanData.GetNumberOfPolys()
-        self.topologyDict[nodeName][segmentName] = topologyNumber
 
+        self.topologyDict[nodeName][segmentName] = topologyNumber
         if self.saveCleanData:
           self.polyDataDict[nodeName][segmentName] = cleanData
         else:
@@ -434,7 +531,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     the boolean reflects existence of inconsistencies
     It uses the dictionary expectedTopologiesBySegment. If empty, it automatically init it computing the mode by segment.
     """
-    if not self.expectedTopologiesBySegment:
+    if not self.expectedTopologiesBySegment:# or self.expectedTopologiesBySegment.keys() != inputTopologyDictionary.keys():
       self.initExpectedTopologyBySegmentWithModes(inputTopologyDictionary)
 
     inconsistenciesExist = False
@@ -487,6 +584,57 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     """
     return self.getTopologyString(nodeName, inputSegmentName), self.getConsistencyString(nodeName, inputSegmentName)
 
+  #
+  #FreeSurfer tab functions
+  #
+
+  def initFreeSurferLUT(self,LUT_path):
+    #import labels LUT
+    numbers=['0','1','2','3','4','5','6','7','8','9']
+    self.freesurfer_lut_dict=dict()
+    with open(LUT_path,'r') as LUT:
+      line = LUT.readline()
+      while line:
+        filtered_line=list(filter(None, line.split(' ')))
+        if len(filtered_line)>0 and filtered_line[0][0] in numbers:
+          color = [int(filtered_line[2])/255.0,int(filtered_line[3])/255.0,int(filtered_line[4])/255.0]
+          self.freesurfer_lut_dict[filtered_line[0]]={'name':filtered_line[1],'color':color}
+        line = LUT.readline()
+
+  def getFreeSurferAvailableSegmentIds(self,template_path):
+    #check available labels for ONE subject, 
+    #we assume that there is a consistency across the analysable labels in the freesurfer pipeline
+    #additional labels correspond to anomalies
+
+    label_ids = [] 
+
+    directory, fileName = os.path.split(template_path)
+    labelMapNode = slicer.util.loadLabelVolume(template_path, returnNode=True)[1]
+
+    if labelMapNode is None:
+      logging.error('Failed to load ' + fileName + 'as a labelmap')
+      # make sure each one is a labelmap
+      return False
+
+    labelMapNode.SetDisplayVisibility(False)
+    segmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode", labelMapNode.GetName() + '_allSegments')
+    segmentationLogic = slicer.modules.segmentations.logic()
+    segmentationLogic.ImportLabelmapToSegmentationNode(labelMapNode,
+                                                       segmentationNode)
+
+    for segmentIndex in range(segmentationNode.GetSegmentation().GetNumberOfSegments()):
+      segmentId = segmentationNode.GetSegmentation().GetNthSegmentID(segmentIndex)
+      segmentName = segmentationNode.GetSegmentation().GetSegment(segmentId).GetName()
+
+      label_id = segmentName.split('_')[1]
+
+      label_ids.append(label_id)
+
+    slicer.mrmlScene.RemoveNode(segmentationNode)
+
+    return label_ids
+
+
 #
 # DataImporterWidget
 #
@@ -538,21 +686,64 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.widget = widget
     self.layout.addWidget(widget)
 
-    #Browse Directory 
+    #Qtabwidget
+    self.ImporterTypeTabWidget = self.getWidget('ImporterTypeTabWidget')
+    self.ImporterTypeTabWidget.setCurrentIndex(1)
+    self.ImporterTypeTabWidget.connect('currentChanged(int)',self.onCurrentTabChanged)
+    self.ImporterTypeTabWidget.setCurrentIndex(0)
+
+    #Browse Directory Button
     self.InputFolderNameLineEdit = self.getWidget('InputFolderNameLineEdit')
     self.FolderDirectoryButton = self.getWidget('FolderDirectoryButton')
     self.FolderDirectoryButton.connect('directoryChanged(QString)', self.onDirectoryChanged)
 
-    #Browse CSV 
+    #Browse CSV Button
     self.InputCSVFileNameLineEdit = self.getWidget('InputCSVFileNameLineEdit')
     self.CSVBrowseFilePushButton = self.getWidget('CSVBrowseFilePushButton')
     self.CSVBrowseFilePushButton.setIcon(qt.QApplication.style().standardIcon(qt.QStyle.SP_DirIcon))
     self.CSVBrowseFilePushButton.connect('clicked(bool)', self.onClickCSVBrowseFilePushButton)
 
-    #Browse FreeSurfer Directory 
-    self.InputFreeSurferFolderNameLineEdit = self.getWidget('InputFreeSurferFolderNameLineEdit')
-    self.FreeSurferBrowseFolderPushButton = self.getWidget('FreeSurferBrowseFolderPushButton')
-    self.FreeSurferBrowseFolderPushButton.connect('directoryChanged(QString)', self.onFreeSurferDirectoryChanged)
+    #FreeSurfer Tab
+    self.freesurferFilesOfInterest=dict()
+    self.freesurferFilesOfInterest['aseg']=os.path.normpath("mri/aseg.mgz")
+    self.freesurferFilesOfInterest['aparc+aseg']=os.path.normpath("mri/aparc+aseg.mgz")
+    self.freesurferFilesOfInterest['aparc.a2009s+aseg']=os.path.normpath("mri/aparc.a2009s+aseg.mgz")
+
+    #home directory
+    self.InputFreeSurferHomeFolderNameLineEdit = self.getWidget('InputFreeSurferHomeFolderNameLineEdit')
+    self.FreeSurferBrowseHomeFolderPushButton = self.getWidget('FreeSurferBrowseHomeFolderPushButton')
+    self.FreeSurferBrowseHomeFolderPushButton.connect('directoryChanged(QString)', self.onFreeSurferHomeDirectoryChanged)
+    #subjects directory
+    self.InputFreeSurferSubjectsFolderNameLineEdit = self.getWidget('InputFreeSurferSubjectsFolderNameLineEdit')
+    self.FreeSurferBrowseSubjectsFolderPushButton = self.getWidget('FreeSurferBrowseSubjectsFolderPushButton')
+    self.FreeSurferBrowseSubjectsFolderPushButton.connect('directoryChanged(QString)', self.onFreeSurferSubjectsDirectoryChanged)
+    #File Select
+    self.InputFreeSurferFileSelection = self.getWidget('InputFreeSurferFileSelection')
+    self.InputFreeSurferFileSelection.connect('currentIndexChanged(QString)',self.onFreeSurferFileSelectionChanged)
+    #FreeSurfer Subjects table
+    self.InputFreeSurferSubjectsTable = self.getWidget('InputFreeSurferSubjectsTable')
+    self.FreeSurferImportAllSubjectsOption = self.getWidget('FreeSurferImportAllSubjectsOption')
+    self.FreeSurferImportAllSubjectsOption.stateChanged.connect(self.onStateChangedFreeSurferImportAllSubjectsOption)
+    self.onStateChangedFreeSurferImportAllSubjectsOption_is_running=False
+    #FreeSurfer Segments table
+    self.InputFreeSurferSegmentsTable = self.getWidget('InputFreeSurferSegmentsTable')
+    self.FreeSurferImportAllSegmentsOption = self.getWidget('FreeSurferImportAllSegmentsOption')
+    self.FreeSurferImportAllSegmentsOption.stateChanged.connect(self.onStateChangedFreeSurferImportAllSegmentsOption)
+    self.onStateChangedFreeSurferImportAllSegmentsOption_is_running=False
+    #look for freesurfer default hme path and subjects path
+    if ('FREESURFER_HOME' in os.environ.keys()):
+      self.FreeSurfer_home_path = os.environ['FREESURFER_HOME']
+      self.FreeSurferBrowseHomeFolderPushButton.directory=self.FreeSurfer_home_path
+    if ('SUBJECTS_DIR' in os.environ.keys()):
+      self.FreeSurfer_subjects_path = os.environ['SUBJECTS_DIR']
+      self.FreeSurferBrowseSubjectsFolderPushButton.directory=self.FreeSurfer_subjects_path
+    #populate the file combobox
+    for file_name in self.freesurferFilesOfInterest.keys():
+      self.InputFreeSurferFileSelection.addItem(file_name)
+
+
+
+
 
     self.ImportButton = self.getWidget('ImportButton')
     self.ImportButton.connect('clicked(bool)', self.onClickImportButton)
@@ -576,11 +767,8 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     # Initialize the beginning input type.
     self.onSaveCleanDataCheckBoxToggled()
 
-    #look for freesurfer subjects default path
-    if ('SUBJECTS_DIR' in os.environ.keys()):
-      freesurfer_subjects_path = os.environ['SUBJECTS_DIR']
-      self.FreeSurferBrowseFolderPushButton.directory=freesurfer_subjects_path
 
+    
   #
   # Reset all the data for data import
   #
@@ -615,6 +803,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     Does not require any other data structure populated.
     """
     ##### Subjects Table
+    self.resetSubjectsTable()
     nameColumn = 0
     consistencyColumn = 1
     nameColumnLabel = 'Subject name'
@@ -919,19 +1108,251 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.SubjectsTableWidget.setCurrentCell(0, 0)
     self.onSubjectsTableWidgetCellClicked(0, 0)
 
+  #freesurfer tab functions
+  def resetFreeSurferSubjectsTable(self):
+    if self.InputFreeSurferSubjectsTable is not None:
+      self.InputFreeSurferSubjectsTable.setRowCount(0)
+
+  def initFreeSurferSubjectsTable(self):
+    self.resetFreeSurferSubjectsTable()
+    self.freesurferSubjectImport = 0
+    self.freesurferSubjectName = 1
+    freesurferSubjectImportLabel = 'Import'
+    freesurferSubjectLabel = 'Subject'
+    self.InputFreeSurferSubjectsTable.setColumnCount(2)
+    self.InputFreeSurferSubjectsTable.setHorizontalHeaderLabels([
+      freesurferSubjectImportLabel,
+      freesurferSubjectLabel
+    ])
+    self.InputFreeSurferSubjectsTable.verticalHeader().setVisible(False)
+    self.InputFreeSurferSubjectsTable.setSortingEnabled(True)
+    self.InputFreeSurferSubjectsTable.setSelectionBehavior(qt.QAbstractItemView.SelectRows)
+    #resize the columns nicely
+    #pyQt5
+    try:
+      header = self.InputFreeSurferSubjectsTable.horizontalHeader()
+      header.setSectionResizeMode(self.freesurferSubjectImport, qt.QHeaderView.ResizeToContents)   
+      header.setSectionResizeMode(self.freesurferSubjectName, qt.QHeaderView.Stretch) 
+    #pyQt4
+    except:
+      header = self.InputFreeSurferSubjectsTable.horizontalHeader()
+      header.setResizeMode(self.freesurferSubjectImport, qt.QHeaderView.ResizeToContents)  
+      header.setResizeMode(self.freesurferSubjectName, qt.QHeaderView.Stretch) 
+
+  def addRowToFreeSurferSubjectsTable(self,subject_name,path):
+    #create checkbox with a centered layout
+    check_box = qt.QCheckBox()
+    check_box.setChecked(False)
+    check_box.stateChanged.connect(lambda state, x=path: self.onToggleFreeSurferSubjectSelection(x))
+
+    container = qt.QWidget();
+    layout = qt.QHBoxLayout(container);
+    layout.addWidget(check_box);
+    layout.setAlignment(qt.Qt.AlignCenter);
+    layout.setContentsMargins(0,0,0,0);
+    container.setLayout(layout);
+    
+
+    rowPosition = self.InputFreeSurferSubjectsTable.rowCount
+    self.InputFreeSurferSubjectsTable.insertRow(rowPosition)
+    self.InputFreeSurferSubjectsTable.setCellWidget(rowPosition , self.freesurferSubjectImport,container)
+    self.InputFreeSurferSubjectsTable.setItem(rowPosition , self.freesurferSubjectName, qt.QTableWidgetItem(subject_name))
+
+  def resetFreeSurferSegmentsTable(self):
+    if self.InputFreeSurferSegmentsTable is not None:
+      self.InputFreeSurferSegmentsTable.setRowCount(0)
+
+  def initFreeSurferSegmentsTable(self):
+    self.resetFreeSurferSegmentsTable()
+    self.freesurferSegmentsImport = 0
+    self.freesurferSegmentsName = 1
+    freesurferSegmentsImportLabel = 'Import'
+    freesurferSegmentsLabel = 'Segment'
+    self.InputFreeSurferSegmentsTable.setColumnCount(2)
+    self.InputFreeSurferSegmentsTable.setHorizontalHeaderLabels([
+      freesurferSegmentsImportLabel,
+      freesurferSegmentsLabel
+    ])
+    self.InputFreeSurferSegmentsTable.verticalHeader().setVisible(False)
+    self.InputFreeSurferSegmentsTable.setSortingEnabled(True)
+    self.InputFreeSurferSegmentsTable.setSelectionBehavior(qt.QAbstractItemView.SelectRows)
+    #resize the columns nicely
+    #pyQt5
+    try:
+      header = self.InputFreeSurferSegmentsTable.horizontalHeader()
+      header.setSectionResizeMode(self.freesurferSubjectImport, qt.QHeaderView.ResizeToContents)   
+      header.setSectionResizeMode(self.freesurferSubjectName, qt.QHeaderView.Stretch) 
+    #pyQt4
+    except:
+      header = self.InputFreeSurferSegmentsTable.horizontalHeader()
+      header.setResizeMode(self.freesurferSubjectImport, qt.QHeaderView.ResizeToContents)  
+      header.setResizeMode(self.freesurferSubjectName, qt.QHeaderView.Stretch) 
+
+  def addRowToFreeSurferSegmentsTable(self,segment_name,label_id):
+    #create checkbox with a centered layout
+    check_box = qt.QCheckBox()
+    check_box.setChecked(False)
+    check_box.stateChanged.connect(lambda state, x=label_id: self.onToggleFreeSurferSegmentSelection(x))
+
+    container = qt.QWidget();
+    layout = qt.QHBoxLayout(container);
+    layout.addWidget(check_box);
+    layout.setAlignment(qt.Qt.AlignCenter);
+    layout.setContentsMargins(0,0,0,0);
+    container.setLayout(layout);
+    
+
+    rowPosition = self.InputFreeSurferSegmentsTable.rowCount
+    self.InputFreeSurferSegmentsTable.insertRow(rowPosition)
+    self.InputFreeSurferSegmentsTable.setCellWidget(rowPosition , self.freesurferSegmentsImport,container)
+    self.InputFreeSurferSegmentsTable.setItem(rowPosition , self.freesurferSegmentsName, qt.QTableWidgetItem(segment_name))
+
+
+
+
+
+
   '''
   GUI Callback functions
   '''
+  #resize tabs
+  def onCurrentTabChanged(self,index):
+    #resize tabs
+    for i in range(self.ImporterTypeTabWidget.count):
+      if(i!=index):
+        self.ImporterTypeTabWidget.widget(i).setSizePolicy(qt.QSizePolicy.Ignored, qt.QSizePolicy.Ignored);
+
+    self.ImporterTypeTabWidget.widget(index).setSizePolicy(qt.QSizePolicy.Preferred, qt.QSizePolicy.Preferred);
+    self.ImporterTypeTabWidget.widget(index).resize(self.ImporterTypeTabWidget.widget(index).minimumSizeHint);
+    self.ImporterTypeTabWidget.widget(index).adjustSize();
+
+    #empty import list
+    self.filteredFilePathsList=[]
+    tab_text=self.ImporterTypeTabWidget.tabText(index)
+    self.logic.setFreeSurferImportation(tab_text=='Import from FreeSurfer')
+
+  #FreeSurfer UI Callbacks
+  def onFreeSurferHomeDirectoryChanged(self, freesurfer_home_path):
+    logging.debug("onFreeSurferHomeDirectoryChanged: {}".format(freesurfer_home_path))
+
+    LUT_path = os.path.join(freesurfer_home_path,'FreeSurferColorLUT.txt')
+    if not os.path.isfile(LUT_path):
+      logging.error("Directory {} is not a valid FreeSurfer directory, impossible to find FreeSurferColorLUT.txt.".format(directory))
+      return
+
+    #Set directory variable and lineEdit
+    self.freesurfer_home_path = freesurfer_home_path
+    self.InputFreeSurferHomeFolderNameLineEdit.text = freesurfer_home_path
+
+    #init the correspondance labels->segment names dict
+    self.logic.initFreeSurferLUT(LUT_path)
+
+  def onFreeSurferSubjectsDirectoryChanged(self, freesurfer_subjects_path):
+    """
+    Populates self.directoryPath and self.filteredFilePathsList
+    containing a list of files contained in the directoryPath
+    that can be used in this module.
+    """
+    logging.debug("onFreeSurferSubjectsDirectoryChanged: {}".format(freesurfer_subjects_path))
+    #Check directory existance
+    directory = qt.QDir(freesurfer_subjects_path)
+    if not directory.exists():
+      logging.error("Directory {} does not exist.".format(directory))
+      return
+    #Set directory variable and lineEdit
+    self.freesurfer_subjects_path = freesurfer_subjects_path
+    self.InputFreeSurferSubjectsFolderNameLineEdit.text = freesurfer_subjects_path
+
+
+
+    #init subject list and segments list
+    current_file=self.InputFreeSurferFileSelection.currentText
+    if current_file != '':
+      self.onFreeSurferFileSelectionChanged(current_file)
+
+  def onFreeSurferFileSelectionChanged(self, file_name):
+    self.filteredFilePathsList=[]
+
+    self.initFreeSurferSubjectsTable()
+    self.initFreeSurferSegmentsTable()
+    if file_name == "":
+      return
+
+    subjects_path = self.freesurfer_subjects_path
+    file_path = self.freesurferFilesOfInterest[file_name]
+
+    for subject_name in os.listdir(subjects_path):
+      subject_path=os.path.join(subjects_path,subject_name)
+
+      if os.path.isdir(subject_path):
+        abs_path=os.path.join(subject_path,file_path)
+        if os.path.isfile(abs_path):
+          template_path=abs_path
+          self.addRowToFreeSurferSubjectsTable(subject_name,abs_path)
+
+    label_ids = self.logic.getFreeSurferAvailableSegmentIds(template_path)
+    self.logic.freesurfer_wanted_segments=[]
+
+    #populate segments selection table
+    for label_id in label_ids:
+      segment_name=self.logic.freesurfer_lut_dict[label_id]['name']
+      #segment_name=label_id
+      self.addRowToFreeSurferSegmentsTable(segment_name,label_id)
+
+  def onToggleFreeSurferSubjectSelection(self,path):
+    if not self.onStateChangedFreeSurferImportAllSubjectsOption_is_running:
+      self.FreeSurferImportAllSubjectsOption.blockSignals(True)
+      self.FreeSurferImportAllSubjectsOption.setChecked(False)
+      self.FreeSurferImportAllSubjectsOption.blockSignals(False)
+
+
+    if path in self.filteredFilePathsList:
+      index=self.filteredFilePathsList.index(path)
+      self.filteredFilePathsList.pop(index)
+    else:
+      self.filteredFilePathsList.append(path)
+
+    # for select_path in self.filteredFilePathsList:
+    #   print(select_path)
+
+  def onStateChangedFreeSurferImportAllSubjectsOption(self):
+    self.onStateChangedFreeSurferImportAllSubjectsOption_is_running=True
+    subject_number = self.InputFreeSurferSubjectsTable.rowCount
+
+    for i_row in range(subject_number):
+      if self.FreeSurferImportAllSubjectsOption.isChecked():
+        self.InputFreeSurferSubjectsTable.cellWidget(i_row,0).children()[1].setChecked(True)
+      else:
+        self.InputFreeSurferSubjectsTable.cellWidget(i_row,0).children()[1].setChecked(False)
+    self.onStateChangedFreeSurferImportAllSubjectsOption_is_running=False
+
+  def onToggleFreeSurferSegmentSelection(self,label_id):
+    if not self.onStateChangedFreeSurferImportAllSegmentsOption_is_running:
+      self.FreeSurferImportAllSegmentsOption.blockSignals(True)
+      self.FreeSurferImportAllSegmentsOption.setChecked(False)
+      self.FreeSurferImportAllSegmentsOption.blockSignals(False)
+
+    label_id='Label_'+label_id
+    if label_id in self.logic.freesurfer_wanted_segments:
+      index=self.logic.freesurfer_wanted_segments.index(label_id)
+      self.logic.freesurfer_wanted_segments.pop(index)
+    else:
+      self.logic.freesurfer_wanted_segments.append(label_id)
+
+  def onStateChangedFreeSurferImportAllSegmentsOption(self):
+    self.onStateChangedFreeSurferImportAllSegmentsOption_is_running=True
+    segment_number = self.InputFreeSurferSegmentsTable.rowCount
+
+    for i_row in range(segment_number):
+      if self.FreeSurferImportAllSegmentsOption.isChecked():
+        self.InputFreeSurferSegmentsTable.cellWidget(i_row,0).children()[1].setChecked(True)
+      else:
+        self.InputFreeSurferSegmentsTable.cellWidget(i_row,0).children()[1].setChecked(False)
+    self.onStateChangedFreeSurferImportAllSegmentsOption_is_running=False
+
   #
   #  Handle request to import data
   #
-
-  def onFreeSurferDirectoryChanged(self, directoryPath):
-    ''' 
-    Look for freesurfer surfer subjects in the directoryPath,
-
-    '''
-    print('not implemented')
 
   def onClickImportButton(self):
     if not self.filteredFilePathsList:
@@ -939,6 +1360,8 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
       return
 
     self.importFiles(self.filteredFilePathsList)
+
+    #print(self.logic.polyDataDict)
 
   def filterFilePaths(self, filePathsList):
     """
@@ -1014,7 +1437,6 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     # Update Consistency column in SubjectsTable
     self.updateSubjectsTableConsistencyColumn()
     
-
   def onSaveCleanDataCheckBoxToggled(self):
     self.logic.setSaveCleanData(self.SaveCleanDataCheckBox.isChecked())
 
