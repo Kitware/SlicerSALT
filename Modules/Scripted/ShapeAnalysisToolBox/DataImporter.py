@@ -77,11 +77,22 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     self.numberOfDifferentSegments = 0
     self.dictSegmentNamesWithIntegers = dict()
 
-    self.freesurfer_importation=False
+    self.freesurfer_import=False
     self.freesurfer_wanted_segments=[]
 
 
+    scene = slicer.mrmlScene
+    count = scene.GetNumberOfNodes()
+    for idx in range(count):
+      node = scene.GetNthNode(idx)
+      node_type = node.GetClassName()
+      name = node.GetName()
+      id = node.GetID()
+      if node_type == 'vtkMRMLColorTableNode':
+        print(name)
+
   def setSaveCleanData(self, save):
+
     self.saveCleanData = save
 
   #
@@ -104,13 +115,20 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
         logging.debug('Deleting segmentation node: ' + nodeName)
         slicer.mrmlScene.RemoveNode(self.segmentationDict[nodeName])
 
+    self.labelMapDict = {}
+    self.modelDict = {}
+    self.segmentationDict = {}
     self.labelRangeInCohort = (-1, -1)
     self.topologyDict = {}
+    self.polyDataDict = {}
+    self.expectedTopologiesBySegment = {}
     self.inconsistentTopologyDict = {}
-    self.polyDataDict = {} # Dictionary that has all the segmentations.
+
     self.numberOfDifferentSegments = 0
+    self.dictSegmentNamesWithIntegers = dict()
 
   def __del__(self):
+
     self.cleanup()
 
   def checkLabelRangeConsistency(self, inputNumberOfSegments):
@@ -145,9 +163,9 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
       return False
 
     labelMapNode.SetDisplayVisibility(False)
-    if self.freesurfer_importation == True:
+    file_name = os.path.splitext(fileName)[0]
+    if self.freesurfer_import == True:
       subject_name = os.path.split(os.path.split(directory)[0])[1]
-      file_name = os.path.splitext(fileName)[0]
       segmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode", subject_name+' '+file_name+'_SelectedSegments')
     else:
       segmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode", labelMapNode.GetName() + '_allSegments')
@@ -156,7 +174,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
                                                        segmentationNode)
 
     #if importing from freesurfer
-    if self.freesurfer_importation == True:
+    if self.freesurfer_import == True:
       to_remove_ids=[]
       freesurfer_found_segments=[]
       
@@ -191,6 +209,15 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
       for segmentId in to_remove_ids:
         segmentationNode.GetSegmentation().RemoveSegment(segmentId)
 
+    else:
+      for segmentIndex in range(segmentationNode.GetSegmentation().GetNumberOfSegments()):
+        segmentId = segmentationNode.GetSegmentation().GetNthSegmentID(segmentIndex)
+        segment = segmentationNode.GetSegmentation().GetSegment(segmentId)
+        segmentName = segment.GetName()
+
+          
+        segment_name=file_name+' '+seg_name
+        segment.SetName(segment_name)
       
 
 
@@ -221,7 +248,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
       return False
 
     # Add to the dicts only if succesful
-    if self.freesurfer_importation == True:
+    if self.freesurfer_import == True:
       subject_name = os.path.split(os.path.split(directory)[0])[1]
       file_name = os.path.splitext(fileName)[0]
       name = subject_name+' '+file_name
@@ -258,7 +285,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     # To allow better mixing with label maps.
     # We change the name of the model (originally set to the filename in vtkSlicerSegmentationModuleLogic)
     # XXX Better option would be to use terminologies, see: https://discourse.slicer.org/t/finding-corresponding-segments-in-segmentations/4055/4
-    segmentationNode.GetSegmentation().GetSegment(modelNode.GetName()).SetName('1')
+    segmentationNode.GetSegmentation().GetSegment(modelNode.GetName()).SetName(fileName+' 1')
     closedSurface = segmentationNode.CreateClosedSurfaceRepresentation()
     segmentationNode.SetDisplayVisibility(False)
     # segmentationNode.GetDisplayNode().SetAllSegmentsVisibility(False)
@@ -353,15 +380,6 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
         raise TypeError("Path [{}] is not existent or has an unknown file type for Slicer [{}]".format(path, fileType))
       else:
         raise TypeError("Path [{}] has file type [{}], but this module does not handle it".format(path, fileType))
-        
-
-    segmentationLogic = slicer.modules.segmentations.logic()
-    for name,segmentation_node in self.segmentationDict.items():
-      labelmaptest=slicer.mrmlScene.AddNewNodeByClass("vtkMRMLLabelMapVolumeNode", 'labelmaptest')
-      segmentationLogic.ExportAllSegmentsToLabelmapNode(segmentation_node,labelmaptest)
-      slicer.util.saveNode(labelmaptest, os.path.join('/work/lpzmateo/data/dataImporter',name+'.nrrd'))
-      loadtest = slicer.util.loadLabelVolume(os.path.join('/work/lpzmateo/data/dataImporter',name+'.nrrd'), returnNode=True)[1]
-      print(loadtest)
 
     return True
 
@@ -422,11 +440,12 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
       self.expectedTopologiesBySegment[segmentName] = long(topologyType)
 
-  def setFreeSurferImportation(self,bool):
+  def setFreeSurferimport(self,bool):
     if bool:
-      self.freesurfer_importation=True
+      self.freesurfer_import=True
     else:
-      self.freesurfer_importation=False
+      self.freesurfer_import=False
+  
   #
   # Function to estimate topology of segmentations, and check for consistencies.
   #
@@ -524,7 +543,6 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
           self.numberOfDifferentSegments+=1
           self.dictSegmentNamesWithIntegers[segmentName] = self.numberOfDifferentSegments
 
-
   def checkTopologyConsistency(self, inputTopologyDictionary):
     """
     Return list with (boolean, dict of dicts of inconsistent entries: { nodeName: {segmentName, inconsistentTopology} } )
@@ -550,6 +568,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     return (inconsistenciesExist, inconsistentSegments)
 
   def getLabelRangeInCohort(self):
+
     return self.labelRangeInCohort
 
   def getTopologyString(self, nodeName, inputSegmentName):
@@ -587,7 +606,6 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
   #
   #FreeSurfer tab functions
   #
-
   def initFreeSurferLUT(self,LUT_path):
     #import labels LUT
     numbers=['0','1','2','3','4','5','6','7','8','9']
@@ -631,9 +649,53 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
       label_ids.append(label_id)
 
     slicer.mrmlScene.RemoveNode(segmentationNode)
+    slicer.mrmlScene.RemoveNode(labelMapNode)
 
     return label_ids
 
+  #
+  #Shape analysis structure
+  #
+  def generateShapeAnlaysisStructure(self,save_path):
+    segmentationLogic = slicer.modules.segmentations.logic()
+
+    for name,segmentation_node in self.segmentationDict.items():
+      for segmentIndex in range(segmentation_node.GetSegmentation().GetNumberOfSegments()):
+        segmentId = segmentation_node.GetSegmentation().GetNthSegmentID(segmentIndex)
+        full_segmentName = segmentation_node.GetSegmentation().GetSegment(segmentId).GetName()
+        segmentName = full_segmentName.split(' ')[-1]
+        directory_path = os.path.join(save_path,segmentName)
+        input_directory_path = os.path.join(directory_path,'input')
+        output_directory_path = os.path.join(directory_path,'output')
+
+        labelMap_filename = full_segmentName.replace(" ", "_")+'.nrrd'
+        labelMap_filepath = os.path.join(input_directory_path,labelMap_filename)
+
+        polydata_filename = full_segmentName.replace(" ", "_")+'.vtk'
+        polydata_filepath = os.path.join(input_directory_path,polydata_filename)
+
+        segmentIdList = vtk.vtkStringArray()
+        segmentIdList.InsertNextValue(segmentId)
+
+        #save label map
+        exported_labelmap = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLLabelMapVolumeNode", full_segmentName+' LabelMap')
+        segmentationLogic.ExportSegmentsToLabelmapNode(segmentation_node,segmentIdList,exported_labelmap)
+        slicer.util.saveNode(exported_labelmap, labelMap_filepath)
+        slicer.mrmlScene.RemoveNode(exported_labelmap)
+
+        #save Polydata
+        exported_hierarchy = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLModelHierarchyNode", full_segmentName+' Model')
+        segmentationLogic.ExportSegmentsToModelHierarchy(segmentation_node,segmentIdList,exported_hierarchy)
+        collec = vtk.vtkCollection()
+        exported_hierarchy.GetChildrenModelNodes(collec)
+        exported_model = collec.GetItemAsObject(0)
+        slicer.util.saveNode(exported_model, polydata_filepath)
+        slicer.mrmlScene.RemoveNode(exported_hierarchy)
+        slicer.mrmlScene.RemoveNode(exported_model)
+
+        #create output directory
+        if not os.path.isdir(output_directory_path):
+          os.mkdir(output_directory_path)
 
 #
 # DataImporterWidget
@@ -648,6 +710,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.logic.cleanup()
     self.logic = DataImporterLogic()
     self.directoryPath = ''
+    self.shape_analysis_folder=''
     self.filteredFilePathsList = list()
 
   def setup(self):
@@ -661,6 +724,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.filteredFilePathsList = list()
     self.tableWidgetItemDefaultFlags = qt.Qt.NoItemFlags | qt.Qt.ItemIsSelectable | qt.Qt.ItemIsEnabled
     self.displayOnClick = True
+    self.shape_analysis_folder=''
 
     # Table columns
     self.subjectsColumnName = 0
@@ -708,7 +772,6 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.freesurferFilesOfInterest['aseg']=os.path.normpath("mri/aseg.mgz")
     self.freesurferFilesOfInterest['aparc+aseg']=os.path.normpath("mri/aparc+aseg.mgz")
     self.freesurferFilesOfInterest['aparc.a2009s+aseg']=os.path.normpath("mri/aparc.a2009s+aseg.mgz")
-
     #home directory
     self.InputFreeSurferHomeFolderNameLineEdit = self.getWidget('InputFreeSurferHomeFolderNameLineEdit')
     self.FreeSurferBrowseHomeFolderPushButton = self.getWidget('FreeSurferBrowseHomeFolderPushButton')
@@ -742,9 +805,6 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
       self.InputFreeSurferFileSelection.addItem(file_name)
 
 
-
-
-
     self.ImportButton = self.getWidget('ImportButton')
     self.ImportButton.connect('clicked(bool)', self.onClickImportButton)
     self.DataInputTypeGroupBox = self.getWidget('DataInputTypeGroupBox')
@@ -768,23 +828,33 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.onSaveCleanDataCheckBoxToggled()
 
 
-    
+    #Shape Analysis Structure Generation
+    self.InputShapeAnalysisFolderNameLineEdit = self.getWidget('InputShapeAnalysisFolderNameLineEdit')
+    self.ShapeAnalysisFolderPushButton = self.getWidget('ShapeAnalysisFolderPushButton')
+    self.ShapeAnalysisFolderPushButton.connect('directoryChanged(QString)', self.onShapeAnalysisFolderChanged)
+    self.CreateShapeAnalysisStructurePushButton = self.getWidget('CreateShapeAnalysisStructurePushButton')
+    self.CreateShapeAnalysisStructurePushButton.connect('clicked(bool)', self.onGenerateShapeAnalysisStructure)
+
   #
   # Reset all the data for data import
   #
   def cleanup(self):
     logging.debug('Cleaning up widget')
+    self.resetFreeSurferSubjectsTable()
+    self.resetFreeSurferSegmentsTable()
     self.resetSubjectsTable()
     self.resetSegmentsTable()
     self.resetGlobalVariables()
 
   def __del__(self):
+
     self.cleanup()
 
   #
   # Functions to recover the widget in the .ui file
   #
   def getWidget(self, objectName):
+
     return self.findWidget(self.widget, objectName)
 
   def findWidget(self, widget, objectName):
@@ -917,7 +987,6 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.resetSegmentsTable()
     self.populateSegmentsTableWithCurrentSubjectsSelection()
     self.SubjectsTableWidget.setSortingEnabled(True)
-
 
   def populateSubjectsTable(self):
     """
@@ -1207,14 +1276,52 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.InputFreeSurferSegmentsTable.setCellWidget(rowPosition , self.freesurferSegmentsImport,container)
     self.InputFreeSurferSegmentsTable.setItem(rowPosition , self.freesurferSegmentsName, qt.QTableWidgetItem(segment_name))
 
+  def uncheckFreeSurferTables(self):
+    #uncheck subjects
+    subject_number = self.InputFreeSurferSubjectsTable.rowCount
+    for i_row in range(subject_number):
+      self.InputFreeSurferSubjectsTable.cellWidget(i_row,0).children()[1].blockSignals(True)
+      self.InputFreeSurferSubjectsTable.cellWidget(i_row,0).children()[1].setChecked(False)
+      self.InputFreeSurferSubjectsTable.cellWidget(i_row,0).children()[1].blockSignals(False)
 
-
-
-
-
+    #uncheck segments
+    segment_number = self.InputFreeSurferSegmentsTable.rowCount
+    for i_row in range(segment_number):
+      self.InputFreeSurferSegmentsTable.cellWidget(i_row,0).children()[1].blockSignals(True)
+      self.InputFreeSurferSegmentsTable.cellWidget(i_row,0).children()[1].setChecked(False)
+      self.InputFreeSurferSegmentsTable.cellWidget(i_row,0).children()[1].blockSignals(False)
+  
   '''
   GUI Callback functions
   '''
+  #Shape Analysis Structure Generation
+  def onShapeAnalysisFolderChanged(self,directoryPath):
+    logging.debug("onShapeAnalysisFolderChanged: {}".format(directoryPath))
+    # Create a list of files from the directory
+    directory = qt.QDir(directoryPath)
+    if not directory.exists():
+      logging.error("Directory {} does not exist.".format(directory))
+      return
+
+    self.shape_analysis_folder = directoryPath
+    self.InputShapeAnalysisFolderNameLineEdit.text = directoryPath
+
+  def onGenerateShapeAnalysisStructure(self):
+    logging.debug("onGenerateShapeAnalysisStructure")
+
+    #check for imported data
+    if len(self.logic.segmentationDict)==0:
+      logging.error("Empty segmentation dictionary, import data before generating the Shape Analysis Structure.")
+      return
+
+    if self.shape_analysis_folder == '':
+      logging.error("No Shape Analysis folder specified")
+      return
+
+    self.logic.generateShapeAnlaysisStructure(self.shape_analysis_folder)
+
+    print('the shape analysis folder located at %s is ready' %(self.shape_analysis_folder))
+
   #resize tabs
   def onCurrentTabChanged(self,index):
     #resize tabs
@@ -1229,7 +1336,15 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     #empty import list
     self.filteredFilePathsList=[]
     tab_text=self.ImporterTypeTabWidget.tabText(index)
-    self.logic.setFreeSurferImportation(tab_text=='Import from FreeSurfer')
+    if tab_text=='Import from FreeSurfer':
+      self.logic.setFreeSurferimport(True)
+    else:
+      self.logic.setFreeSurferimport(False)
+      self.logic.freesurfer_wanted_segments=[]
+      try:
+        self.uncheckFreeSurferTables()
+      except:
+        pass
 
   #FreeSurfer UI Callbacks
   def onFreeSurferHomeDirectoryChanged(self, freesurfer_home_path):
@@ -1350,14 +1465,29 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
         self.InputFreeSurferSegmentsTable.cellWidget(i_row,0).children()[1].setChecked(False)
     self.onStateChangedFreeSurferImportAllSegmentsOption_is_running=False
 
+ 
+
   #
   #  Handle request to import data
   #
-
   def onClickImportButton(self):
     if not self.filteredFilePathsList:
       logging.warning('List of files is empty, choose a folder or a csv file to import first.')
       return
+
+    if len(self.logic.segmentationDict) != 0:
+      logging.warning('Importing new data will delete the previous import')
+
+      if  slicer.util.confirmYesNoDisplay('Importing new data will delete the previous import,\ndo you want to import anyway?', windowTitle=None):
+        self.logic.cleanup()
+        self.resetSubjectsTable()
+        self.resetSegmentsTable()
+
+        
+      else:
+        logging.info("import aborted")
+        return
+
 
     self.importFiles(self.filteredFilePathsList)
 
@@ -1438,17 +1568,20 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.updateSubjectsTableConsistencyColumn()
     
   def onSaveCleanDataCheckBoxToggled(self):
+
     self.logic.setSaveCleanData(self.SaveCleanDataCheckBox.isChecked())
 
   def onDisplayOnClickCheckBoxToggled(self):
+
     self.displayOnClick = self.DisplayOnClickCheckBox.isChecked()
 
   def onClickDisplaySelectedPushButton(self):
+
     self.displaySelectedIndexes()
+
   '''
   Supplemental functions to update the visualizations
   '''
-
   def center3dView(self):
     layoutManager = slicer.app.layoutManager()
     threeDWidget = layoutManager.threeDWidget(0)
@@ -1464,6 +1597,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
       displayNode.SetAllSegmentsVisibility(visibility)
 
   def hideAllSegmentations(self):
+
     self.setVisibilitySegmentations(False)
 
   def displaySelectedIndexes(self):
