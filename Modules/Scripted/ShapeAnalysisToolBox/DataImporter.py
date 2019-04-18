@@ -285,7 +285,8 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     # To allow better mixing with label maps.
     # We change the name of the model (originally set to the filename in vtkSlicerSegmentationModuleLogic)
     # XXX Better option would be to use terminologies, see: https://discourse.slicer.org/t/finding-corresponding-segments-in-segmentations/4055/4
-    segmentationNode.GetSegmentation().GetSegment(modelNode.GetName()).SetName(fileName+' 1')
+    file_name = os.path.splitext(fileName)[0]
+    segmentationNode.GetSegmentation().GetSegment(modelNode.GetName()).SetName(file_name+' 1')
     closedSurface = segmentationNode.CreateClosedSurfaceRepresentation()
     segmentationNode.SetDisplayVisibility(False)
     # segmentationNode.GetDisplayNode().SetAllSegmentsVisibility(False)
@@ -441,10 +442,9 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
       self.expectedTopologiesBySegment[segmentName] = long(topologyType)
 
   def setFreeSurferimport(self,bool):
-    if bool:
-      self.freesurfer_import=True
-    else:
-      self.freesurfer_import=False
+
+    self.freesurfer_import=bool
+
   
   #
   # Function to estimate topology of segmentations, and check for consistencies.
@@ -1291,6 +1291,20 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
       self.InputFreeSurferSegmentsTable.cellWidget(i_row,0).children()[1].setChecked(False)
       self.InputFreeSurferSegmentsTable.cellWidget(i_row,0).children()[1].blockSignals(False)
   
+  def resetFreeSurferTab(self):
+    self.logic.freesurfer_wanted_segments=[]
+    self.uncheckFreeSurferTables()
+  
+  def resetCSVTab(self):
+    #reset CSV tab
+    self.InputCSVFileNameLineEdit.text=''
+
+  def resetDirectoryTab(self):
+    #reset directroy tab
+    self.InputFolderNameLineEdit.text=''
+    self.FolderDirectoryButton.blockSignals(True)
+    self.FolderDirectoryButton.directory = '/'
+    self.FolderDirectoryButton.blockSignals(False)
   '''
   GUI Callback functions
   '''
@@ -1324,25 +1338,48 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
 
   #resize tabs
   def onCurrentTabChanged(self,index):
-    #resize tabs
+    #resize tabs to fit minimal space
     for i in range(self.ImporterTypeTabWidget.count):
       if(i!=index):
         self.ImporterTypeTabWidget.widget(i).setSizePolicy(qt.QSizePolicy.Ignored, qt.QSizePolicy.Ignored);
-
     self.ImporterTypeTabWidget.widget(index).setSizePolicy(qt.QSizePolicy.Preferred, qt.QSizePolicy.Preferred);
     self.ImporterTypeTabWidget.widget(index).resize(self.ImporterTypeTabWidget.widget(index).minimumSizeHint);
     self.ImporterTypeTabWidget.widget(index).adjustSize();
 
     #empty import list
     self.filteredFilePathsList=[]
+    #reset import option of other tabs
     tab_text=self.ImporterTypeTabWidget.tabText(index)
     if tab_text=='Import from FreeSurfer':
       self.logic.setFreeSurferimport(True)
-    else:
-      self.logic.setFreeSurferimport(False)
-      self.logic.freesurfer_wanted_segments=[]
       try:
-        self.uncheckFreeSurferTables()
+        self.resetDirectoryTab()
+        self.resetCSVTab()
+      except:
+        pass
+
+    elif tab_text=='Import from CSV':
+      self.logic.setFreeSurferimport(False)
+      try:
+        self.resetFreeSurferTab()
+        self.resetDirectoryTab()
+      except:
+        pass
+
+    elif tab_text=='Import from directory':
+      self.logic.setFreeSurferimport(False)
+      try:
+        self.resetFreeSurferTab()
+        self.resetCSVTab()
+      except:
+        pass
+
+    else:
+      try:
+        self.logic.setFreeSurferimport(False)
+        self.resetFreeSurferTab()
+        self.resetDirectoryTab()
+        self.resetCSVTab()
       except:
         pass
 
