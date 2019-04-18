@@ -81,16 +81,6 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     self.freesurfer_wanted_segments=[]
 
 
-    scene = slicer.mrmlScene
-    count = scene.GetNumberOfNodes()
-    for idx in range(count):
-      node = scene.GetNthNode(idx)
-      node_type = node.GetClassName()
-      name = node.GetName()
-      id = node.GetID()
-      if node_type == 'vtkMRMLColorTableNode':
-        print(name)
-
   def setSaveCleanData(self, save):
 
     self.saveCleanData = save
@@ -681,6 +671,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
         exported_labelmap = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLLabelMapVolumeNode", full_segmentName+' LabelMap')
         segmentationLogic.ExportSegmentsToLabelmapNode(segmentation_node,segmentIdList,exported_labelmap)
         slicer.util.saveNode(exported_labelmap, labelMap_filepath)
+        slicer.mrmlScene.RemoveNode(slicer.util.getNode(pattern=full_segmentName+' LabelMap_ColorTable'))
         slicer.mrmlScene.RemoveNode(exported_labelmap)
 
         #save Polydata
@@ -735,6 +726,18 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.segmentsColumnTopologyCurrent = 1
     self.segmentsColumnTopologyExpected = 2
 
+    #get available color tables
+    self.color_table_dict=dict()
+    scene = slicer.mrmlScene
+    count = scene.GetNumberOfNodes()
+    for idx in range(count):
+      node = scene.GetNthNode(idx)
+      node_type = node.GetClassName()
+      name = node.GetName()
+      id = node.GetID()
+      if node_type == 'vtkMRMLColorTableNode':
+        self.color_table_dict[name]=id
+
     #
     #  Interface
     #
@@ -760,12 +763,28 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.InputFolderNameLineEdit = self.getWidget('InputFolderNameLineEdit')
     self.FolderDirectoryButton = self.getWidget('FolderDirectoryButton')
     self.FolderDirectoryButton.connect('directoryChanged(QString)', self.onDirectoryChanged)
+    self.InputFolderColorTableSelection = self.getWidget('InputFolderColorTableSelection')
+    self.InputFolderColorTableSelection.connect('currentIndexChanged(QString)',self.onColorTableSelectionChanged)
+    self.InputFileTypeSelection = self.getWidget('InputFileTypeSelection')
+    self.InputFileTypeSelection.connect('currentIndexChanged(QString)',self.onFileTypeSelectionChanged)
+    #populate file type combobox
+    self.InputFileTypeSelection.addItem('Volume File')
+    self.InputFileTypeSelection.addItem('Model File')
+    self.InputFileTypeSelection.addItem('Segmentation File')
+    #populate colortable combobox
+    for name in self.color_table_dict.keys():
+      self.InputFolderColorTableSelection.addItem(name)
 
     #Browse CSV Button
     self.InputCSVFileNameLineEdit = self.getWidget('InputCSVFileNameLineEdit')
     self.CSVBrowseFilePushButton = self.getWidget('CSVBrowseFilePushButton')
     self.CSVBrowseFilePushButton.setIcon(qt.QApplication.style().standardIcon(qt.QStyle.SP_DirIcon))
     self.CSVBrowseFilePushButton.connect('clicked(bool)', self.onClickCSVBrowseFilePushButton)
+    self.InputCSVColorTableSelection = self.getWidget('InputCSVColorTableSelection')
+    self.InputCSVColorTableSelection.connect('currentIndexChanged(QString)',self.onColorTableSelectionChanged)
+    #populate colortable combobox
+    for name in self.color_table_dict.keys():
+      self.InputCSVColorTableSelection.addItem(name)
 
     #FreeSurfer Tab
     self.freesurferFilesOfInterest=dict()
@@ -1507,6 +1526,13 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
   #
   #  Handle request to import data
   #
+  def onColorTableSelectionChanged(self):
+    print('yo')
+
+  def onFileTypeSelectionChanged(self):
+    print('yo')
+
+
   def onClickImportButton(self):
     if not self.filteredFilePathsList:
       logging.warning('List of files is empty, choose a folder or a csv file to import first.')
