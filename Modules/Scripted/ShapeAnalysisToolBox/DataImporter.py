@@ -80,6 +80,8 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     self.freesurfer_import=False
     self.freesurfer_wanted_segments=[]
 
+    self.expected_file_type = 'VolumeFile'
+
 
   def setSaveCleanData(self, save):
 
@@ -206,7 +208,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
         segmentName = segment.GetName()
 
           
-        segment_name=file_name+' '+seg_name
+        segment_name=file_name+' '+segmentName
         segment.SetName(segment_name)
       
 
@@ -359,13 +361,22 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
       logging.debug("Path [{}] has file type [{}]".format(path, fileType))
 
       if fileType == 'VolumeFile':
-        self.importLabelMap(path)
+        if self.expected_file_type == 'None' or self.expected_file_type == fileType:
+          self.importLabelMap(path)
+        else:
+          logging.debug("Path [{}] ignored, expected file type is [{}]".format(path, self.expected_file_type))
 
       elif fileType == 'SegmentationFile':
-        self.importSegmentation(path)
+        if self.expected_file_type == 'None' or self.expected_file_type == fileType:
+          self.importSegmentation(path)
+        else:
+          logging.debug("Path [{}] ignored, expected file type is [{}]".format(path, self.expected_file_type))
 
       elif fileType == 'ModelFile':
-        self.importModel(path)
+        if self.expected_file_type == 'None' or self.expected_file_type == fileType:
+          self.importModel(path)
+        else:
+          logging.debug("Path [{}] ignored, expected file type is [{}]".format(path, self.expected_file_type))
 
       elif fileType == 'NoFile':
         raise TypeError("Path [{}] is not existent or has an unknown file type for Slicer [{}]".format(path, fileType))
@@ -435,6 +446,9 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
     self.freesurfer_import=bool
 
+  def setExpectedFileType(self,filetype):
+
+    self.expected_file_type=filetype
   
   #
   # Function to estimate topology of segmentations, and check for consistencies.
@@ -1371,6 +1385,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     tab_text=self.ImporterTypeTabWidget.tabText(index)
     if tab_text=='Import from FreeSurfer':
       self.logic.setFreeSurferimport(True)
+      self.logic.setExpectedFileType('VolumeFile')
       try:
         self.resetDirectoryTab()
         self.resetCSVTab()
@@ -1379,6 +1394,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
 
     elif tab_text=='Import from CSV':
       self.logic.setFreeSurferimport(False)
+      self.logic.setExpectedFileType('None')
       try:
         self.resetFreeSurferTab()
         self.resetDirectoryTab()
@@ -1387,7 +1403,10 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
 
     elif tab_text=='Import from directory':
       self.logic.setFreeSurferimport(False)
+
       try:
+        self.InputFileTypeSelection.setCurrentIndex(1)
+        self.InputFileTypeSelection.setCurrentIndex(0)
         self.resetFreeSurferTab()
         self.resetCSVTab()
       except:
@@ -1526,11 +1545,20 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
   #
   #  Handle request to import data
   #
-  def onColorTableSelectionChanged(self):
-    print('yo')
+  def onColorTableSelectionChanged(self,file_name):
+    print(file_name)
 
-  def onFileTypeSelectionChanged(self):
-    print('yo')
+  def onFileTypeSelectionChanged(self,file_type):
+    if file_type == 'Volume File':
+      self.logic.setExpectedFileType('VolumeFile')
+    elif file_type == 'Segmentation File':
+      self.logic.setExpectedFileType('SegmentationFile')
+    elif file_type == 'Model File':
+      self.logic.setExpectedFileType('ModelFile')
+    else:
+      self.logic.setExpectedFileType('None')
+
+
 
 
   def onClickImportButton(self):
