@@ -70,16 +70,6 @@
            <enum>QLayout::SetDefaultConstraint</enum>
           </property>
           <item>
-           <widget class="ctkDirectoryButton" name="FolderDirectoryButton" native="true">
-            <property name="directory" stdset="0">
-             <string>.</string>
-            </property>
-            <property name="text" stdset="0">
-             <string> Choose Data Directory</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <layout class="QHBoxLayout" name="FolderHorizontalLayout">
             <property name="sizeConstraint">
              <enum>QLayout::SetDefaultConstraint</enum>
@@ -98,6 +88,44 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="ctkDirectoryButton" name="FolderDirectoryButton" native="true">
+              <property name="directory" stdset="0">
+               <string>.</string>
+              </property>
+              <property name="text" stdset="0">
+               <string> Choose Data Directory</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QLabel" name="InputFolderColorTableLabel">
+              <property name="text">
+               <string>Color table</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="InputFolderColorTableSelection"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QLabel" name="InputFileTypeLabel">
+              <property name="text">
+               <string>Type of File</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="InputFileTypeSelection"/>
+            </item>
            </layout>
           </item>
          </layout>
@@ -114,13 +142,6 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <item>
-           <widget class="QPushButton" name="CSVBrowseFilePushButton">
-            <property name="text">
-             <string>Choose CSV File</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <layout class="QHBoxLayout" name="CSVHorizontalLayout">
             <item>
              <widget class="QLabel" name="InputCSVFileNameLabel">
@@ -135,6 +156,27 @@
                <bool>true</bool>
               </property>
              </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="CSVBrowseFilePushButton">
+              <property name="text">
+               <string>Choose CSV File</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QLabel" name="InputCSVColorTableLabel">
+              <property name="text">
+               <string>Color Table</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="InputCSVColorTableSelection"/>
             </item>
            </layout>
           </item>
