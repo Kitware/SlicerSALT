@@ -330,7 +330,7 @@ set(${extension_name}_EXTERNAL_PROJECT_EXCLUDE_ALL TRUE)
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/${extension_name}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/${extension_name}
   GIT_TAG        c186eeb30a99a20c12cc706d2e392552992d479a # slicersalt-2018-09-17-ff44744
   GIT_PROGRESS   1
   QUIET
