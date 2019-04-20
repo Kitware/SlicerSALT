@@ -153,7 +153,7 @@ set(extension_name "Eigen3")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/eigen-git-mirror
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/eigen-git-mirror
   GIT_TAG        16e54382bc1938069cf9faa200f009c48964195e # slicersalt-3.3-2018-09-07-2fd9e7447
   GIT_PROGRESS   1
   QUIET
@@ -213,8 +213,8 @@ set(extension_name "GROUPS")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/vicory/${extension_name}
-  GIT_TAG        eb8c65a177969e804aeb76a924082cbef23c5e90 # fix_rigidalignment_errors
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
+  GIT_TAG        eb8c65a177969e804aeb76a924082cbef23c5e90 # slicersalt-2018-11-16-15c897e
   GIT_PROGRESS   1
   QUIET
   )
@@ -228,7 +228,7 @@ if(SlicerSALT_BUILD_MFSDA)
   set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
   FetchContent_Populate(${extension_name}
     SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-    GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/vicory/${extension_name}
+    GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
     GIT_TAG        a4d6b6ad94d91bfe4895f1bf8565561c38240e3b # branch: fix_extension_build
     GIT_PROGRESS   1
     QUIET
@@ -264,7 +264,7 @@ set(${extension_name}_EXTERNAL_PROJECT_EXCLUDE_ALL TRUE)
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/3DMetricTools
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/3DMetricTools
   GIT_TAG        a323e0bcfffd112e517cf28bf6a96dca10d32047 # branch: slicersalt-2017-10-06-dbd3b88a2
   GIT_PROGRESS   1
   QUIET
@@ -294,7 +294,7 @@ set(extension_name "shape4D")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/${extension_name}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
   GIT_TAG        b175600fc38671a0d139dfbaaa61165aab12bdbc # slicersalt-2018-09-27-e6c242627
   GIT_PROGRESS   1
   QUIET
@@ -312,7 +312,7 @@ set(${extension_name}_EXTERNAL_PROJECT_EXCLUDE_ALL TRUE)
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/${extension_name}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
   GIT_TAG        8112d7b1253a94426b510a53779c20118e483c1a # slicersalt-2018-11-26-92fb222
   GIT_PROGRESS   1
   QUIET
@@ -348,8 +348,8 @@ set(${extension_name}_EXTERNAL_PROJECT_DEPENDENCIES LAPACK)
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/jcfr/${extension_name}
-  GIT_TAG        f78ef12958847d35fb46c1eab3a2e2b59f22c437 # support-direct-integration-in-custom-slicer-app
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
+  GIT_TAG        f78ef12958847d35fb46c1eab3a2e2b59f22c437 # slicersalt-2018-09-17-a483d8106
   GIT_PROGRESS   1
   QUIET
   )
