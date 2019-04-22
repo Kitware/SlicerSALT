@@ -201,7 +201,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${short_extension_name}")
 FetchContent_Populate(${short_extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/SlicerSkeletalRepresentation.git
-  GIT_TAG        7be23feb8bef52e9e319637c37acf68f12d73ceb
+  GIT_TAG        00d21aade820fb3aa322cbf6940e3fe35fd86251
   GIT_PROGRESS   1
   QUIET
   )
@@ -349,7 +349,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        f78ef12958847d35fb46c1eab3a2e2b59f22c437 # slicersalt-2018-09-17-a483d8106
+  GIT_TAG        4f5c07f1ea2b2a0530dfabe9c9d129a9347cbc07 # slicersalt-2018-09-17-a483d8106
   GIT_PROGRESS   1
   QUIET
   )
