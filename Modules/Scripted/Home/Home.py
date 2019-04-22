@@ -7,7 +7,7 @@ import vtk, qt, ctk, slicer, PythonQt
 # Home
 #
 
-class Home:
+class Home(object):
     def __init__(self, parent):
         parent.title = "Home"
         parent.categories = ["Shape Analysis Toolbox"]
@@ -39,7 +39,7 @@ class Home:
 # qHomeWidget
 #
 
-class HomeWidget:
+class HomeWidget(object):
     def __init__(self, parent=None):
         if not parent:
             self.parent = slicer.qMRMLWidget()
