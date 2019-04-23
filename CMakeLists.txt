@@ -240,6 +240,27 @@ if(SlicerSALT_BUILD_MFSDA)
 endif()
 
 #-----------------------------------------------------------------------------
+# ShapeVariationAnalyzer
+
+set(ShapeVariationAnalyzer_BUILD_SLICER_EXTENSION 1)
+mark_as_superbuild(ShapeVariationAnalyzer_BUILD_SLICER_EXTENSION:BOOL)
+
+set(extension_name "ShapeVariationAnalyzer")
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
+  GIT_TAG        42343774c44dc78b8560fc0a9e33e3a6018cb6e1 # slicersalt-2018-11-29-8340af24e
+  GIT_PROGRESS   1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+list(APPEND Slicer_ADDITIONAL_DEPENDENCIES
+  python-ShapeVariationAnalyzer-requirements
+  )
+
+#-----------------------------------------------------------------------------
 # ModelToModelDistance
 
 # Notes:
