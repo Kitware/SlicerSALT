@@ -60,9 +60,9 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
 &nbsp; 3. Use <a href="#ShapeAnalysisModule"><b>SPHARM Shape Analysis Module</b></a> to do spherical harmonics based analysis<br><br>
 &nbsp; 4. Use the <a href="#GroupWiseRegistrationModule"><b>Study-specific Shape Analysis</b></a> module.<br><br>
 &nbsp; 5. Use the <a href="#SkeletalRepresentationVisualizer"><b>S-Rep Shape Analysis</b></a> module to do shape analysis via skeletal representations.<br><br>
-&nbsp; 6. Use the <a href="#Home"><b>Shape Evaluator</b></a> module to compute a mean shape and see how the population varies.<br><br>
+&nbsp; 6. Use the <a href="#ShapeVariationAnalyzer"><b>Shape Evaluator</b></a> module to compute a mean shape and see how the population varies.<br><br>
 &nbsp; 7. Use <a href="#RegressionComputation"><b>Shape Regressions</b></a> module to do regression based analysis.<br><br>
-&nbsp; 8. Use the <a href="#Home"><b>Shape Statistics</b></a> module.<br><br>
+&nbsp; 8. Use the <a href="#MFSDA"><b>Shape Statistics</b></a> module.<br><br>
 """
 
         # TEXTEDIT
