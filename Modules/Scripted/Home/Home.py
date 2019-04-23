@@ -1,13 +1,17 @@
-import vtk, qt, ctk, slicer, PythonQt
+import os
+import vtk, qt, ctk, slicer
+from slicer.ScriptedLoadableModule import (ScriptedLoadableModule,
+                                           ScriptedLoadableModuleWidget)
 
-
-# ICON_DIR = os.path.dirname(os.path.realpath(__file__)) + '/Resources/Icons/'
 
 #
 # Home
 #
 
-class Home(object):
+class Home(ScriptedLoadableModule):
+    """Uses ScriptedLoadableModule base class, available at:
+    https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py
+    """
     def __init__(self, parent):
         parent.title = "Home"
         parent.categories = ["Shape Analysis Toolbox"]
@@ -30,30 +34,20 @@ class Home(object):
         </center>
         """
 
-        # parent.icon = qt.QIcon("%s/cranioIcon.png" % ICON_DIR)
-
-        self.parent = parent
-
 
 #
-# qHomeWidget
+# HomeWidget
 #
 
-class HomeWidget(object):
-    def __init__(self, parent=None):
-        if not parent:
-            self.parent = slicer.qMRMLWidget()
-            self.parent.setLayout(qt.QVBoxLayout())
-            self.parent.setMRMLScene(slicer.mrmlScene)
-        else:
-            self.parent = parent
-        self.layout = self.parent.layout()
-        if not parent:
-            self.setup()
-            self.parent.show()
+class HomeWidget(ScriptedLoadableModuleWidget):
+    """Uses ScriptedLoadableModuleWidget base class, available at:
+    https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py
+    """
 
     def setup(self):
+        ScriptedLoadableModuleWidget.setup(self)
 
+        # Instantiate and connect widgets ...
         # TEXT
         text = """
 <br>
