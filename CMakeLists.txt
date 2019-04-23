@@ -1,12 +1,8 @@
-cmake_minimum_required(VERSION 3.11)
+cmake_minimum_required(VERSION 3.13.4)
 
 # Enable C++11
-if(NOT DEFINED CMAKE_CXX_STANDARD)
-  if(DEFINED Qt5_DIR)
-    set(CMAKE_CXX_STANDARD 11)
-  else()
-    set(CMAKE_CXX_STANDARD 98)
-  endif()
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 11)
 endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -16,8 +12,8 @@ include(FetchContent)
 if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
-    GIT_REPOSITORY https://github.com/jcfr/Slicer
-    GIT_TAG        57cf303f19cce128022752c12e2af7c5af3afb92 # slicersalt-4.11-2018-11-19-559e3deb0
+    GIT_REPOSITORY https://github.com/slicersalt/Slicer
+    GIT_TAG        9cb1e810754d6c2e59e6658e0ae8467245dcb3d2 # slicersalt-4.11-2019-04-22-eeb2d75e8
     GIT_PROGRESS   1
     )
 else()
@@ -201,7 +197,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${short_extension_name}")
 FetchContent_Populate(${short_extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/SlicerSkeletalRepresentation.git
-  GIT_TAG        7be23feb8bef52e9e319637c37acf68f12d73ceb
+  GIT_TAG        00d21aade820fb3aa322cbf6940e3fe35fd86251
   GIT_PROGRESS   1
   QUIET
   )
@@ -224,23 +220,45 @@ list(APPEND EXTERNAL_PROJECT_ADDITIONAL_DIRS ${${extension_name}_SOURCE_DIR}/Sup
 #-----------------------------------------------------------------------------
 # MFSDA
 if(SlicerSALT_BUILD_MFSDA)
+  set(MFSDA_BUILD_SLICER_EXTENSION 1)
+  mark_as_superbuild(MFSDA_BUILD_SLICER_EXTENSION:BOOL)
+
   set(extension_name "MFSDA_Python")
   set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
   FetchContent_Populate(${extension_name}
     SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
     GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-    GIT_TAG        a4d6b6ad94d91bfe4895f1bf8565561c38240e3b # branch: fix_extension_build
+    GIT_TAG        25fb34e2f392e1f264eab37dd513a7e33055eb9d # slicersalt-2019-02-13-0a67df1d8
     GIT_PROGRESS   1
     QUIET
     )
   list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
   list(APPEND Slicer_ADDITIONAL_DEPENDENCIES
-    python-scipy
-    python-pandas
-    python-statsmodels
+    python-mfsda-requirements
     )
 endif()
+
+#-----------------------------------------------------------------------------
+# ShapeVariationAnalyzer
+
+set(ShapeVariationAnalyzer_BUILD_SLICER_EXTENSION 1)
+mark_as_superbuild(ShapeVariationAnalyzer_BUILD_SLICER_EXTENSION:BOOL)
+
+set(extension_name "ShapeVariationAnalyzer")
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
+  GIT_TAG        42343774c44dc78b8560fc0a9e33e3a6018cb6e1 # slicersalt-2018-11-29-8340af24e
+  GIT_PROGRESS   1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+list(APPEND Slicer_ADDITIONAL_DEPENDENCIES
+  python-ShapeVariationAnalyzer-requirements
+  )
 
 #-----------------------------------------------------------------------------
 # ModelToModelDistance
@@ -349,7 +367,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        f78ef12958847d35fb46c1eab3a2e2b59f22c437 # slicersalt-2018-09-17-a483d8106
+  GIT_TAG        4f5c07f1ea2b2a0530dfabe9c9d129a9347cbc07 # slicersalt-2018-09-17-a483d8106
   GIT_PROGRESS   1
   QUIET
   )

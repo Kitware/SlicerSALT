@@ -1,7 +1,7 @@
-set(proj python-pandas)
+set(proj python-ShapeVariationAnalyzer-requirements)
 
 # Set dependency list
-set(${proj}_DEPENDENCIES python NUMPY python-scipy python-cython python-pip)
+set(${proj}_DEPENDENCIES python NUMPY python-pip)
 
 if(NOT DEFINED Slicer_USE_SYSTEM_${proj})
   set(Slicer_USE_SYSTEM_${proj} ${Slicer_USE_SYSTEM_python})
@@ -11,26 +11,24 @@ endif()
 ExternalProject_Include_Dependencies(${proj} PROJECT_VAR proj DEPENDS_VAR ${proj}_DEPENDENCIES)
 
 if(Slicer_USE_SYSTEM_${proj})
-  ExternalProject_FindPythonPackage(
-    MODULE_NAME "pandas"
-    REQUIRED
-    )
+  foreach(module_name IN ITEMS sklearn)
+    ExternalProject_FindPythonPackage(
+      MODULE_NAME "${module_name}"
+      REQUIRED
+      )
+  endforeach()
 endif()
 
 if(NOT Slicer_USE_SYSTEM_${proj})
 
-set(_version "0.23.4")
-
   ExternalProject_Add(${proj}
     ${${proj}_EP_ARGS}
-    URL "https://files.pythonhosted.org/packages/e9/ad/5e92ba493eff96055a23b0a1323a9a803af71ec859ae3243ced86fcbd0a4/pandas-${_version}.tar.gz"
-    URL_HASH SHA256=5b24ca47acf69222e82530e89111dd9d14f9b970ab2cd3a1c2c78f0c4fbba4f4
-    DOWNLOAD_DIR ${CMAKE_BINARY_DIR}
+    DOWNLOAD_COMMAND ""
     SOURCE_DIR ${CMAKE_BINARY_DIR}/${proj}
     BUILD_IN_SOURCE 1
-    CONFIGURE_COMMAND ${PYTHON_EXECUTABLE} -m pip install pytz python-dateutil
+    CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
-    INSTALL_COMMAND ${PYTHON_EXECUTABLE} setup.py install
+    INSTALL_COMMAND ${PYTHON_EXECUTABLE} -m pip install -r ${SlicerSALT_SOURCE_DIR}/SuperBuild/ShapeVariationAnalyzer-requirements.txt
     LOG_INSTALL 1
     DEPENDS
       ${${proj}_DEPENDENCIES}

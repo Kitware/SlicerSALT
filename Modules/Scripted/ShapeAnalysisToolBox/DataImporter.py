@@ -329,7 +329,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
         logging.warning("Topology: [{}] for segmentName: '{}', shows multiple holes. Use a key from {}".format(topologyType, segmentName, self.TOPOLOGY_TYPES))
         topologyType = self.TOPOLOGY_MULTIPLE_HOLES_TYPE
 
-      self.expectedTopologiesBySegment[segmentName] = long(topologyType)
+      self.expectedTopologiesBySegment[segmentName] = int(topologyType)
 
   #
   # Function to estimate topology of segmentations, and check for consistencies.
@@ -440,8 +440,8 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     inconsistenciesExist = False
     inconsistentSegments = {}
 
-    for nameNode, segmentsDict in inputTopologyDictionary.iteritems():
-      for segmentName, topologyType in segmentsDict.iteritems():
+    for nameNode, segmentsDict in inputTopologyDictionary.items():
+      for segmentName, topologyType in segmentsDict.items():
         if topologyType != self.expectedTopologiesBySegment[segmentName]:
           if not nameNode in inconsistentSegments:
             inconsistentSegments[nameNode] = {}
@@ -1172,13 +1172,13 @@ class DataImporterTest(ScriptedLoadableModuleTest):
     self.delayDisplay('All tests passed!')
 
   def printMembers(self, logic):
-    print 'labelMapDict', logic.labelMapDict
-    print 'segmentationDict', logic.segmentationDict
-    print 'cohort label range', logic.labelRangeInCohort
+    print('labelMapDict', logic.labelMapDict)
+    print('segmentationDict', logic.segmentationDict)
+    print('cohort label range', logic.labelRangeInCohort)
 
-    print 'topologyDict', logic.topologyDict
-    print 'inconsistentTopologyDict', logic.inconsistentTopologyDict
-    print 'polyDataDict', logic.polyDataDict
+    print('topologyDict', logic.topologyDict)
+    print('inconsistentTopologyDict', logic.inconsistentTopologyDict)
+    print('polyDataDict', logic.polyDataDict)
 
   def test_importLabelMapFromFile(self, fileName):
     """
