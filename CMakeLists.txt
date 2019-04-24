@@ -56,7 +56,7 @@ include(SlicerInitializeBuildType)
 include(SlicerInitializeReleaseType)
 
 # SlicerSALT options
-option(SlicerSALT_BUILD_MFSDA                   "Build and bundle MFSDA extension" OFF)
+# NA
 
 
 # Slicer options
@@ -219,25 +219,24 @@ list(APPEND EXTERNAL_PROJECT_ADDITIONAL_DIRS ${${extension_name}_SOURCE_DIR}/Sup
 
 #-----------------------------------------------------------------------------
 # MFSDA
-if(SlicerSALT_BUILD_MFSDA)
-  set(MFSDA_BUILD_SLICER_EXTENSION 1)
-  mark_as_superbuild(MFSDA_BUILD_SLICER_EXTENSION:BOOL)
 
-  set(extension_name "MFSDA_Python")
-  set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
-  FetchContent_Populate(${extension_name}
-    SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-    GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-    GIT_TAG        25fb34e2f392e1f264eab37dd513a7e33055eb9d # slicersalt-2019-02-13-0a67df1d8
-    GIT_PROGRESS   1
-    QUIET
-    )
-  list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+set(MFSDA_BUILD_SLICER_EXTENSION 1)
+mark_as_superbuild(MFSDA_BUILD_SLICER_EXTENSION:BOOL)
 
-  list(APPEND Slicer_ADDITIONAL_DEPENDENCIES
-    python-mfsda-requirements
-    )
-endif()
+set(extension_name "MFSDA_Python")
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
+  GIT_TAG        25fb34e2f392e1f264eab37dd513a7e33055eb9d # slicersalt-2019-02-13-0a67df1d8
+  GIT_PROGRESS   1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+list(APPEND Slicer_ADDITIONAL_DEPENDENCIES
+  python-mfsda-requirements
+  )
 
 #-----------------------------------------------------------------------------
 # ShapeVariationAnalyzer
