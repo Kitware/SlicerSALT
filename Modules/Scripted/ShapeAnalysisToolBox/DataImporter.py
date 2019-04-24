@@ -578,9 +578,6 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.resetSegmentsTable()
     self.resetGlobalVariables()
 
-  def __del__(self):
-    self.cleanup()
-
   #
   # Functions to recover the widget in the .ui file
   #
