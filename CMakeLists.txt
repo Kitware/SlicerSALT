@@ -13,7 +13,7 @@ if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
     GIT_REPOSITORY https://github.com/slicersalt/Slicer
-    GIT_TAG        e71081e8c4423902ed867d5b741ec6d7e4077bce # slicersalt-4.11-2019-04-24-62ed8d6d4
+    GIT_TAG        1589b3d510aec86178bab6880c0d2b9bcb400d30 # slicersalt-4.11-2019-04-25-1589b3d51
     GIT_PROGRESS   1
     )
 else()
@@ -71,6 +71,7 @@ option(Slicer_BUILD_DIFFUSION_SUPPORT           "Build application with Diffusio
 option(Slicer_BUILD_EXTENSIONMANAGER_SUPPORT    "Build application with ExtensionManager support"     OFF)
 option(Slicer_BUILD_MULTIVOLUME_SUPPORT         "Build application with MultiVolume support"          OFF)
 option(Slicer_BUILD_PARAMETERSERIALIZER_SUPPORT "Build application with parameter serializer support" OFF)
+option(Slicer_BUILD_WEBENGINE_SUPPORT           "Build application with Qt WebEngine support"         OFF)
 option(Slicer_USE_PYTHONQT                      "Build application with Python support"               ON)
 option(Slicer_USE_PYTHONQT_WITH_TCL             "Build application with Python Tcl adapter layer"     OFF)
 option(Slicer_USE_QtTesting                     "Build application with QtTesting support"            OFF)
@@ -249,7 +250,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        42343774c44dc78b8560fc0a9e33e3a6018cb6e1 # slicersalt-2018-11-29-8340af24e
+  GIT_TAG        934c028cb8c89df49ea34610b7a7ab0c548035ce # slicersalt-2018-11-29-8340af24e
   GIT_PROGRESS   1
   QUIET
   )
