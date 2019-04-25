@@ -14,7 +14,8 @@ class Home(ScriptedLoadableModule):
     """
     def __init__(self, parent):
         parent.title = "Home"
-        parent.categories = ["Shape Analysis Toolbox"]
+        parent.categories = [""]
+        parent.index = 0
         parent.dependencies = []
         parent.contributors = ["Kitware, Inc., The University of North Carolina at Chapel Hill, and NYU Tandon School of Engineering"]
         parent.helpText = """<center>
@@ -33,6 +34,22 @@ class Home(ScriptedLoadableModule):
         <br> SlicerSALT is supported by NIH and the Slicer Community. <br>
         </center>
         """
+
+        slicer.app.connect("startupCompleted()", self.updateModulesMenu)
+
+    def updateModulesMenu(self):
+        moduleMenu = slicer.util.mainWindow().moduleSelector().modulesMenu()
+
+        moduleMenu.removeCategory("Developer Tools")
+        moduleMenu.removeCategory("Diffusion")
+        moduleMenu.removeCategory("Converters")
+        moduleMenu.removeCategory("Registration.Specialized")
+        moduleMenu.removeCategory("Segmentation")
+
+        removeFromAllModules = False
+        moduleMenu.removeModule("SegmentEditor", removeFromAllModules)
+        moduleMenu.removeModule("Segmentations", removeFromAllModules)
+        moduleMenu.removeModule("Terminologies", removeFromAllModules)
 
 
 #
