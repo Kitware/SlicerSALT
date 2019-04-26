@@ -198,7 +198,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${short_extension_name}")
 FetchContent_Populate(${short_extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/SlicerSkeletalRepresentation.git
-  GIT_TAG        00d21aade820fb3aa322cbf6940e3fe35fd86251
+  GIT_TAG        431bf575bd8efda06fe57fd43df2c910212b0204
   GIT_PROGRESS   1
   QUIET
   )
