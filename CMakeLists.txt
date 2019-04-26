@@ -13,7 +13,7 @@ if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
     GIT_REPOSITORY https://github.com/slicersalt/Slicer
-    GIT_TAG        85f47844d9bff2ec78f06ba14304fd67a6a14df3 # slicersalt-4.11-2019-04-25-1589b3d51
+    GIT_TAG        218e8ebd18ba4dd3dc4b5a2e065aa071ee671e57 # slicersalt-4.11-2019-04-26-752a2ad57
     GIT_PROGRESS   1
     )
 else()
@@ -66,7 +66,7 @@ if(WIN32)
   option(Slicer_BUILD_WIN32_CONSOLE             "Build application executable as a console app"       OFF)
 endif()
 
-option(Slicer_BUILD_DICOM_SUPPORT               "Build application with DICOM support"                ON)
+option(Slicer_BUILD_DICOM_SUPPORT               "Build application with DICOM support"                OFF)
 option(Slicer_BUILD_DIFFUSION_SUPPORT           "Build application with Diffusion support"            OFF)
 option(Slicer_BUILD_EXTENSIONMANAGER_SUPPORT    "Build application with ExtensionManager support"     OFF)
 option(Slicer_BUILD_MULTIVOLUME_SUPPORT         "Build application with MultiVolume support"          OFF)
@@ -108,7 +108,7 @@ set(Slicer_QTLOADABLEMODULES_DISABLED
   )
 set(Slicer_QTSCRIPTEDMODULES_DISABLED
   DataProbe
-  DMRIInstall
+  Editor
   Endoscopy
   LabelStatistics
   PerformanceTests
