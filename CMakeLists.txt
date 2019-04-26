@@ -109,6 +109,7 @@ set(Slicer_QTLOADABLEMODULES_DISABLED
 set(Slicer_QTSCRIPTEDMODULES_DISABLED
   DataProbe
   Editor
+  EditorLib
   Endoscopy
   LabelStatistics
   PerformanceTests
