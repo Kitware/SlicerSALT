@@ -13,7 +13,7 @@ if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
     GIT_REPOSITORY https://github.com/slicersalt/Slicer
-    GIT_TAG        ab6305d8948f9a60a05361904903bb6c04b3345a # slicersalt-4.11-2019-04-25-1589b3d51
+    GIT_TAG        85f47844d9bff2ec78f06ba14304fd67a6a14df3 # slicersalt-4.11-2019-04-25-1589b3d51
     GIT_PROGRESS   1
     )
 else()
