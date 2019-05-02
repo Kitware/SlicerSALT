@@ -35,7 +35,6 @@ void qSlicerSALTAppMainWindowPrivate::init()
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 7, 0))
   QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 #endif
-  Q_Q(qSlicerSALTAppMainWindow);
   this->Superclass::init();
 }
 
@@ -72,7 +71,7 @@ void qSlicerSALTAppMainWindowPrivate::setupUi(QMainWindow * mainWindow)
   // Hide the toolbars
   this->MainToolBar->setVisible(true);
   this->ModuleSelectorToolBar->setVisible(true);
-  //this->ModuleToolBar->setVisible(false);
+  this->ModuleToolBar->setVisible(false);
   //this->ViewToolBar->setVisible(false);
   //this->MouseModeToolBar->setVisible(false);
   //this->CaptureToolBar->setVisible(false);
@@ -92,6 +91,24 @@ void qSlicerSALTAppMainWindowPrivate::setupUi(QMainWindow * mainWindow)
   this->DataProbeCollapsibleWidget->setCollapsed(true);
   this->DataProbeCollapsibleWidget->setVisible(false);
   this->StatusBar->setVisible(false);
+
+  qSlicerModulesMenu* modulesMenu = this->ModuleSelectorToolBar->modulesMenu();
+
+  modulesMenu->setAllModulesCategoryVisible(false);
+
+  modulesMenu->setTopLevelCategoryOrder(
+        QStringList()
+        << "Shape Analysis Toolbox"
+        << "Shape Creation"
+        << "Shape Analysis"
+        << "Groups"
+        << "Skeleton, topology"
+        << "Surface Models"
+        << "Quantification"
+        << "Informatics"
+        << "Registration"
+        << "Utilities"
+        );
 }
 
 //-----------------------------------------------------------------------------
@@ -142,23 +159,6 @@ void qSlicerSALTAppMainWindow::on_HelpAboutSlicerSALTAppAction_triggered()
 //-----------------------------------------------------------------------------
 void qSlicerSALTAppMainWindow::show()
 {
-  Q_D(qSlicerSALTAppMainWindow);
-  qSlicerModulesMenu* qMenu = d->ModuleSelectorToolBar->modulesMenu();
-  qSlicerModuleManager * moduleManager = qSlicerApplication::application()->moduleManager();
-
-  // Modules to add
-  QStringList addModuleNames = QStringList()
-          << "Home";
-  QAction * beforeAction = qMenu->actions().at(1); // to insert after the "All Modules" menu
-  foreach(const QString& moduleName, addModuleNames)
-    {
-    qSlicerAbstractCoreModule * coreModule = moduleManager->module(moduleName);
-    qSlicerAbstractModule* module = qobject_cast<qSlicerAbstractModule*>(coreModule);
-    qMenu->insertAction(beforeAction, module->action());
-    }
-  // Add missing separator (only if all modules removed from list)
-  beforeAction = qMenu->actions().at(1);
-  qMenu->insertSeparator(beforeAction);
   // Show
   this->Superclass::show();
 }
