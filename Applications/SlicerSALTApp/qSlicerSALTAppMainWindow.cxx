@@ -5,6 +5,9 @@
 #include <QDebug>
 #include <QDesktopWidget>
 
+// CTK includes
+#include <ctkMenuComboBox.h>
+
 // Slicer includes
 #include "qSlicerAboutDialog.h"
 #include "qSlicerModuleSelectorToolBar.h"
@@ -93,6 +96,9 @@ void qSlicerSALTAppMainWindowPrivate::setupUi(QMainWindow * mainWindow)
   this->StatusBar->setVisible(false);
 
   qSlicerModulesMenu* modulesMenu = this->ModuleSelectorToolBar->modulesMenu();
+
+  ctkMenuComboBox* modulesMenuComboBox = this->ModuleSelectorToolBar->modulesMenuComboBox();
+  modulesMenuComboBox->setCompleterMenu(modulesMenu->allModulesCategory());
 
   modulesMenu->setAllModulesCategoryVisible(false);
 
