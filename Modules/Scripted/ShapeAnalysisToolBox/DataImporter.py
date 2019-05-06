@@ -22,7 +22,7 @@ class DataImporter(ScriptedLoadableModule):
     self.parent.title = "Data Importer"
     self.parent.categories = ["Shape Analysis Toolbox"]
     self.parent.dependencies = []
-    self.parent.contributors = ["Pablo Hernandez (Kitware Inc,), Hina Shah (Kitware Inc.)"]
+    self.parent.contributors = ["Mateo Lopez (UNC), Pablo Hernandez (Kitware Inc,), Hina Shah (Kitware Inc.)"]
     self.parent.helpText = """
     This module import label images and segmentations from files and folders and compute the topology number of each segment.
     topologyNumber = cleanData.GetNumberOfPoints() - edges.GetNumberOfLines() + cleanData.GetNumberOfPolys()
@@ -81,6 +81,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     self.freesurfer_wanted_segments=[]
 
     self.expected_file_type = 'VolumeFile'
+    self.color_table_id = 'None'
 
 
   def setSaveCleanData(self, save):
@@ -148,22 +149,24 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
     labelMapNode = slicer.util.loadLabelVolume(path, returnNode=True)[1]
 
-
     if labelMapNode is None:
       logging.error('Failed to load ' + fileName + 'as a labelmap')
       # make sure each one is a labelmap
       return False
 
-    labelMapNode.SetDisplayVisibility(False)
+    
     file_name = os.path.splitext(fileName)[0]
     if self.freesurfer_import == True:
       subject_name = os.path.split(os.path.split(directory)[0])[1]
-      segmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode", subject_name+' '+file_name+'_SelectedSegments')
+      segmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode", subject_name+' '+file_name)
     else:
-      segmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode", labelMapNode.GetName() + '_allSegments')
+      segmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode", labelMapNode.GetName() )
     segmentationLogic = slicer.modules.segmentations.logic()
     segmentationLogic.ImportLabelmapToSegmentationNode(labelMapNode,
                                                        segmentationNode)
+    labelMapNode.SetDisplayVisibility(False)
+    segmentationNode.SetDisplayVisibility(False)
+    segmentationNode.GetDisplayNode().SetAllSegmentsVisibility(False)
 
     #if importing from freesurfer
     if self.freesurfer_import == True:
@@ -178,14 +181,17 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
           to_remove_ids.append(segmentId)
         else:
           freesurfer_found_segments.append(segmentName)
-          label_id=segmentName.split('_')[1]
+          label_id=segmentId.split('_')[-1]
           seg_name=self.freesurfer_lut_dict[label_id]['name']
           color=self.freesurfer_lut_dict[label_id]['color']
           segment = segmentationNode.GetSegmentation().GetSegment(segmentId)
 
           
-          segment_name=subject_name+' '+file_name+' '+seg_name
+          segment_name=seg_name
           segment.SetName(segment_name)
+          
+
+          
           # segment.SetName(seg_name)
           segment.SetColor(color)
 
@@ -193,7 +199,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
         unpresent_segments=self.freesurfer_wanted_segments[:]
         for seg in freesurfer_found_segments:
           del unpresent_segments[unpresent_segments.index(seg)]
-        unpresent_segments = map(lambda x: self.freesurfer_lut_dict[x.split('_')[1]]['name'], unpresent_segments) 
+        unpresent_segments = map(lambda x: self.freesurfer_lut_dict[x.split('_')[-1]]['name'], unpresent_segments) 
         logging.warning('Unable to find all segments, {} have not been found.'.format(unpresent_segments))
         logging.warning('LabelMap in path: {} has not been loaded into segmentationDict.'.format(path))
         return False
@@ -201,16 +207,40 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
       for segmentId in to_remove_ids:
         segmentationNode.GetSegmentation().RemoveSegment(segmentId)
 
-    else:
-      for segmentIndex in range(segmentationNode.GetSegmentation().GetNumberOfSegments()):
-        segmentId = segmentationNode.GetSegmentation().GetNthSegmentID(segmentIndex)
-        segment = segmentationNode.GetSegmentation().GetSegment(segmentId)
-        segmentName = segment.GetName()
+    elif self.color_table_id != 'None':
+      segment_number=segmentationNode.GetSegmentation().GetNumberOfSegments()
+      color_node=slicer.util.getNode(pattern=self.color_table_id)
+      if (segment_number>1):
+        for segmentIndex in range(segment_number):
+          segmentId = segmentationNode.GetSegmentation().GetNthSegmentID(segmentIndex)
+          label_id=int(segmentId.split('_')[-1])
 
           
-        segment_name=file_name+' '+segmentName
+          color=[.0,.0,.0,.0]
+          color_node.GetColor(label_id,color)
+          segment_name=color_node.GetColorName(label_id)
+
+          segment = segmentationNode.GetSegmentation().GetSegment(segmentId)
+          segment.SetName(segment_name)
+          segment.SetColor(color[:3])
+          
+
+
+
+      elif (segment_number==1):
+        segmentId = segmentationNode.GetSegmentation().GetNthSegmentID(0)
+        color=[.0,.0,.0,.0]
+        color_node.GetColor(1,color)
+        segment_name=color_node.GetColorName(1)
+        segment = segmentationNode.GetSegmentation().GetSegment(segmentId)
         segment.SetName(segment_name)
-      
+        segment.SetColor(color[:3])
+
+
+        
+
+
+
 
 
     closedSurface = segmentationNode.CreateClosedSurfaceRepresentation()
@@ -227,8 +257,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     #   displaynode.BackfaceCullingOff()
     #   displaynode.SetVisibility(False)
 
-    segmentationNode.SetDisplayVisibility(False)
-    segmentationNode.GetDisplayNode().SetAllSegmentsVisibility(False)
+
 
     if closedSurface is False:
       logging.error('Failed to create closed surface representation for filename: {}.'.format(path))
@@ -450,6 +479,10 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
     self.expected_file_type=filetype
   
+  def setColorTableId(self,id):
+
+    self.color_table_id = id
+
   #
   # Function to estimate topology of segmentations, and check for consistencies.
   #
@@ -632,17 +665,22 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
     directory, fileName = os.path.split(template_path)
     labelMapNode = slicer.util.loadLabelVolume(template_path, returnNode=True)[1]
+    labelMapNode.SetDisplayVisibility(False)
+
 
     if labelMapNode is None:
       logging.error('Failed to load ' + fileName + 'as a labelmap')
       # make sure each one is a labelmap
       return False
 
-    labelMapNode.SetDisplayVisibility(False)
     segmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode", labelMapNode.GetName() + '_allSegments')
     segmentationLogic = slicer.modules.segmentations.logic()
     segmentationLogic.ImportLabelmapToSegmentationNode(labelMapNode,
                                                        segmentationNode)
+
+    labelMapNode.SetDisplayVisibility(False)
+    segmentationNode.SetDisplayVisibility(False)
+    segmentationNode.GetDisplayNode().SetAllSegmentsVisibility(False)
 
     for segmentIndex in range(segmentationNode.GetSegmentation().GetNumberOfSegments()):
       segmentId = segmentationNode.GetSegmentation().GetNthSegmentID(segmentIndex)
@@ -666,24 +704,42 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     for name,segmentation_node in self.segmentationDict.items():
       for segmentIndex in range(segmentation_node.GetSegmentation().GetNumberOfSegments()):
         segmentId = segmentation_node.GetSegmentation().GetNthSegmentID(segmentIndex)
-        full_segmentName = segmentation_node.GetSegmentation().GetSegment(segmentId).GetName()
-        segmentName = full_segmentName.split(' ')[-1]
+        segmentName = segmentation_node.GetSegmentation().GetSegment(segmentId).GetName()
         directory_path = os.path.join(save_path,segmentName)
+        if not os.path.isdir(directory_path):
+          os.mkdir(directory_path)
         input_directory_path = os.path.join(directory_path,'input')
+        if not os.path.isdir(input_directory_path):
+          os.mkdir(input_directory_path)
+        volume_directory_path = os.path.join(input_directory_path,'volume')
+        if not os.path.isdir(volume_directory_path):
+          os.mkdir(volume_directory_path)
+        model_directory_path = os.path.join(input_directory_path,'model')
+        if not os.path.isdir(model_directory_path):
+          os.mkdir(model_directory_path)
         output_directory_path = os.path.join(directory_path,'output')
+        if not os.path.isdir(output_directory_path):
+          os.mkdir(output_directory_path)
 
-        labelMap_filename = full_segmentName.replace(" ", "_")+'.nrrd'
-        labelMap_filepath = os.path.join(input_directory_path,labelMap_filename)
+        labelMap_filename = segmentation_node.GetName().replace(" ", "_")+'.nrrd'
+        labelMap_filepath = os.path.join(volume_directory_path,labelMap_filename)
 
-        polydata_filename = full_segmentName.replace(" ", "_")+'.vtk'
-        polydata_filepath = os.path.join(input_directory_path,polydata_filename)
+        polydata_filename = segmentation_node.GetName().replace(" ", "_")+'.vtk'
+        polydata_filepath = os.path.join(model_directory_path,polydata_filename)
 
         segmentIdList = vtk.vtkStringArray()
         segmentIdList.InsertNextValue(segmentId)
 
+        full_segmentName=segmentation_node.GetName()+segmentName
+
         #save label map
         exported_labelmap = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLLabelMapVolumeNode", full_segmentName+' LabelMap')
-        segmentationLogic.ExportSegmentsToLabelmapNode(segmentation_node,segmentIdList,exported_labelmap)
+        
+        if name in self.labelMapDict.keys():
+          segmentationLogic.ExportSegmentsToLabelmapNode(segmentation_node,segmentIdList,exported_labelmap,self.labelMapDict[name])
+        else:
+          segmentationLogic.ExportSegmentsToLabelmapNode(segmentation_node,segmentIdList,exported_labelmap)
+
         slicer.util.saveNode(exported_labelmap, labelMap_filepath)
         slicer.mrmlScene.RemoveNode(slicer.util.getNode(pattern=full_segmentName+' LabelMap_ColorTable'))
         slicer.mrmlScene.RemoveNode(exported_labelmap)
@@ -777,28 +833,33 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.InputFolderNameLineEdit = self.getWidget('InputFolderNameLineEdit')
     self.FolderDirectoryButton = self.getWidget('FolderDirectoryButton')
     self.FolderDirectoryButton.connect('directoryChanged(QString)', self.onDirectoryChanged)
-    self.InputFolderColorTableSelection = self.getWidget('InputFolderColorTableSelection')
-    self.InputFolderColorTableSelection.connect('currentIndexChanged(QString)',self.onColorTableSelectionChanged)
+    
     self.InputFileTypeSelection = self.getWidget('InputFileTypeSelection')
     self.InputFileTypeSelection.connect('currentIndexChanged(QString)',self.onFileTypeSelectionChanged)
     #populate file type combobox
     self.InputFileTypeSelection.addItem('Volume File')
     self.InputFileTypeSelection.addItem('Model File')
-    self.InputFileTypeSelection.addItem('Segmentation File')
+    #self.InputFileTypeSelection.addItem('Segmentation File')
     #populate colortable combobox
+    self.InputFolderColorTableSelection = self.getWidget('InputFolderColorTableSelection')
+    self.InputFolderColorTableSelection.addItem('None')
     for name in self.color_table_dict.keys():
       self.InputFolderColorTableSelection.addItem(name)
+    self.InputFolderColorTableSelection.connect('currentIndexChanged(QString)',self.onColorTableSelectionChanged)
 
     #Browse CSV Button
     self.InputCSVFileNameLineEdit = self.getWidget('InputCSVFileNameLineEdit')
     self.CSVBrowseFilePushButton = self.getWidget('CSVBrowseFilePushButton')
     self.CSVBrowseFilePushButton.setIcon(qt.QApplication.style().standardIcon(qt.QStyle.SP_DirIcon))
     self.CSVBrowseFilePushButton.connect('clicked(bool)', self.onClickCSVBrowseFilePushButton)
-    self.InputCSVColorTableSelection = self.getWidget('InputCSVColorTableSelection')
-    self.InputCSVColorTableSelection.connect('currentIndexChanged(QString)',self.onColorTableSelectionChanged)
+    
     #populate colortable combobox
+    self.InputCSVColorTableSelection = self.getWidget('InputCSVColorTableSelection')
+    self.InputCSVColorTableSelection.addItem('None')
     for name in self.color_table_dict.keys():
       self.InputCSVColorTableSelection.addItem(name)
+    self.InputCSVColorTableSelection.connect('currentIndexChanged(QString)',self.onColorTableSelectionChanged)
+    self.onColorTableSelectionChanged('None')
 
     #FreeSurfer Tab
     self.freesurferFilesOfInterest=dict()
@@ -868,6 +929,9 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.CreateShapeAnalysisStructurePushButton = self.getWidget('CreateShapeAnalysisStructurePushButton')
     self.CreateShapeAnalysisStructurePushButton.connect('clicked(bool)', self.onGenerateShapeAnalysisStructure)
 
+    #detect if when a node is added to update colortable list
+    self.registerCallbacks()
+
   #
   # Reset all the data for data import
   #
@@ -878,6 +942,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.resetSubjectsTable()
     self.resetSegmentsTable()
     self.resetGlobalVariables()
+    self.unregisterCallbacks()
 
   def __del__(self):
 
@@ -988,13 +1053,20 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     uniqueRowIndexes = self.getRowsFromSelectedIndexes(self.SubjectsTableWidget)
     # Get Names from rows
     if len(uniqueRowIndexes) == 1:
+      #Save current selection
+      selectedSegmentIndex = self.getRowsFromSelectedIndexes(self.SegmentsTableWidget)
+      #print('selected segment: ',uniqueRowIndexes)
+
       self.initSegmentsTable()
       name = self.SubjectsTableWidget.item(uniqueRowIndexes[0], self.subjectsColumnName).text()
       self.populateSegmentsTable(name)
+      #restore selection
+      for rowindex in selectedSegmentIndex:
+        self.SegmentsTableWidget.selectRow(rowindex)
       return 
 
     self.initSegmentsMultiTable()
-    for row in uniqueRowIndexes:
+    for row in selectedSegmentIndex:
       name = self.SubjectsTableWidget.item(row, self.subjectsColumnName).text()
       self.populateSegmentsMultiTable(name)
 
@@ -1074,6 +1146,8 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     if not nameKey in self.logic.topologyDict:
       logging.error("Input nameKey: {} does not exist in topologyDict.".format(nameKey))
       return
+
+
     # Required to safely populate table when sorting is enabled, restored later.
     self.SegmentsTableWidget.setSortingEnabled(False)
     # Block signals while populating programatically
@@ -1341,7 +1415,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
   '''
   GUI Callback functions
   '''
-  #Shape Analysis Structure Generation
+  #Shape Analysis Structure Generation Callbacks
   def onShapeAnalysisFolderChanged(self,directoryPath):
     logging.debug("onShapeAnalysisFolderChanged: {}".format(directoryPath))
     # Create a list of files from the directory
@@ -1540,14 +1614,61 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
         self.InputFreeSurferSegmentsTable.cellWidget(i_row,0).children()[1].setChecked(False)
     self.onStateChangedFreeSurferImportAllSegmentsOption_is_running=False
 
- 
+  #events to detect new or deleted color table
+  def registerCallbacks(self):
+    self.nodeAddedModifiedObserverTag = slicer.mrmlScene.AddObserver(slicer.vtkMRMLScene.NodeAddedEvent, self.nodeAddedCallback)
+    self.nodeAboutToBeRemovedModifiedObserverTag = slicer.mrmlScene.AddObserver(slicer.vtkMRMLScene.NodeAboutToBeRemovedEvent, self.nodeAboutToBeRemovedCallback)
+  def unregisterCallbacks(self):
+    slicer.mrmlScene.RemoveObserver(self.nodeAddedModifiedObserverTag)
+    slicer.mrmlScene.RemoveObserver(self.nodeAboutToBeRemovedModifiedObserverTag)
+
+  @vtk.calldata_type(vtk.VTK_OBJECT)
+  def nodeAddedCallback(self, caller, eventId, callData):
+    node_type = callData.GetClassName()
+    name = callData.GetName()
+    id = callData.GetID()
+    if node_type == 'vtkMRMLColorTableNode':
+      self.color_table_dict[name]=id
+      self.InputFolderColorTableSelection.addItem(name)
+      self.InputCSVColorTableSelection.addItem(name)
+      # print("Color Node added")
+      # print("New node: {0}".format(name))
+  @vtk.calldata_type(vtk.VTK_OBJECT)
+  def nodeAboutToBeRemovedCallback(self, caller, eventId, callData):
+    node_type = callData.GetClassName()
+    name = callData.GetName()
+    if node_type == 'vtkMRMLColorTableNode':
+      self.color_table_dict.pop(name)
+      id=self.InputFolderColorTableSelection.findText(name)
+      self.InputFolderColorTableSelection.removeItem(id)
+      id=self.InputCSVColorTableSelection.findText(name)
+      self.InputCSVColorTableSelection.removeItem(id)
+      # print("Color Node removed")
+      # print("New node: {0}".format(name))
 
   #
   #  Handle request to import data
   #
-  def onColorTableSelectionChanged(self,file_name):
-    print(file_name)
 
+  def onColorTableSelectionChanged(self,color_table_name):
+    index = self.InputFolderColorTableSelection.findText(color_table_name, qt.Qt.MatchFixedString)
+    if index >= 0:
+      self.InputFolderColorTableSelection.blockSignals(True)
+      self.InputFolderColorTableSelection.setCurrentIndex(index)
+      self.InputFolderColorTableSelection.blockSignals(False)
+
+    index = self.InputCSVColorTableSelection.findText(color_table_name, qt.Qt.MatchFixedString)
+    if index >= 0:
+      self.InputCSVColorTableSelection.blockSignals(True)
+      self.InputCSVColorTableSelection.setCurrentIndex(index)
+      self.InputCSVColorTableSelection.blockSignals(False)
+
+    if color_table_name == 'None':
+      self.logic.setColorTableId(color_table_name)
+    else:
+      ID=self.color_table_dict[color_table_name]
+      self.logic.setColorTableId(ID)
+    
   def onFileTypeSelectionChanged(self,file_type):
     if file_type == 'Volume File':
       self.logic.setExpectedFileType('VolumeFile')
@@ -1557,9 +1678,6 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
       self.logic.setExpectedFileType('ModelFile')
     else:
       self.logic.setExpectedFileType('None')
-
-
-
 
   def onClickImportButton(self):
     if not self.filteredFilePathsList:
