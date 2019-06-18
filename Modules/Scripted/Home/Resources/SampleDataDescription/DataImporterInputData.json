@@ -1,0 +1,37 @@
+{
+    "category": "Data Importer",
+    "sampleName": "Input data",
+    "fileNames": [
+        "case03.nrrd",
+        "case01_allSegments.seg.vtm.zip",
+        "sample_model.vtk",
+        "case02.nrrd",
+        "case02_allSegments.seg.nrrd",
+        "case02_allSegments.seg.vtm.zip",
+        "case01.nrrd",
+        "case04.nrrd",
+        "case01_allSegments.seg.nrrd"
+    ],
+    "uris": [
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/5ecf5dbdf085dcfe344eb58ca4ed8fd97f431c0a8ec329ee6796f2d565cea26bc680580aadc3498576c2d2e55d64d75edd16d5c75c89b2b006f2a7980c48c76c/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/9ceec06714638650e70a31114bfe843d29b6174b1c2fb9f822d41e98974a7622cc5058bab67b54fa3bd1f1d36ae62e2318109a9c3a83a61e2d039dc22a915003/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/f17feb058a5275e656b2f7a2dd46fec49fd5e5e4f494ba6a6d58a006db99eec4b9ea4767451218fee97c860fca260a5f3a2c9da598e686a7fb3dc68bed590333/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/4223861eea87e19a017e1ea4f1725cee65c9b34ff6bf5d34b6c5608766ccd4651881c4cacf78d9d259de74a322ba3b58232503b3efacfb855fbbc340357fd82a/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/037ec7f22b2f70566799a48ea368ed0f8ceab05476932620520be45a472b7c63cc012cb1e383845fc96aa22ceb9b721390c2cb2b990b83847dfccf9fd0582f25/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/9ba74dc40099b662b0e425fa7a9ccf93911c225493080d477438837799fd6206ea123af15ffdb6df663fd5755ce04c0f24280c23fd53d34ebe0101b069a712bf/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/2131117bc69c52a59182bead507bd2785c2b7ffc902a9c0cd2fb8cd160eba9a138dbed8f513536377bee00b03a8540909e24f708c0dfa0f8af2ed3b3930994a5/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/3af4cc07acf6b78ac6cc93ba998802df5c80651a51701cb6055766ce69b646e81729a9ea24f715ffc622cb2da0e881534f600f54dfdfc86e67f60efefd275fb4/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/dc16bb99d1de7146e4b926a37d3a4c1e4e086967d7de7a7fabe28ba2fb2f1ddaae6810ae5b1f02925a56b1dae1a5849667ad81147ea76009ae69994d7149f35f/download"
+    ],
+    "checksums": [
+        "SHA512:5ecf5dbdf085dcfe344eb58ca4ed8fd97f431c0a8ec329ee6796f2d565cea26bc680580aadc3498576c2d2e55d64d75edd16d5c75c89b2b006f2a7980c48c76c",
+        "SHA512:9ceec06714638650e70a31114bfe843d29b6174b1c2fb9f822d41e98974a7622cc5058bab67b54fa3bd1f1d36ae62e2318109a9c3a83a61e2d039dc22a915003",
+        "SHA512:f17feb058a5275e656b2f7a2dd46fec49fd5e5e4f494ba6a6d58a006db99eec4b9ea4767451218fee97c860fca260a5f3a2c9da598e686a7fb3dc68bed590333",
+        "SHA512:4223861eea87e19a017e1ea4f1725cee65c9b34ff6bf5d34b6c5608766ccd4651881c4cacf78d9d259de74a322ba3b58232503b3efacfb855fbbc340357fd82a",
+        "SHA512:037ec7f22b2f70566799a48ea368ed0f8ceab05476932620520be45a472b7c63cc012cb1e383845fc96aa22ceb9b721390c2cb2b990b83847dfccf9fd0582f25",
+        "SHA512:9ba74dc40099b662b0e425fa7a9ccf93911c225493080d477438837799fd6206ea123af15ffdb6df663fd5755ce04c0f24280c23fd53d34ebe0101b069a712bf",
+        "SHA512:2131117bc69c52a59182bead507bd2785c2b7ffc902a9c0cd2fb8cd160eba9a138dbed8f513536377bee00b03a8540909e24f708c0dfa0f8af2ed3b3930994a5",
+        "SHA512:3af4cc07acf6b78ac6cc93ba998802df5c80651a51701cb6055766ce69b646e81729a9ea24f715ffc622cb2da0e881534f600f54dfdfc86e67f60efefd275fb4",
+        "SHA512:dc16bb99d1de7146e4b926a37d3a4c1e4e086967d7de7a7fabe28ba2fb2f1ddaae6810ae5b1f02925a56b1dae1a5849667ad81147ea76009ae69994d7149f35f"
+    ]
+}

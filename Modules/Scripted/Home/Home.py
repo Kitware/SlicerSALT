@@ -2,6 +2,10 @@ import os
 import vtk, qt, ctk, slicer
 from slicer.ScriptedLoadableModule import (ScriptedLoadableModule,
                                            ScriptedLoadableModuleWidget)
+import SampleData
+import logging
+import json
+from slicer.util import computeChecksum, extractAlgoAndDigest
 
 
 #
@@ -16,7 +20,7 @@ class Home(ScriptedLoadableModule):
         parent.title = "Home"
         parent.categories = [""]
         parent.index = 0
-        parent.dependencies = []
+        parent.dependencies = ["SampleData"]
         parent.contributors = ["Kitware, Inc., The University of North Carolina at Chapel Hill, and NYU Tandon School of Engineering"]
         parent.helpText = """<center>
         <br>
@@ -92,6 +96,49 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
         # SPACER
         self.layout.addStretch()
 
+        # SAMPLE DATA REGISTRATION
+        for json_file in [
+            'DataImporterInputData.json',
+            'ShapeRegressionInputData.json',
+            'SPHARM-PDMTestData.json',
+        ]:
+            with open(self.resourcePath('SampleDataDescription/%s' % json_file), 'r') as json_data:
+                source_data = json.load(json_data)
+                if 'iconPath' in source_data:
+                  iconPath = self.resourcePath(source_data['iconPath'])
+                else:
+                  iconPath = None
+
+                SampleData.SampleDataLogic.registerCustomSampleDataSource(
+                    category=source_data['category'],
+                    sampleName=source_data['sampleName'],
+                    uris=source_data['uris'],
+                    checksums=source_data.get('checksums', None),
+                    fileNames=source_data['fileNames'],
+                    nodeNames=None,
+                    thumbnailFileName=iconPath,
+                    loadFileType=None,
+                    customDownloader=self.downloadSampleDataInFolder,
+                )
+
+        # HIDE SAMPLE DATA 'BUILTIN' CATEGORY
+        slicer.modules.sampledata.widgetRepresentation().self().setCategoryVisible('BuiltIn', False)
+
     def onAnchorClicked(self, url):
         moduleName = url.fragment()
         slicer.util.selectModule(moduleName)
+
+    @staticmethod
+    def downloadSampleDataInFolder(source):
+
+        destFolderPath = str(qt.QFileDialog.getExistingDirectory(slicer.util.mainWindow(), 'Destination Folder'))
+        if not os.path.isdir(destFolderPath):
+            return
+
+        print('Selected data folder: %s' % destFolderPath)
+
+        widget = slicer.modules.sampledata.widgetRepresentation().self()
+        sampleDataLogic = widget.logic
+
+        for uri, fileName, checksum  in zip(source.uris, source.fileNames, source.checksums):
+            sampleDataLogic.downloadFile(uri, destFolderPath, fileName, checksum=checksum)
