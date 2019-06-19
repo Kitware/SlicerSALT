@@ -13,7 +13,7 @@ if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
     GIT_REPOSITORY https://github.com/slicersalt/Slicer
-    GIT_TAG        4b925c6518bc81c8d6dc55a8e2d980ca45c4f6e9 # slicersalt-4.11-2019-05-07-12df2875b
+    GIT_TAG        4f68ef56b6fd8f92e6c60fceeed030581605dd12 # slicersalt-4.11-2019-06-19-4f68ef56b
     GIT_PROGRESS   1
     )
 else()
@@ -54,6 +54,24 @@ if(NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 include(SlicerInitializeBuildType)
 include(SlicerInitializeReleaseType)
+
+# Installation folder and admin account requirement for Windows
+if(WIN32)
+  set(Slicer_CPACK_NSIS_INSTALL_REQUIRES_ADMIN_ACCOUNT ON)
+  if(Slicer_CPACK_NSIS_INSTALL_REQUIRES_ADMIN_ACCOUNT)
+    # User has administrative privileges, therefore we can install to shared folder
+    # "C:\Program Files" or "C:\Program Files (x86)".
+    if(CMAKE_CL_64)
+      set(Slicer_CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES64")
+    else()
+      set(Slicer_CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
+    endif()
+  else()
+    # We do not require administrative privileges, therefore we install to user folder
+    # "C:\Users\<username>\AppData\Local".
+    set(Slicer_CPACK_NSIS_INSTALL_ROOT "$LOCALAPPDATA\\\\${Slicer_ORGANIZATION_NAME}")
+  endif()
+endif()
 
 # SlicerSALT options
 # NA
