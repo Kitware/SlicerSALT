@@ -130,15 +130,23 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
 
     @staticmethod
     def downloadSampleDataInFolder(source):
+        widget = slicer.modules.sampledata.widgetRepresentation().self()
+        sampleDataLogic = widget.logic
 
-        destFolderPath = str(qt.QFileDialog.getExistingDirectory(slicer.util.mainWindow(), 'Destination Folder'))
+        # Retrieve directory
+        category = sampleDataLogic.categoryForSource(source)
+        savedDirectory = slicer.app.userSettings().value(
+            "SampleData/Last%sDownloadDirectory" % category,
+            qt.QStandardPaths.writableLocation(qt.QStandardPaths.DocumentsLocation))
+
+        destFolderPath = str(qt.QFileDialog.getExistingDirectory(slicer.util.mainWindow(), 'Destination Folder', savedDirectory))
         if not os.path.isdir(destFolderPath):
             return
 
         print('Selected data folder: %s' % destFolderPath)
 
-        widget = slicer.modules.sampledata.widgetRepresentation().self()
-        sampleDataLogic = widget.logic
-
         for uri, fileName, checksum  in zip(source.uris, source.fileNames, source.checksums):
             sampleDataLogic.downloadFile(uri, destFolderPath, fileName, checksum=checksum)
+
+        # Save directory
+        slicer.app.userSettings().setValue("SampleData/Last%sDownloadDirectory" % category, destFolderPath)
