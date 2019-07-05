@@ -68,8 +68,9 @@ class HomeWidget(ScriptedLoadableModuleWidget):
     def setup(self):
         ScriptedLoadableModuleWidget.setup(self)
 
-        # Instantiate and connect widgets ...
-        # TEXT
+        # The anchor associated with each link corresponds to the name of the module to select.
+        # For example, after the user click on the link associated with `href="#DataImporter"`,
+        # the "DataImporter" module is selected.
         text = """
 <br>
 <u>Workflow quick-reference:</u><br>
@@ -78,7 +79,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
 <br>
 &nbsp; 1. Use the <a href="#DataImporter"><b>Data importer</b></a> module to load your segmentations from FreeSurf, FSL, Autoseg, or a bunch of vtp's<br><br>
 &nbsp; 2. Use <a href="#ShapePopulationViewer"><b>Shape Population Viewer</b></a> to do a quality check on the imported data<br><br>
-&nbsp; 3. Use <a href="#ShapeAnalysisModule"><b>SPHARM Shape Analysis Module</b></a> to do spherical harmonics based analysis<br><br>
+&nbsp; 3. Use <a href="#ShapeAnalysisModule"><b>SPHARM-PDM Generator</b></a> to do spherical harmonics based analysis<br><br>
 &nbsp; 4. Use the <a href="#GroupWiseRegistrationModule"><b>Study-specific Shape Analysis</b></a> module.<br><br>
 &nbsp; 5. Use the <a href="#SkeletalRepresentationVisualizer"><b>S-Rep Shape Analysis</b></a> module to do shape analysis via skeletal representations.<br><br>
 &nbsp; 6. Use the <a href="#ShapeVariationAnalyzer"><b>Shape Evaluator</b></a> module to compute a mean shape and see how the population varies.<br><br>
