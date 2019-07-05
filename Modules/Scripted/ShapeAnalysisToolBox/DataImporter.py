@@ -168,8 +168,8 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     Populate segmentationDict and set labelRangeInCohort to (0,1)
     """
     directory, fileName = os.path.split(path)
-
     modelNode = slicer.util.loadModel(path, returnNode=True)[1]
+
     if modelNode is None:
       logging.error('Failed to load ' + fileName + 'as a model')
       return False
@@ -177,8 +177,8 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
     segmentationNode = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLSegmentationNode", modelNode.GetName() + '_allSegments')
     segmentationLogic = slicer.modules.segmentations.logic()
-    segmentationLogic.ImportModelToSegmentationNode(modelNode,
-                                                    segmentationNode)
+    segmentationLogic.ImportModelToSegmentationNode(modelNode, segmentationNode)
+
     # To allow better mixing with label maps.
     # We change the name of the model (originally set to the filename in vtkSlicerSegmentationModuleLogic)
     # XXX Better option would be to use terminologies, see: https://discourse.slicer.org/t/finding-corresponding-segments-in-segmentations/4055/4
@@ -246,11 +246,11 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
     return filePaths
 
-
         # Depending on the mode fill the structures table.
         # TODO: add directory parsing based on mode
     # else:
     #   logging.error("Importing from directory is not yet supported")
+
   def importFiles(self, filePaths):
     """
     Call the appropiate import function from a heteregeneous list of file paths.
@@ -354,6 +354,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
       for segmentIndex in range(segmentationNode.GetSegmentation().GetNumberOfSegments()):
         segmentId = segmentationNode.GetSegmentation().GetNthSegmentID(segmentIndex)
         segmentName = segmentationNode.GetSegmentation().GetSegment(segmentId).GetName()
+
         # 0 label is assumed to be the background. XXX Pablo: assumed where?
         if segmentName == "0":
           continue
@@ -390,8 +391,8 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
         # calculate the numbers
         topologyNumber = cleanData.GetNumberOfPoints() - edges.GetNumberOfLines() + cleanData.GetNumberOfPolys()
-        self.topologyDict[nodeName][segmentName] = topologyNumber
 
+        self.topologyDict[nodeName][segmentName] = topologyNumber
         if self.saveCleanData:
           self.polyDataDict[nodeName][segmentName] = cleanData
         else:
@@ -426,7 +427,6 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
         if not segmentName in self.dictSegmentNamesWithIntegers:
           self.numberOfDifferentSegments+=1
           self.dictSegmentNamesWithIntegers[segmentName] = self.numberOfDifferentSegments
-
 
   def checkTopologyConsistency(self, inputTopologyDictionary):
     """
@@ -563,6 +563,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.DisplaySelectedPushButton.connect('clicked(bool)', self.onClickDisplaySelectedPushButton)
     self.DisplayOnClickCheckBox = self.getWidget('DisplayOnClickCheckBox')
     self.DisplayOnClickCheckBox.connect('toggled(bool)', self.onDisplayOnClickCheckBoxToggled)
+
     # Set self.displayOnClick according to ui file
     self.onDisplayOnClickCheckBoxToggled()
 
@@ -693,7 +694,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
 
   def updateSubjectsTableConsistencyColumn(self):
     self.SubjectsTableWidget.setSortingEnabled(False)
-    consistencyColumn = 1 
+    consistencyColumn = 1
     rowCount = self.SubjectsTableWidget.rowCount
     if not rowCount:
       return
@@ -708,12 +709,10 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
         consistency = '# Inconsistencies: ' + str(countInconsistencies)
       self.SubjectsTableWidget.item(row, consistencyColumn).setText(consistency)
 
-
     #XXX is this the best place to trigger re-populate?
     self.resetSegmentsTable()
     self.populateSegmentsTableWithCurrentSubjectsSelection()
     self.SubjectsTableWidget.setSortingEnabled(True)
-
 
   def populateSubjectsTable(self):
     """
@@ -768,6 +767,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     if not nameKey in self.logic.topologyDict:
       logging.error("Input nameKey: {} does not exist in topologyDict.".format(nameKey))
       return
+
     # Required to safely populate table when sorting is enabled, restored later.
     self.SegmentsTableWidget.setSortingEnabled(False)
     # Block signals while populating programatically
@@ -801,9 +801,9 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
       comboBox.connect('currentIndexChanged(int)', lambda index, name=segmentName: self.onSegmentTableWidgetComboBoxCurrentIndexChanged(index, name))
       self.SegmentsTableWidget.setCellWidget(rowPosition, topologyExpectedColumn, comboBox)
 
-
     # Restore sorting
     self.SegmentsTableWidget.setSortingEnabled(True)
+
     # Restore signals
     self.SegmentsTableWidget.blockSignals(False)
     self.SegmentsTableWidget.show()
@@ -824,8 +824,10 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     if not nameKey in self.logic.topologyDict:
       logging.error("Input nameKey: {} does not exist in topologyDict.".format(nameKey))
       return
+
     # Required to safely populate table when sorting is enabled, restored later.
     self.SegmentsTableWidget.setSortingEnabled(False)
+
     # Block signals while populating programatically
     self.SegmentsTableWidget.blockSignals(True)
     self.SegmentsTableWidget.hide()
@@ -864,9 +866,9 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
       comboBox.connect('currentIndexChanged(int)', lambda index, name=segmentName: self.onSegmentTableWidgetComboBoxCurrentIndexChanged(index, name))
       self.SegmentsTableWidget.setCellWidget(rowPosition, topologyExpectedColumn, comboBox)
 
-
     # Restore sorting
     self.SegmentsTableWidget.setSortingEnabled(True)
+
     # Restore signals
     self.SegmentsTableWidget.blockSignals(False)
     self.SegmentsTableWidget.show()
@@ -885,7 +887,6 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     """
     Use logic.importFiles, populateTopologyDict and populate tables.
     """
-
     if not self.logic.importFiles(filePaths):
       logging.warning("logic.importFiles issues, see raised errors.")
       return
@@ -991,7 +992,6 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.logic.expectedTopologiesBySegment[name] = newTopology
     # Update Consistency column in SubjectsTable
     self.updateSubjectsTableConsistencyColumn()
-    
 
   def onSaveCleanDataCheckBoxToggled(self):
     self.logic.setSaveCleanData(self.SaveCleanDataCheckBox.isChecked())
@@ -1001,10 +1001,10 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
 
   def onClickDisplaySelectedPushButton(self):
     self.displaySelectedIndexes()
+
   '''
   Supplemental functions to update the visualizations
   '''
-
   def center3dView(self):
     layoutManager = slicer.app.layoutManager()
     threeDWidget = layoutManager.threeDWidget(0)
@@ -1020,6 +1020,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
       displayNode.SetAllSegmentsVisibility(visibility)
 
   def hideAllSegmentations(self):
+
     self.setVisibilitySegmentations(False)
 
   def displaySelectedIndexes(self):
@@ -1048,9 +1049,9 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
       self.segmentsColumnTopologyCurrent = 1
       self.segmentsColumnTopologyExpected = 2
 
-    # segmentationNodes = list() 
+    # segmentationNodes = list()
     # segmentationNodes.append(node)
-    for row in rowsSubjects: 
+    for row in rowsSubjects:
       subjectName = self.SubjectsTableWidget.item(row, self.subjectsColumnName).text()
       node = self.logic.segmentationDict[subjectName]
       segmentationDisplayNode = node.GetDisplayNode()
@@ -1060,11 +1061,11 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
         self.center3dView()
 
     subjectName = None
-    for row in rowsSegments: 
+    for row in rowsSegments:
       if hasSegmentsColumnSubjectName:
         subjectName = self.SegmentsTableWidget.item(row, self.segmentsColumnSubjectName).text()
       else:
-        if countSubjects: 
+        if countSubjects:
           subjectName = self.SubjectsTableWidget.item(rowsSubjects[0], self.subjectsColumnName).text()
         else:
           continue
@@ -1183,7 +1184,7 @@ class DataImporterTest(ScriptedLoadableModuleTest):
     - populateTopologyDictionary
     - checkTopologyConsistency
     """
-    logging.info('-- Starting test for %s --' % (fileName))
+    logging.info('-- Starting test for %s --' % fileName)
     filePath = os.path.join(self.testDir, fileName)
     logic = DataImporterLogic()
     self.assertTrue(logic.importLabelMap(filePath))
@@ -1200,7 +1201,7 @@ class DataImporterTest(ScriptedLoadableModuleTest):
       self.assertNotEqual(logic.labelMapDict, dict())
       self.check_case02(logic, fileName)
 
-    logging.info('-- Test for %s passed (importLabelMap)! --' % (fileName))
+    logging.info('-- Test for %s passed (importLabelMap)! --' % fileName)
 
   def check_case01(self, logic, fileName):
     logging.info('-- Checking case01 --')
@@ -1242,7 +1243,7 @@ class DataImporterTest(ScriptedLoadableModuleTest):
     - populateTopologyDictionary
     - checkTopologyConsistency
     """
-    logging.info('-- Starting segmentation test for %s --' % (fileName))
+    logging.info('-- Starting segmentation test for %s --' % fileName)
     filePath = os.path.join(self.testDir, fileName)
     logic = DataImporterLogic()
     self.assertTrue(logic.importSegmentation(filePath))
@@ -1258,10 +1259,10 @@ class DataImporterTest(ScriptedLoadableModuleTest):
     elif fileName == 'case02_allSegments.seg.vtm':
       self.check_case02(logic, fileName)
 
-    logging.info('-- Test for %s passed (importSegmentation)! --' % (fileName))
+    logging.info('-- Test for %s passed (importSegmentation)! --' % fileName)
 
   def test_importModelFromFile(self, fileName):
-    logging.info('-- Starting model test for %s --' % (fileName))
+    logging.info('-- Starting model test for %s --' % fileName)
     filePath = os.path.join(self.testDir, fileName)
     logic = DataImporterLogic()
     self.assertTrue(logic.importModel(filePath))
@@ -1281,7 +1282,7 @@ class DataImporterTest(ScriptedLoadableModuleTest):
     self.assertEqual(topologyString, logic.TOPOLOGY_TYPES[logic.TOPOLOGY_SPHERE_TYPE])
     self.assertEqual(consistentTopologyString, 'Consistent')
 
-    logging.info('-- Test for %s passed (importModel) ! --' % (fileName))
+    logging.info('-- Test for %s passed (importModel) ! --' % fileName)
 
   def test_importFiles(self):
     """
