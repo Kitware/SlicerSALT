@@ -523,46 +523,30 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.segmentsColumnTopologyCurrent = 1
     self.segmentsColumnTopologyExpected = 2
 
-    #
-    #  Interface
-    #
-    loader = qt.QUiLoader()
-    self.moduleName = 'DataImporter'
-    scriptedModulesPath = eval('slicer.modules.%s.path' % self.moduleName.lower())
-    scriptedModulesPath = os.path.dirname(scriptedModulesPath)
-    path = os.path.join(scriptedModulesPath, 'Resources', '%s.ui' % self.moduleName)
-    qfile = qt.QFile(path)
-    qfile.open(qt.QFile.ReadOnly)
-    widget = loader.load(qfile, self.parent)
-    self.layout = self.parent.layout()
-    self.widget = widget
-    self.layout.addWidget(widget)
+    # Load widget from .ui file (created by Qt Designer)
+    uiWidget = slicer.util.loadUI(self.resourcePath('%s.ui' % self.moduleName))
+    self.layout.addWidget(uiWidget)
 
-    self.InputFolderNameLineEdit = self.getWidget('InputFolderNameLineEdit')
-    self.FolderDirectoryButton = self.getWidget('FolderDirectoryButton')
+    self.InputFolderNameLineEdit = self.ui.InputFolderNameLineEdit
+    self.FolderDirectoryButton = self.ui.FolderDirectoryButton
     self.FolderDirectoryButton.connect('directoryChanged(QString)', self.onDirectoryChanged)
 
-    self.InputCSVFileNameLineEdit = self.getWidget('InputCSVFileNameLineEdit')
-    self.CSVBrowseFilePushButton = self.getWidget('CSVBrowseFilePushButton')
+    self.InputCSVFileNameLineEdit = self.ui.InputCSVFileNameLineEdit
+    self.CSVBrowseFilePushButton = self.ui.CSVBrowseFilePushButton
     self.CSVBrowseFilePushButton.setIcon(qt.QApplication.style().standardIcon(qt.QStyle.SP_DirIcon))
     self.CSVBrowseFilePushButton.connect('clicked(bool)', self.onClickCSVBrowseFilePushButton)
 
-    self.ImportButton = self.getWidget('ImportButton')
-    self.ImportButton.connect('clicked(bool)', self.onClickImportButton)
-    self.DataInputTypeGroupBox = self.getWidget('DataInputTypeGroupBox')
-    self.SubjectsTableWidget = self.getWidget('SubjectsTableWidget')
-    self.SegmentsTableWidget = self.getWidget('SegmentsTableWidget')
-    self.SaveCleanDataCheckBox = self.getWidget('checkBoxSaveCleanData')
-    self.SaveCleanDataCheckBox.setChecked(True)
-    self.SaveCleanDataCheckBox.connect('toggled(bool)', self.onSaveCleanDataCheckBoxToggled)
+    self.ui.ImportButton.connect('clicked(bool)', self.onClickImportButton)
+    self.SubjectsTableWidget = self.ui.SubjectsTableWidget
+    self.SegmentsTableWidget = self.ui.SegmentsTableWidget
+    self.ui.SaveCleanDataCheckBox.setChecked(True)
+    self.ui.SaveCleanDataCheckBox.connect('toggled(bool)', self.onSaveCleanDataCheckBoxToggled)
 
     self.SubjectsTableWidget.connect('cellClicked(int, int)', self.onSubjectsTableWidgetCellClicked)
     self.SegmentsTableWidget.connect('cellClicked(int, int)', self.onSegmentsTableWidgetCellClicked)
 
-    self.DisplaySelectedPushButton = self.getWidget('DisplaySelectedPushButton')
-    self.DisplaySelectedPushButton.connect('clicked(bool)', self.onClickDisplaySelectedPushButton)
-    self.DisplayOnClickCheckBox = self.getWidget('DisplayOnClickCheckBox')
-    self.DisplayOnClickCheckBox.connect('toggled(bool)', self.onDisplayOnClickCheckBoxToggled)
+    self.ui.DisplaySelectedPushButton.connect('clicked(bool)', self.onClickDisplaySelectedPushButton)
+    self.ui.DisplayOnClickCheckBox.connect('toggled(bool)', self.onDisplayOnClickCheckBoxToggled)
 
     # Set self.displayOnClick according to ui file
     self.onDisplayOnClickCheckBoxToggled()
@@ -579,21 +563,6 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.resetSegmentsTable()
     self.resetGlobalVariables()
 
-  #
-  # Functions to recover the widget in the .ui file
-  #
-  def getWidget(self, objectName):
-    return self.findWidget(self.widget, objectName)
-
-  def findWidget(self, widget, objectName):
-    if widget.objectName == objectName:
-      return widget
-    else:
-      for w in widget.children():
-        resulting_widget = self.findWidget(w, objectName)
-        if resulting_widget:
-          return resulting_widget
-    return None
 
   def initSubjectsTable(self):
     """
@@ -994,10 +963,10 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.updateSubjectsTableConsistencyColumn()
 
   def onSaveCleanDataCheckBoxToggled(self):
-    self.logic.setSaveCleanData(self.SaveCleanDataCheckBox.isChecked())
+    self.logic.setSaveCleanData(self.ui.SaveCleanDataCheckBox.isChecked())
 
   def onDisplayOnClickCheckBoxToggled(self):
-    self.displayOnClick = self.DisplayOnClickCheckBox.isChecked()
+    self.displayOnClick = self.ui.DisplayOnClickCheckBox.isChecked()
 
   def onClickDisplaySelectedPushButton(self):
     self.displaySelectedIndexes()

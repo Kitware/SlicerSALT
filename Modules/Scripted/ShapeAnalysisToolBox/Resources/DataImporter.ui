@@ -132,7 +132,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="checkBoxSaveCleanData">
+       <widget class="QCheckBox" name="SaveCleanDataCheckBox">
         <property name="toolTip">
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The segmentation data generally has to be cleaned in order to get to underlying geometry.&lt;/p&gt;&lt;p&gt;If enabled, this clean geometry will be used for all further processing.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
