@@ -3,6 +3,9 @@ set(MODULE_NAME Home)
 
 #-----------------------------------------------------------------------------
 set(MODULE_PYTHON_RESOURCES
+  "Resources/SampleDataDescription/DataImporterInputData.json"
+  "Resources/SampleDataDescription/SPHARM-PDMTestData.json"
+  "Resources/SampleDataDescription/ShapeRegressionInputData.json"
   )
 
 #-----------------------------------------------------------------------------

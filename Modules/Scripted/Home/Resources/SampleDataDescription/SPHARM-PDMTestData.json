@@ -1,0 +1,49 @@
+{
+    "category": "SPHARM-PDM",
+    "sampleName": "Test data",
+    "fileNames": [
+        "OutputImageToCompareParaToSPHARMMesh_SPHARM_MedialMesh.vtk",
+        "OutputImageToCompareGenParaMesh_surf.vtk",
+        "InputImageTestForSPHARM_surf.vtk",
+        "InputImageTestForSPHARM_para.vtk",
+        "OutputImageToCompareParaToSPHARMMesh_SPHARM_procalign.vtk",
+        "RegistrationTemplateForParaToSPHARMMesh.vtk",
+        "OutputImageToCompareParaToSPHARMMesh_SPHARM_ellalign.vtk",
+        "InputImage.gipl",
+        "OutputImageToCompareGenParaMesh_para.vtk",
+        "InputImageForSegPostProcess.gipl",
+        "OutputImageToCompareParaToSPHARMMesh_SPHARM.vtk",
+        "InputImageForGenParaMesh.nrrd",
+        "OutputImageToCompareSegPostProcess.nrrd"
+    ],
+    "uris": [
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/e196630b06e28256a8bc56ce153bdb22d5cb7732bef39c07944901d3c0de907875086030669d7c410e80568edd97b235a14a5728174e10a85c6fb6d2305884f6/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/7b5357dc10376ce3c60e6321829e3bd62de9de875488644e849c9c3b2cc724193d0c9f4333b60b4f7f175fb973b61c7a18ea0b74c7675e966905bd0028669e28/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/7b5357dc10376ce3c60e6321829e3bd62de9de875488644e849c9c3b2cc724193d0c9f4333b60b4f7f175fb973b61c7a18ea0b74c7675e966905bd0028669e28/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/43d3bbf58e62f68c3092a9cb2a0b25ed1960502ae62f13b3312571d4cd3526e2788feff602853a12df737a109a71d9f3c2cd14b7f0063ada75a40f7b27ca8671/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/71dfd115cf4782d98f91f3f3495ef9f2ee349c6a58f73f95c0b559b1b2acaf1ef1a116bfe032687e34f35f6d02a5c11f09e3e5d1ef8cefa310454f4cd8d029cc/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/7f441c2eeef2c4c4b6b504c5b8f4f9b4f256038c0443c5c4a3abaeda52a8fae5575831d90fbd089bddf28d3d03c8bc23c4a51f98a8d510f3e34e594db8c75039/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/3a6dae33dadd6e75fa631f31d4ee5cb9ee67e41db476a9c92e52fd6f0b34ee6e4f50fd4b1e07245ada748a50b441a479bc912ee6c470a437ccd510d4b5c065e5/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/32de18c219dde802e2dad5412d4a0e0c0c0b709d793cd1d9b7d65d622f6e063d54110d28faa65e4c2185d756239f70b6683c03cf299e9848b7608ed58234a4e1/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/43d3bbf58e62f68c3092a9cb2a0b25ed1960502ae62f13b3312571d4cd3526e2788feff602853a12df737a109a71d9f3c2cd14b7f0063ada75a40f7b27ca8671/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/32de18c219dde802e2dad5412d4a0e0c0c0b709d793cd1d9b7d65d622f6e063d54110d28faa65e4c2185d756239f70b6683c03cf299e9848b7608ed58234a4e1/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/e9262629b6aea2430ebe0e6b840af185bdd3b8288b6c464e0be8b37e4f28aafe0e9a57d01d864652f2143a8bd0aa83c9f7ee11da1cc27f831abdef66291d4279/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/0c036cd290d8d4afc0eb45fc91c0009cf6aef387af51034df13e13089719b89d98deca7f1f0ca5880eb2d7a6eedab2962479989bcfa6559dd2c1759b4372a919/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/0c036cd290d8d4afc0eb45fc91c0009cf6aef387af51034df13e13089719b89d98deca7f1f0ca5880eb2d7a6eedab2962479989bcfa6559dd2c1759b4372a919/download"
+    ],
+    "checksums": [
+        "SHA512:e196630b06e28256a8bc56ce153bdb22d5cb7732bef39c07944901d3c0de907875086030669d7c410e80568edd97b235a14a5728174e10a85c6fb6d2305884f6",
+        "SHA512:7b5357dc10376ce3c60e6321829e3bd62de9de875488644e849c9c3b2cc724193d0c9f4333b60b4f7f175fb973b61c7a18ea0b74c7675e966905bd0028669e28",
+        "SHA512:7b5357dc10376ce3c60e6321829e3bd62de9de875488644e849c9c3b2cc724193d0c9f4333b60b4f7f175fb973b61c7a18ea0b74c7675e966905bd0028669e28",
+        "SHA512:43d3bbf58e62f68c3092a9cb2a0b25ed1960502ae62f13b3312571d4cd3526e2788feff602853a12df737a109a71d9f3c2cd14b7f0063ada75a40f7b27ca8671",
+        "SHA512:71dfd115cf4782d98f91f3f3495ef9f2ee349c6a58f73f95c0b559b1b2acaf1ef1a116bfe032687e34f35f6d02a5c11f09e3e5d1ef8cefa310454f4cd8d029cc",
+        "SHA512:7f441c2eeef2c4c4b6b504c5b8f4f9b4f256038c0443c5c4a3abaeda52a8fae5575831d90fbd089bddf28d3d03c8bc23c4a51f98a8d510f3e34e594db8c75039",
+        "SHA512:3a6dae33dadd6e75fa631f31d4ee5cb9ee67e41db476a9c92e52fd6f0b34ee6e4f50fd4b1e07245ada748a50b441a479bc912ee6c470a437ccd510d4b5c065e5",
+        "SHA512:32de18c219dde802e2dad5412d4a0e0c0c0b709d793cd1d9b7d65d622f6e063d54110d28faa65e4c2185d756239f70b6683c03cf299e9848b7608ed58234a4e1",
+        "SHA512:43d3bbf58e62f68c3092a9cb2a0b25ed1960502ae62f13b3312571d4cd3526e2788feff602853a12df737a109a71d9f3c2cd14b7f0063ada75a40f7b27ca8671",
+        "SHA512:32de18c219dde802e2dad5412d4a0e0c0c0b709d793cd1d9b7d65d622f6e063d54110d28faa65e4c2185d756239f70b6683c03cf299e9848b7608ed58234a4e1",
+        "SHA512:e9262629b6aea2430ebe0e6b840af185bdd3b8288b6c464e0be8b37e4f28aafe0e9a57d01d864652f2143a8bd0aa83c9f7ee11da1cc27f831abdef66291d4279",
+        "SHA512:0c036cd290d8d4afc0eb45fc91c0009cf6aef387af51034df13e13089719b89d98deca7f1f0ca5880eb2d7a6eedab2962479989bcfa6559dd2c1759b4372a919",
+        "SHA512:0c036cd290d8d4afc0eb45fc91c0009cf6aef387af51034df13e13089719b89d98deca7f1f0ca5880eb2d7a6eedab2962479989bcfa6559dd2c1759b4372a919"
+    ]
+}
