@@ -2,9 +2,9 @@ import os
 import vtk, qt, ctk, slicer
 from slicer.ScriptedLoadableModule import (ScriptedLoadableModule,
                                            ScriptedLoadableModuleWidget)
-import SampleData
 import logging
 import json
+from SampleData import SampleDataLogic, SampleDataWidget
 from slicer.util import computeChecksum, extractAlgoAndDigest
 
 
@@ -110,7 +110,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
                 else:
                   iconPath = None
 
-                SampleData.SampleDataLogic.registerCustomSampleDataSource(
+                SampleDataLogic.registerCustomSampleDataSource(
                     category=source_data['category'],
                     sampleName=source_data['sampleName'],
                     uris=source_data['uris'],
@@ -125,14 +125,35 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
         # HIDE SAMPLE DATA 'BUILTIN' CATEGORY
         slicer.modules.sampledata.widgetRepresentation().self().setCategoryVisible('BuiltIn', False)
 
+        self.sampleDataModuleTab = None
+        self.sampleDataTabTextEdit = None
+
+        self.moduleNameToSampleDataCategory = {
+            "DataImporter": "Data Importer",
+            "ShapeAnalysisModule": "SPHARM-PDM",
+            "RegressionComputation": "Shape Regression",
+        }
+
+        self.sampleDataModuleTab = self.addSampleDataTab()
+        self.updateSampleDataTab("Home")
+        moduleMenu = slicer.util.mainWindow().moduleSelector().modulesMenu()
+        moduleMenu.connect("currentModuleChanged(QString)", self.updateSampleDataTab)
+
+    def cleanup(self):
+        currentSampleDataLogic = slicer.modules.sampledata.widgetRepresentation().self().logic
+        SampleDataWidget.setCategoriesFromSampleDataSources(self.sampleDataModuleTab.layout(), {}, currentSampleDataLogic)
+
     def onAnchorClicked(self, url):
         moduleName = url.fragment()
         slicer.util.selectModule(moduleName)
 
     @staticmethod
     def downloadSampleDataInFolder(source):
-        widget = slicer.modules.sampledata.widgetRepresentation().self()
-        sampleDataLogic = widget.logic
+
+        if slicer.util.selectedModule() == "SampleData":
+            sampleDataLogic = slicer.modules.sampledata.widgetRepresentation().self().logic
+        else:
+            sampleDataLogic = SampleDataLogic(logMessage=slicer.modules.HomeWidget.logSampleDataTabMessage)
 
         # Retrieve directory
         category = sampleDataLogic.categoryForSource(source)
@@ -151,3 +172,48 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
 
         # Save directory
         slicer.app.userSettings().setValue("SampleData/Last%sDownloadDirectory" % category, destFolderPath)
+
+    @staticmethod
+    def addSampleDataTab():
+        tabWidget = slicer.util.findChild(slicer.util.mainWindow(), "HelpAcknowledgementTabWidget")
+        sampleDataTab = qt.QWidget()
+        sampleDataTab.objectName = "SampleDataTab"
+        verticalLayout = qt.QVBoxLayout(sampleDataTab)
+        verticalLayout.setContentsMargins(0, 0, 0, 0)
+        tabWidget.addTab(sampleDataTab, "SampleData")
+        return sampleDataTab
+
+    def logSampleDataTabMessage(self, message, logLevel=logging.INFO):
+        # Set text color based on log level
+        if logLevel >= logging.ERROR:
+          message = '<font color="red">' + message + '</font>'
+        elif logLevel >= logging.WARNING:
+          message = '<font color="orange">' + message + '</font>'
+        # Show message in status bar
+        doc = qt.QTextDocument()
+        doc.setHtml(message)
+        slicer.util.showStatusMessage(doc.toPlainText(),3000)
+        # Show message in log window at the bottom of the module widget
+        self.sampleDataTabTextEdit.insertHtml(message)
+        self.sampleDataTabTextEdit.insertPlainText('\n')
+        self.sampleDataTabTextEdit.ensureCursorVisible()
+        self.sampleDataTabTextEdit.repaint()
+        logging.log(logLevel, message)
+        slicer.app.processEvents(qt.QEventLoop.ExcludeUserInputEvents)
+
+    def updateSampleDataTab(self, moduleName):
+        currentSampleDataLogic = slicer.modules.sampledata.widgetRepresentation().self().logic
+        categoryLayout = self.sampleDataModuleTab.layout()
+        if moduleName not in self.moduleNameToSampleDataCategory:
+            SampleDataWidget.setCategoriesFromSampleDataSources(categoryLayout, {}, currentSampleDataLogic)
+            label = qt.QLabel("No SampleData available for this module")
+            categoryLayout.addWidget(label)
+        else:
+            category = self.moduleNameToSampleDataCategory[moduleName]
+            sources = {category: slicer.modules.sampleDataSources[category]}
+            SampleDataWidget.setCategoriesFromSampleDataSources(categoryLayout, sources, currentSampleDataLogic)
+            log = qt.QTextEdit()
+            log.readOnly = True
+            categoryLayout.addWidget(log)
+            log.insertHtml('<p>Status: <i>Idle</i></p>')
+            self.sampleDataTabTextEdit = log
