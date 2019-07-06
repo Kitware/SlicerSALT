@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>459</width>
-    <height>682</height>
+    <width>503</width>
+    <height>1125</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -54,18 +54,14 @@
           <string>Import from directory</string>
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="ctkDirectoryButton" name="FolderDirectoryButton">
-            <property name="directory">
-             <string>.</string>
-            </property>
-            <property name="text">
-             <string> Choose Data Directory</string>
-            </property>
-           </widget>
-          </item>
+          <property name="sizeConstraint">
+           <enum>QLayout::SetDefaultConstraint</enum>
+          </property>
           <item>
            <layout class="QHBoxLayout" name="FolderHorizontalLayout">
+            <property name="sizeConstraint">
+             <enum>QLayout::SetDefaultConstraint</enum>
+            </property>
             <item>
              <widget class="QLabel" name="InputFolderNameLabel">
               <property name="text">
@@ -79,6 +75,44 @@
                <bool>true</bool>
               </property>
              </widget>
+            </item>
+            <item>
+             <widget class="ctkDirectoryButton" name="FolderDirectoryButton" native="true">
+              <property name="directory" stdset="0">
+               <string>.</string>
+              </property>
+              <property name="text" stdset="0">
+               <string> Choose Data Directory</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QLabel" name="InputFolderColorTableLabel">
+              <property name="text">
+               <string>Color table</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="InputFolderColorTableSelection"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_4">
+            <item>
+             <widget class="QLabel" name="InputFileTypeLabel">
+              <property name="text">
+               <string>Type of File</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="InputFileTypeSelection"/>
             </item>
            </layout>
           </item>
@@ -96,13 +130,6 @@
          </attribute>
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <item>
-           <widget class="QPushButton" name="CSVBrowseFilePushButton">
-            <property name="text">
-             <string>Choose CSV File</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <layout class="QHBoxLayout" name="CSVHorizontalLayout">
             <item>
              <widget class="QLabel" name="InputCSVFileNameLabel">
@@ -118,7 +145,184 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QPushButton" name="CSVBrowseFilePushButton">
+              <property name="text">
+               <string>Choose CSV File</string>
+              </property>
+             </widget>
+            </item>
            </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QLabel" name="InputCSVColorTableLabel">
+              <property name="text">
+               <string>Color Table</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="InputCSVColorTableSelection"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="FreeSurferImportTab">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <attribute name="title">
+          <string>Import from FreeSurfer</string>
+         </attribute>
+         <layout class="QVBoxLayout" name="verticalLayout_7">
+          <item>
+           <layout class="QHBoxLayout" name="FreeSurferHomeHorizontalLayout">
+            <item>
+             <widget class="QLabel" name="InputFreeSurferHomeFolderNameLabel">
+              <property name="text">
+               <string>Home Folder:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="InputFreeSurferHomeFolderNameLineEdit">
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="ctkDirectoryButton" name="FreeSurferBrowseHomeFolderPushButton" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="directory" stdset="0">
+               <string>.</string>
+              </property>
+              <property name="text" stdset="0">
+               <string> Choose Data Directory</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="FreeSurferHorizontalLayout">
+            <item>
+             <widget class="QLabel" name="InputFreeSurferSubjectsFolderNameLabel">
+              <property name="text">
+               <string>Subjects Folder:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="InputFreeSurferSubjectsFolderNameLineEdit">
+              <property name="readOnly">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="ctkDirectoryButton" name="FreeSurferBrowseSubjectsFolderPushButton" native="true">
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="directory" stdset="0">
+               <string>.</string>
+              </property>
+              <property name="text" stdset="0">
+               <string> Choose Data Directory</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLabel" name="InputFreeSurferFileNameLabel">
+              <property name="text">
+               <string>File:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="InputFreeSurferFileSelection"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QTableWidget" name="InputFreeSurferSubjectsTable">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>150</height>
+             </size>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+            <attribute name="horizontalHeaderCascadingSectionResizes">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="horizontalHeaderHighlightSections">
+             <bool>true</bool>
+            </attribute>
+            <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
+            <attribute name="verticalHeaderCascadingSectionResizes">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="verticalHeaderShowSortIndicator" stdset="0">
+             <bool>false</bool>
+            </attribute>
+            <attribute name="verticalHeaderStretchLastSection">
+             <bool>false</bool>
+            </attribute>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="FreeSurferImportAllSubjectsOption">
+            <property name="text">
+             <string>Import all subjects</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTableWidget" name="InputFreeSurferSegmentsTable">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>150</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="FreeSurferImportAllSegmentsOption">
+            <property name="text">
+             <string>Import all segments</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -148,13 +352,48 @@
     </widget>
    </item>
    <item>
-    <widget class="ctkCollapsibleButton" name="SubjectsCollapsibleButton">
+    <widget class="QLabel" name="label">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>2</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>2</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background:black;
+</string>
+     </property>
      <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="ctkCollapsibleButton" name="SubjectsCollapsibleButton" native="true">
+     <property name="text" stdset="0">
       <string>Imported Subjects</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
        <widget class="QTableWidget" name="SubjectsTableWidget">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>125</height>
+         </size>
+        </property>
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -176,13 +415,19 @@
     </widget>
    </item>
    <item>
-    <widget class="ctkCollapsibleButton" name="SegmentsCollapsibleButton">
-     <property name="text">
+    <widget class="ctkCollapsibleButton" name="SegmentsCollapsibleButton" native="true">
+     <property name="text" stdset="0">
       <string>Segments in Selected Subject</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
        <widget class="QTableWidget" name="SegmentsTableWidget">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>125</height>
+         </size>
+        </property>
         <property name="sortingEnabled">
          <bool>true</bool>
         </property>
@@ -227,6 +472,78 @@
        </widget>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="label_2">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>2</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>2</height>
+      </size>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background:black;</string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="ShapeAnalysisHorizontalLayout">
+     <item>
+      <widget class="QLabel" name="InputShapeAnalysisFolderNameLabel">
+       <property name="text">
+        <string>Shape Analysis Folder:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="InputShapeAnalysisFolderNameLineEdit">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="ctkDirectoryButton" name="ShapeAnalysisFolderPushButton" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="directory" stdset="0">
+        <string>.</string>
+       </property>
+       <property name="text" stdset="0">
+        <string> Choose Data Directory</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QPushButton" name="CreateShapeAnalysisStructurePushButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;lt;html&amp;gt;&amp;lt;head/&amp;gt;&amp;lt;body&amp;gt;&amp;lt;p&amp;gt;Display the selection made on Subjects and Segment tables.&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;You can use the key shift for multi-selection.&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;&amp;lt;br/&amp;gt;&amp;lt;/p&amp;gt;&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Generate Shape Analysis Stucture</string>
+     </property>
     </widget>
    </item>
   </layout>
