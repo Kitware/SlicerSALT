@@ -725,8 +725,6 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
   def resetGlobalVariables(self):
     self.logic.cleanup()
     self.logic = DataImporterLogic()
-    self.directoryPath = ''
-    self.shape_analysis_folder = ''
     self.filteredFilePathsList = list()
 
   def setup(self):
@@ -736,11 +734,9 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     #   Global variables
     #
     self.logic = DataImporterLogic()
-    self.directoryPath = ''
     self.filteredFilePathsList = list()
     self.tableWidgetItemDefaultFlags = qt.Qt.NoItemFlags | qt.Qt.ItemIsSelectable | qt.Qt.ItemIsEnabled
     self.displayOnClick = True
-    self.shape_analysis_folder = ''
 
     # Table columns
     self.subjectsColumnName = 0
@@ -891,7 +887,21 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     self.resetGlobalVariables()
     self.unregisterCallbacks()
 
+  @property
+  def inputShapeAnalysisPath(self):
+    return self.InputShapeAnalysisFolderNameLineEdit.text
 
+  @inputShapeAnalysisPath.setter
+  def inputShapeAnalysisPath(self, value):
+    self.InputShapeAnalysisFolderNameLineEdit.text = value
+
+  @property
+  def inputPath(self):
+    return self.InputFolderNameLineEdit.text
+
+  @inputPath.setter
+  def inputPath(self, value):
+    self.InputFolderNameLineEdit.text = value
 
   def initSubjectsTable(self):
     """
@@ -1298,16 +1308,18 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     # uncheck subjects
     subject_number = self.InputFreeSurferSubjectsTable.rowCount
     for i_row in range(subject_number):
-      self.InputFreeSurferSubjectsTable.cellWidget(i_row, 0).children()[1].blockSignals(True)
-      self.InputFreeSurferSubjectsTable.cellWidget(i_row, 0).children()[1].setChecked(False)
-      self.InputFreeSurferSubjectsTable.cellWidget(i_row, 0).children()[1].blockSignals(False)
+      rowItem = self.InputFreeSurferSubjectsTable.cellWidget(i_row, 0).children()[1]
+      rowItem.blockSignals(True)
+      rowItem.setChecked(False)
+      rowItem.blockSignals(False)
 
     # uncheck segments
     segment_number = self.InputFreeSurferSegmentsTable.rowCount
     for i_row in range(segment_number):
-      self.InputFreeSurferSegmentsTable.cellWidget(i_row, 0).children()[1].blockSignals(True)
-      self.InputFreeSurferSegmentsTable.cellWidget(i_row, 0).children()[1].setChecked(False)
-      self.InputFreeSurferSegmentsTable.cellWidget(i_row, 0).children()[1].blockSignals(False)
+      rowItem = self.InputFreeSurferSegmentsTable.cellWidget(i_row, 0).children()[1]
+      rowItem.blockSignals(True)
+      rowItem.setChecked(False)
+      rowItem.blockSignals(False)
 
   def resetFreeSurferTab(self):
     self.logic.freesurfer_wanted_segments = []
@@ -1319,7 +1331,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
 
   def resetDirectoryTab(self):
     # reset directroy tab
-    self.InputFolderNameLineEdit.text = ''
+    self.inputPath = ''
     self.FolderDirectoryButton.blockSignals(True)
     self.FolderDirectoryButton.directory = '/'
     self.FolderDirectoryButton.blockSignals(False)
@@ -1334,9 +1346,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     if not directory.exists():
       logging.error("Directory {} does not exist.".format(directory))
       return
-
-    self.shape_analysis_folder = directoryPath
-    self.InputShapeAnalysisFolderNameLineEdit.text = directoryPath
+    self.inputShapeAnalysisPath = directoryPath
 
   def onGenerateShapeAnalysisStructure(self):
     logging.debug("onGenerateShapeAnalysisStructure")
@@ -1346,13 +1356,13 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
       logging.error("Empty segmentation dictionary, import data before generating the Shape Analysis Structure.")
       return
 
-    if self.shape_analysis_folder == '':
+    if self.inputShapeAnalysisPath == '':
       logging.error("No Shape Analysis folder specified")
       return
 
-    self.logic.generateShapeAnlaysisStructure(self.shape_analysis_folder)
+    self.logic.generateShapeAnlaysisStructure(self.inputShapeAnalysisPath)
 
-    print('the shape analysis folder located at %s is ready' % self.shape_analysis_folder)
+    print('the shape analysis folder located at %s is ready' % self.inputShapeAnalysisPath)
 
   def onCurrentTabChanged(self, index):
     """Resize tabs to fit minimal space
@@ -1426,7 +1436,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
 
   def onFreeSurferSubjectsDirectoryChanged(self, freesurfer_subjects_path):
     """
-    Populates self.directoryPath and self.filteredFilePathsList
+    Populates self.inputPath and self.filteredFilePathsList
     containing a list of files contained in the directoryPath
     that can be used in this module.
     """
@@ -1491,10 +1501,8 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     subject_number = self.InputFreeSurferSubjectsTable.rowCount
 
     for i_row in range(subject_number):
-      if self.FreeSurferImportAllSubjectsOption.isChecked():
-        self.InputFreeSurferSubjectsTable.cellWidget(i_row, 0).children()[1].setChecked(True)
-      else:
-        self.InputFreeSurferSubjectsTable.cellWidget(i_row, 0).children()[1].setChecked(False)
+      rowItem = self.InputFreeSurferSubjectsTable.cellWidget(i_row, 0).children()[1]
+      rowItem.setChecked(self.FreeSurferImportAllSubjectsOption.isChecked())
     self.onStateChangedFreeSurferImportAllSubjectsOption_is_running = False
 
   def onToggleFreeSurferSegmentSelection(self, label_id):
@@ -1515,10 +1523,8 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
     segment_number = self.InputFreeSurferSegmentsTable.rowCount
 
     for i_row in range(segment_number):
-      if self.FreeSurferImportAllSegmentsOption.isChecked():
-        self.InputFreeSurferSegmentsTable.cellWidget(i_row, 0).children()[1].setChecked(True)
-      else:
-        self.InputFreeSurferSegmentsTable.cellWidget(i_row, 0).children()[1].setChecked(False)
+      rowItem = self.InputFreeSurferSegmentsTable.cellWidget(i_row, 0).children()[1]
+      rowItem.setChecked(self.FreeSurferImportAllSegmentsOption.isChecked())
     self.onStateChangedFreeSurferImportAllSegmentsOption_is_running = False
 
   #events to detect new or deleted color table
@@ -1627,7 +1633,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
 
   def onDirectoryChanged(self, directoryPath):
     """
-    Populates self.directoryPath and self.filteredFilePathsList
+    Populates self.inputPath and self.filteredFilePathsList
     containing a list of files contained in the directoryPath
     that can be used in this module.
     """
@@ -1638,8 +1644,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
       logging.error("Directory {} does not exist.".format(directory))
       return
 
-    self.directoryPath = directoryPath
-    self.InputFolderNameLineEdit.text = directoryPath
+    self.inputPath = directoryPath
 
     fileNameList = directory.entryList(qt.QDir.Files | qt.QDir.Readable)
     # Trim fileList to only accept types recognized by slicer
