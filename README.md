@@ -32,7 +32,8 @@ Tested Development environment: [Slicer Windows Dev Environment].
 
 1. Run CMake (cmake-gui) from the Windows Start Menu
     * Set the build directory `C:\slicerSALT-Debug` or `C:\slicerSALT-Release`
-    * Select your compiler: Visual Studio 12 2013 Win64
+    * Select your compiler: Visual Studio 14 2015 Win64
+    * If using a newer version of Visual Studio, be sure to specify the 2015 toolset (v140)
     * Configure using default options. You may get a configuration error that `QT_QMAKE_EXECUTABLE` is not set, which is normal.
     * Verify that `QT_QMAKE_EXECUTABLE` is set to the QT version that was used to compile Slicer
     * Click generate the close cmake-gui
