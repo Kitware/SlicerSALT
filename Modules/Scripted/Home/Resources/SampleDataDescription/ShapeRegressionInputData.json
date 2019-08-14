@@ -1,6 +1,6 @@
 {
     "category": "Shape Regression",
-    "sampleName": "Input data",
+    "sampleName": "Download sample data",
     "fileNames": [
         "SphereToEllipsoid_02.vtk",
         "regression_driver.xml",

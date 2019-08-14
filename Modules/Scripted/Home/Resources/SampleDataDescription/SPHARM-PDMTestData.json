@@ -1,6 +1,6 @@
 {
     "category": "SPHARM-PDM",
-    "sampleName": "Test data",
+    "sampleName": "Download sample data",
     "fileNames": [
         "OutputImageToCompareParaToSPHARMMesh_SPHARM_MedialMesh.vtk",
         "OutputImageToCompareGenParaMesh_surf.vtk",

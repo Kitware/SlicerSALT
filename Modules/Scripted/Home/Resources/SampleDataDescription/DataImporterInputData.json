@@ -1,6 +1,6 @@
 {
     "category": "Data Importer",
-    "sampleName": "Input data",
+    "sampleName": "Download sample data",
     "fileNames": [
         "case03.nrrd",
         "case01_allSegments.seg.vtm.zip",
