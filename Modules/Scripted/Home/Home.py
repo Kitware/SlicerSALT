@@ -180,7 +180,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
         sampleDataTab.objectName = "SampleDataTab"
         verticalLayout = qt.QVBoxLayout(sampleDataTab)
         verticalLayout.setContentsMargins(0, 0, 0, 0)
-        tabWidget.addTab(sampleDataTab, "SampleData")
+        tabWidget.addTab(sampleDataTab, "Tutorials")
         return sampleDataTab
 
     def logSampleDataTabMessage(self, message, logLevel=logging.INFO):
