@@ -68,6 +68,14 @@ class HomeWidget(ScriptedLoadableModuleWidget):
     def setup(self):
         ScriptedLoadableModuleWidget.setup(self)
 
+        self.tutorials = {
+          "ShapeAnalysisModule": "https://bit.ly/2Fyn97v",  # SPHARM-PDM Generator
+          "GroupWiseRegistrationModule": "https://bit.ly/2WsFiun",
+          "RegressionComputation": "http://bit.ly/2uVYche",
+          "ShapeVariationAnalyzer": "https://bit.ly/2HYbHVA",  # Population Analysis
+          "SkeletalRepresentationVisualizer": "http://bit.ly/2UKKgW2"
+        }
+
         # The anchor associated with each link corresponds to the name of the module to select.
         # For example, after the user click on the link associated with `href="#DataImporter"`,
         # the "DataImporter" module is selected.
@@ -204,16 +212,43 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
     def updateSampleDataTab(self, moduleName):
         currentSampleDataLogic = slicer.modules.sampledata.widgetRepresentation().self().logic
         categoryLayout = self.sampleDataModuleTab.layout()
-        if moduleName not in self.moduleNameToSampleDataCategory:
+        tutorialTextBrowser = ctk.ctkFittedTextBrowser()
+        tutorialTextBrowser.frameShape = qt.QFrame.NoFrame
+        tutorialTextBrowser.openExternalLinks = True
+        if moduleName == "Home":
+            # Tutorial link
+            tutorialHtml = \
+                "See <a href=\"https://salt.slicer.org/documentation/\">https://salt.slicer.org/documentation/</a> " \
+                "for overall documentation.<br/>" \
+                "<br/>" \
+                "Module specific tutorials and associated data are available in the Tutorials tab specific to each module."
+            # SampleData
             SampleDataWidget.setCategoriesFromSampleDataSources(categoryLayout, {}, currentSampleDataLogic)
-            label = qt.QLabel("No SampleData available for this module")
-            categoryLayout.addWidget(label)
         else:
-            category = self.moduleNameToSampleDataCategory[moduleName]
-            sources = {category: slicer.modules.sampleDataSources[category]}
-            SampleDataWidget.setCategoriesFromSampleDataSources(categoryLayout, sources, currentSampleDataLogic)
+            # Tutorial link
+            if moduleName in self.tutorials:
+                tutorialHtml = "Click <a href=\"%s\">here</a> to read tutorial. <br/>" % self.tutorials[moduleName]
+            else:
+                tutorialHtml = \
+                  "There is no tutorial for this module. " \
+                  "Consider asking questions on the <a href=\"https://discourse.slicer.org/c/community/slicer-salt\">SlicerSALT forum</a>. <br/>"
+            # SampleData
+            if moduleName not in self.moduleNameToSampleDataCategory:
+                SampleDataWidget.setCategoriesFromSampleDataSources(categoryLayout, {}, currentSampleDataLogic)
+                tutorialHtml += \
+                    "<br/>" \
+                    "There is no SampleData available for this module. <br/>"
+            else:
+                category = self.moduleNameToSampleDataCategory[moduleName]
+                sources = {category: slicer.modules.sampleDataSources[category]}
+                SampleDataWidget.setCategoriesFromSampleDataSources(categoryLayout, sources, currentSampleDataLogic)
+                tutorialHtml += ""
+            # Download status
             log = qt.QTextEdit()
             log.readOnly = True
             categoryLayout.addWidget(log)
             log.insertHtml('<p>Status: <i>Idle</i></p>')
             self.sampleDataTabTextEdit = log
+
+        tutorialTextBrowser.setHtml(tutorialHtml)
+        categoryLayout.insertWidget(0, tutorialTextBrowser)
