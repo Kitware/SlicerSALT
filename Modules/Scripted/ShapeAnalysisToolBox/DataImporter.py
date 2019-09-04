@@ -1003,7 +1003,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
       return
 
     self.initSegmentsMultiTable()
-    for row in selectedSegmentIndex:
+    for row in uniqueRowIndexes:
       name = self.SubjectsTableWidget.item(row, self.subjectsColumnName).text()
       self.populateSegmentsMultiTable(name)
 
