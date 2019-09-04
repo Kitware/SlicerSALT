@@ -78,6 +78,8 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     self.numberOfDifferentSegments = 0
     self.dictSegmentNamesWithIntegers = dict()
 
+    self.TemplateName = ''
+
     self.freesurfer_import = False
     self.freesurfer_wanted_segments = []
 
@@ -116,6 +118,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     self.expectedTopologiesBySegment = {}
     self.inconsistentTopologyDict = {}
 
+    self.TemplateName = ''
     self.numberOfDifferentSegments = 0
     self.dictSegmentNamesWithIntegers = dict()
 
@@ -420,6 +423,30 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     {'segmentName0' : 2, 'segmentName1': 0'}
     Where the integers correspond to the enum TOPOLOGY_TYPES
     """
+
+    self.expectedTopologiesBySegment = {}
+    segmentNames = set()
+    for name in inputTopologyDictionary:
+      for segmentName in inputTopologyDictionary[name]:
+        segmentNames.add(segmentName)
+
+
+    for segmentName in segmentNames:
+      topologyType = self._computeModeOfSegment(inputTopologyDictionary, segmentName)
+      validTopologyType = (topologyType in self.TOPOLOGY_TYPES)
+      if not validTopologyType:
+        logging.warning("Topology: [{}] for segmentName: '{}', shows multiple holes. Use a key from {}".format(topologyType, segmentName, self.TOPOLOGY_TYPES))
+        topologyType = self.TOPOLOGY_MULTIPLE_HOLES_TYPE
+
+      self.expectedTopologiesBySegment[segmentName] = int(topologyType)
+
+  def initExpectedTopologyBySubjectTemplate(self, inputTopologyDictionary, templateName):
+    """
+    Populate the dict from the selected template subject:
+    Example::
+    {'segmentName0' : 2, 'segmentName1': 0'}
+    Where the integers correspond to the enum TOPOLOGY_TYPES
+    """
     self.expectedTopologiesBySegment = {}
     segmentNames = set()
     for name in inputTopologyDictionary:
@@ -427,7 +454,10 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
         segmentNames.add(segmentName)
 
     for segmentName in segmentNames:
-      topologyType = self._computeModeOfSegment(inputTopologyDictionary, segmentName)
+      if segmentName in inputTopologyDictionary[templateName]:
+        topologyType = inputTopologyDictionary[templateName][segmentName]
+      else:
+        topologyType = self.TOPOLOGY_MULTIPLE_HOLES_TYPE
       validTopologyType = (topologyType in self.TOPOLOGY_TYPES)
       if not validTopologyType:
         logging.warning("Topology: [{}] for segmentName: '{}', shows multiple holes. Use a key from {}".format(topologyType, segmentName, self.TOPOLOGY_TYPES))
@@ -548,7 +578,10 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     It uses the dictionary expectedTopologiesBySegment. If empty, it automatically init it computing the mode by segment.
     """
     if not self.expectedTopologiesBySegment:
-      self.initExpectedTopologyBySegmentWithModes(inputTopologyDictionary)
+      if self.TemplateName == '' or not self.TemplateName in inputTopologyDictionary:
+        self.initExpectedTopologyBySegmentWithModes(inputTopologyDictionary)
+      else:
+        self.initExpectedTopologyBySubjectTemplate(inputTopologyDictionary, self.TemplateName)
 
     inconsistenciesExist = False
     inconsistentSegments = {}
@@ -742,9 +775,12 @@ class DataImporterWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
     self.tableWidgetItemDefaultFlags = qt.Qt.NoItemFlags | qt.Qt.ItemIsSelectable | qt.Qt.ItemIsEnabled
     self.displayOnClick = True
 
+    self.TemplateButtonLookup = {}
+
     # Table columns
     self.subjectsColumnName = 0
     self.subjectsColumnConsistency = 1
+    self.subjectsColumnTemplate = 2
     # Note that these values change on initSegmentsTable/initSegmentsMultiTable
     self.segmentsColumnSubjectName = -1
     self.segmentsColumnSegmentName = 0
@@ -927,12 +963,15 @@ class DataImporterWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
     self.resetSubjectsTable()
     nameColumn = 0
     consistencyColumn = 1
+    checkColumn = 2
     nameColumnLabel = 'Subject name'
     consistencyColumnLabel = 'Consistency'
-    self.SubjectsTableWidget.setColumnCount(2)
+    checkColumnLabel = "Use as template"
+    self.SubjectsTableWidget.setColumnCount(3)
     self.SubjectsTableWidget.setHorizontalHeaderLabels([
       nameColumnLabel,
-      consistencyColumnLabel
+      consistencyColumnLabel,
+      checkColumnLabel
     ])
     self.SubjectsTableWidget.horizontalHeader().setSectionResizeMode(qt.QHeaderView.Stretch)
     self.SubjectsTableWidget.verticalHeader().setVisible(False)
@@ -1037,7 +1076,11 @@ class DataImporterWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
         countInconsistencies = len(inconsistentDict[name])
       if countInconsistencies > 0:
         consistency = '# Inconsistencies: ' + str(countInconsistencies)
+        consistencyBackground = qt.QBrush(qt.QColor(255, 204, 203)) # light red
+      else:
+        consistencyBackground = qt.QBrush(qt.QColor(255, 255, 255)) # white
       self.SubjectsTableWidget.item(row, consistencyColumn).setText(consistency)
+      self.SubjectsTableWidget.item(row, consistencyColumn).setBackground(consistencyBackground)
 
     #XXX is this the best place to trigger re-populate?
     self.resetSegmentsTable()
@@ -1053,22 +1096,38 @@ class DataImporterWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
       logging.error("Trying to populateSubjectsTable with non existant topologyDict.")
       return
 
+    self.TemplateButtonLookup = {}
+
     # Required to safely populate table when sorting is enabled, restored later.
     self.SubjectsTableWidget.setSortingEnabled(False)
 
     nameColumn = 0
     consistencyColumn = 1
+    checkColumn = 2
+
+    buttonGroup = qt.QButtonGroup(self.SubjectsTableWidget)
+    buttonGroup.setExclusive(True)
+
+    
+    inconsistenciesExist = False
+    inconsistentDict = {}
     # User can change self.logic.expectedTopologiesBySegment prior to call this function
-    inconsistenciesExist, inconsistentDict = self.logic.populateInconsistentTopologyDict()
+    
+
     for name in self.logic.topologyDict:
       # Populate subject names
       rowPosition = self.SubjectsTableWidget.rowCount
+
+      if rowPosition == 0:
+        self.logic.TemplateName = name
+        inconsistenciesExist, inconsistentDict = self.logic.populateInconsistentTopologyDict()
+
       self.SubjectsTableWidget.insertRow(rowPosition)
       nameItem = qt.QTableWidgetItem(name)
       nameItem.setFlags(self.tableWidgetItemDefaultFlags)
       self.SubjectsTableWidget.setItem(rowPosition, nameColumn, nameItem)
 
-      # Populate consistency row
+      # Populate consistency column
       consistency = 'Consistent'
       countInconsistencies = 0
       if name in inconsistentDict:
@@ -1081,8 +1140,27 @@ class DataImporterWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
       if countInconsistencies > 0:
         consistencyItem.setBackground(qt.QBrush(qt.QColor(255, 204, 203))) # light red
 
+      #populate checkboxes
+      checkItem = qt.QRadioButton()
+      if rowPosition == 0:
+        checkItem.setChecked(True)        
+      buttonGroup.addButton(checkItem)
+      self.TemplateButtonLookup[buttonGroup.id(checkItem)] = name      
+      self.SubjectsTableWidget.setCellWidget(rowPosition, checkColumn, checkItem)
+
     # Restore sorting
     self.SubjectsTableWidget.setSortingEnabled(True)
+
+    #connect buttons
+    buttonGroup.connect('buttonClicked(int)', self.onTemplateRadioButtons)
+
+
+  def onTemplateRadioButtons(self, id):
+    if self.TemplateButtonLookup[id] != self.logic.TemplateName:      
+      if self.TemplateButtonLookup[id] in self.logic.topologyDict:
+        self.logic.TemplateName = self.TemplateButtonLookup[id]
+        self.logic.initExpectedTopologyBySubjectTemplate(self.logic.topologyDict, self.logic.TemplateName)
+        self.updateSubjectsTableConsistencyColumn()
 
   def populateSegmentsTable(self, nameKey):
     """
