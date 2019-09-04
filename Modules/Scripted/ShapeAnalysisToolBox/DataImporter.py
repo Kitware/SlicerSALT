@@ -7,6 +7,7 @@ from collections import Counter
 import csv
 import logging
 import os
+from slicer.util import VTKObservationMixin
 
 #
 # DataImporter
@@ -717,11 +718,14 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 # DataImporterWidget
 #
 
-class DataImporterWidget(ScriptedLoadableModuleWidget):
+class DataImporterWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
   """Uses ScriptedLoadableModuleWidget base class, available at:
   https://github.com/Slicer/Slicer/blob/master/Base/Python/slicer/ScriptedLoadableModule.py
   """
-
+  def __init__(self, parent):
+    ScriptedLoadableModuleWidget.__init__(self, parent)
+    VTKObservationMixin.__init__(self)
+  
   def resetGlobalVariables(self):
     self.logic.cleanup()
     self.logic = DataImporterLogic()
@@ -874,6 +878,17 @@ class DataImporterWidget(ScriptedLoadableModuleWidget):
 
     # detect if when a node is added to update colortable list
     self.registerCallbacks()
+
+    #clear on scene close
+    self.addObserver(slicer.mrmlScene, slicer.mrmlScene.StartCloseEvent, self.onSceneStartClose)
+
+  
+  def onSceneStartClose(self, caller, event):
+    self.logic.cleanup()
+    self.resetSubjectsTable()
+    self.resetSegmentsTable()
+    self.resetFreeSurferSubjectsTable()
+    self.resetFreeSurferSegmentsTable()  
 
   #
   # Reset all the data for data import
