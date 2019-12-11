@@ -110,6 +110,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
             'DataImporterInputData.json',
             'ShapeRegressionInputData.json',
             'SPHARM-PDMTestData.json',
+	    'SVAInputData.json',
         ]:
             with open(self.resourcePath('SampleDataDescription/%s' % json_file), 'r') as json_data:
                 source_data = json.load(json_data)
@@ -140,6 +141,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
             "DataImporter": "Data Importer",
             "ShapeAnalysisModule": "SPHARM-PDM",
             "RegressionComputation": "Shape Regression",
+            "ShapeVariationAnalyzer": "Population Analysis",
         }
 
         self.sampleDataModuleTab = self.addSampleDataTab()
@@ -239,7 +241,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
                     "<br/>" \
                     "There is no SampleData available for this module. <br/>"
             else:
-                category = self.moduleNameToSampleDataCategory[moduleName]
+                category = self.moduleNameToSampleDataCategory[moduleName]		
                 sources = {category: slicer.modules.sampleDataSources[category]}
                 SampleDataWidget.setCategoriesFromSampleDataSources(categoryLayout, sources, currentSampleDataLogic)
                 tutorialHtml += ""
