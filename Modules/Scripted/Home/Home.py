@@ -129,7 +129,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
                     thumbnailFileName=iconPath,
                     loadFileType=None,
                     customDownloader=self.downloadSampleDataInFolder,
-                )
+                )              
 
         # HIDE SAMPLE DATA 'BUILTIN' CATEGORY
         slicer.modules.sampledata.widgetRepresentation().self().setCategoryVisible('BuiltIn', False)
@@ -182,6 +182,11 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
 
         # Save directory
         slicer.app.userSettings().setValue("SampleData/Last%sDownloadDirectory" % category, destFolderPath)
+
+        filepath=destFolderPath+"/setup.py"
+        if (os.path.exists(filepath)):
+          command="python "+filepath
+          os.system(command)
 
     @staticmethod
     def addSampleDataTab():
