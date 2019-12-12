@@ -109,9 +109,10 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
         # SAMPLE DATA REGISTRATION
         for json_file in [
             'DataImporterInputData.json',
+            'MFSDAInputData.json',
             'ShapeRegressionInputData.json',
             'SPHARM-PDMTestData.json',
-	    'SVAInputData.json',
+	        'SVAInputData.json',
         ]:
             with open(self.resourcePath('SampleDataDescription/%s' % json_file), 'r') as json_data:
                 source_data = json.load(json_data)
@@ -140,6 +141,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
 
         self.moduleNameToSampleDataCategory = {
             "DataImporter": "Data Importer",
+            "MFSDA": "Covariate Significance Testing",
             "ShapeAnalysisModule": "SPHARM-PDM",
             "RegressionComputation": "Shape Regression",
             "ShapeVariationAnalyzer": "Population Analysis",
