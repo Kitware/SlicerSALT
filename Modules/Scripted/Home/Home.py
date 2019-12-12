@@ -6,6 +6,7 @@ import logging
 import json
 from SampleData import SampleDataLogic, SampleDataWidget
 from slicer.util import computeChecksum, extractAlgoAndDigest
+import importlib.util
 
 
 #
@@ -185,8 +186,10 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
 
         filepath=destFolderPath+"/setup.py"
         if (os.path.exists(filepath)):
-          command="python "+filepath
-          os.system(command)
+            spec = importlib.util.spec_from_file_location("setup",filepath)
+            setup = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(setup)
+            setup.setup()
 
     @staticmethod
     def addSampleDataTab():
