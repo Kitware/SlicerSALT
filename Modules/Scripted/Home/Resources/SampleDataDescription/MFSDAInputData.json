@@ -1,0 +1,16 @@
+{
+  "category": "Covariate Significance Testing",
+  "sampleName": "Download sample data",
+  "fileNames": [
+"MFSDASampleData.zip",
+"setup.py"
+  ],
+  "uris": [
+"https://data.kitware.com/api/v1/file/hashsum/sha512/82526a922dbe3bd96aa3ef875bddc49b93743b85007bb2cd364a758cd5938b85a5c328c9d8030bf50e040f1e6cb621e98be9a610f492b4b33b479fa9bec04094/download",
+"https://data.kitware.com/api/v1/file/hashsum/sha512/7b8d6f2337a854c3a97b07ea59238a51a26980cada83f934ed86e21de1e8f0a70f9b437b82fa9f2bf1449f1530ba557abdb6ff90ea5b8ed718076e04d49038c3/download"
+  ],
+  "checksums": [
+      "SHA512:82526a922dbe3bd96aa3ef875bddc49b93743b85007bb2cd364a758cd5938b85a5c328c9d8030bf50e040f1e6cb621e98be9a610f492b4b33b479fa9bec04094",
+      "SHA512:7b8d6f2337a854c3a97b07ea59238a51a26980cada83f934ed86e21de1e8f0a70f9b437b82fa9f2bf1449f1530ba557abdb6ff90ea5b8ed718076e04d49038c3"
+  ]
+}
