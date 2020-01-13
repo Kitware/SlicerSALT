@@ -193,6 +193,34 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
             spec.loader.exec_module(setup)
             setup.setup()
 
+        # Pre-fill input/output fields in module
+        currModule = slicer.util.selectedModule()
+        if currModule == 'DataImporter':
+            slicer.modules.DataImporterWidget.FolderDirectoryButton.directory = destFolderPath
+        elif currModule == 'ShapeAnalysisModule':
+            slicer.modules.ShapeAnalysisModuleWidget.GroupProjectInputDirectory.directory = destFolderPath
+            outPath = os.path.join(destFolderPath,'out')
+            if not os.path.exists(outPath):
+                os.mkdir(outPath)
+            slicer.modules.ShapeAnalysisModuleWidget.GroupProjectOutputDirectory.directory = outPath
+        elif currModule == 'ShapeVariationAnalyzer':
+            slicer.modules.ShapeVariationAnalyzerWidget.collapsibleButton_PCA.collapsed = False
+            slicer.modules.ShapeVariationAnalyzerWidget.pathLineEdit_CSVFilePCA.currentPath = os.path.join(destFolderPath,'inputFiles.csv')
+        elif currModule == 'RegressionComputation':
+            slicer.modules.RegressionComputationWidget.shapeInputDirectory.directory = destFolderPath
+            outPath = os.path.join(destFolderPath,'out')
+            if not os.path.exists(outPath):
+                os.mkdir(outPath)
+            slicer.modules.RegressionComputationWidget.outputDirectory.directory = outPath
+        elif currModule == 'MFSDA':
+            slicer.modules.MFSDAWidget.lineEdit_csv.currentPath = os.path.join(destFolderPath,'inputFiles.csv')
+            slicer.modules.MFSDAWidget.lineEdit_template.currentPath = os.path.join(destFolderPath,'g01','bump00.vtk')
+            slicer.modules.MFSDAWidget.lineEdit_pshape.currentPath = os.path.join(destFolderPath,'g01','bump00.vtk')
+            outPath = os.path.join(destFolderPath,'out')
+            if not os.path.exists(outPath):
+                os.mkdir(outPath)
+            slicer.modules.MFSDAWidget.lineEdit_output.directory = os.path.join(destFolderPath,'out')
+
     @staticmethod
     def addSampleDataTab():
         tabWidget = slicer.util.findChild(slicer.util.mainWindow(), "HelpAcknowledgementTabWidget")
