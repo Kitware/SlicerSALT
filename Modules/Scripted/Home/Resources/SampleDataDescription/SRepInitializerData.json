@@ -1,0 +1,13 @@
+{
+  "category": "Skeletal Representation Initializer",
+  "sampleName": "Download sample data",
+  "fileNames": [
+      "sample.vtk"
+  ],
+  "uris": [
+      "https://data.kitware.com/api/v1/file/hashsum/sha512/8b70ab1d2f83b1e079a91b985825f2d21ab416b0d0099570fd621f34ad489a9afb8e823d55a17f7cc13a8c6d34b96531377c1dcbb01c63c659300b7c9f8efe6f/download"
+  ],
+  "checksums": [
+      "SHA512:8b70ab1d2f83b1e079a91b985825f2d21ab416b0d0099570fd621f34ad489a9afb8e823d55a17f7cc13a8c6d34b96531377c1dcbb01c63c659300b7c9f8efe6f"
+  ]
+}

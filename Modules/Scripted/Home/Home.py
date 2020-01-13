@@ -112,7 +112,8 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
             'MFSDAInputData.json',
             'ShapeRegressionInputData.json',
             'SPHARM-PDMTestData.json',
-	        'SVAInputData.json',
+            'SRepInitializerData.json',
+            'SVAInputData.json'
         ]:
             with open(self.resourcePath('SampleDataDescription/%s' % json_file), 'r') as json_data:
                 source_data = json.load(json_data)
@@ -145,6 +146,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
             "ShapeAnalysisModule": "SPHARM-PDM",
             "RegressionComputation": "Shape Regression",
             "ShapeVariationAnalyzer": "Population Analysis",
+            "SkeletalRepresentationInitializer": "Skeletal Representation Initializer"
         }
 
         self.sampleDataModuleTab = self.addSampleDataTab()
