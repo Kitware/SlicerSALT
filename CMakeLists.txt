@@ -303,7 +303,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/3DMetricTools
-  GIT_TAG        a323e0bcfffd112e517cf28bf6a96dca10d32047 # branch: slicersalt-2017-10-06-dbd3b88a2
+  GIT_TAG        178e0d9bbb5408a04abce6b252822d080ed3719d # slicersalt-2019-11-20-56d288a
   GIT_PROGRESS   1
   QUIET
   )
@@ -351,7 +351,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        90d8bdc5fe4ff321ed4d6dbe9ad394a2d2565871 # slicersalt-2018-11-26-92fb222
+  GIT_TAG        aecbfec228ac095d75ada0066a96eb2c128a5f65 # slicersalt-2019-11-20-bd4bdcf
   GIT_PROGRESS   1
   QUIET
   )
@@ -387,7 +387,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        f147c9500b04fc978f28687be7796cb08f044b25 # slicersalt-2019-10-03-4baa99c10
+  GIT_TAG        50ae545559a9a897de60832e29a8062364cae7cf # slicersalt-2018-11-29-4baa99c10
   GIT_PROGRESS   1
   QUIET
   )
