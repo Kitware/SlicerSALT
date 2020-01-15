@@ -112,7 +112,8 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
             'MFSDAInputData.json',
             'ShapeRegressionInputData.json',
             'SPHARM-PDMTestData.json',
-	        'SVAInputData.json',
+            'SRepInitializerData.json',
+            'SVAInputData.json'
         ]:
             with open(self.resourcePath('SampleDataDescription/%s' % json_file), 'r') as json_data:
                 source_data = json.load(json_data)
@@ -145,6 +146,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
             "ShapeAnalysisModule": "SPHARM-PDM",
             "RegressionComputation": "Shape Regression",
             "ShapeVariationAnalyzer": "Population Analysis",
+            "SkeletalRepresentationInitializer": "Skeletal Representation Initializer"
         }
 
         self.sampleDataModuleTab = self.addSampleDataTab()
@@ -192,6 +194,34 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
             setup = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(setup)
             setup.setup()
+
+        # Pre-fill input/output fields in module
+        currModule = slicer.util.selectedModule()
+        if currModule == slicer.moduleNames.DataImporter:
+            slicer.modules.DataImporterWidget.FolderDirectoryButton.directory = destFolderPath
+        elif currModule == slicer.moduleNames.ShapeAnalysisModule:
+            slicer.modules.ShapeAnalysisModuleWidget.GroupProjectInputDirectory.directory = destFolderPath
+            outPath = os.path.join(destFolderPath,'out')
+            if not os.path.exists(outPath):
+                os.mkdir(outPath)
+            slicer.modules.ShapeAnalysisModuleWidget.GroupProjectOutputDirectory.directory = outPath
+        elif currModule == slicer.moduleNames.ShapeVariationAnalyzer:
+            slicer.modules.ShapeVariationAnalyzerWidget.collapsibleButton_PCA.collapsed = False
+            slicer.modules.ShapeVariationAnalyzerWidget.pathLineEdit_CSVFilePCA.currentPath = os.path.join(destFolderPath,'inputFiles.csv')
+        elif currModule == slicer.moduleNames.RegressionComputation:
+            slicer.modules.RegressionComputationWidget.shapeInputDirectory.directory = destFolderPath
+            outPath = os.path.join(destFolderPath,'out')
+            if not os.path.exists(outPath):
+                os.mkdir(outPath)
+            slicer.modules.RegressionComputationWidget.outputDirectory.directory = outPath
+        elif currModule == slicer.moduleNames.MFSDA:
+            slicer.modules.MFSDAWidget.lineEdit_csv.currentPath = os.path.join(destFolderPath,'inputFiles.csv')
+            slicer.modules.MFSDAWidget.lineEdit_template.currentPath = os.path.join(destFolderPath,'g01','bump00.vtk')
+            slicer.modules.MFSDAWidget.lineEdit_pshape.currentPath = os.path.join(destFolderPath,'g01','bump00.vtk')
+            outPath = os.path.join(destFolderPath,'out')
+            if not os.path.exists(outPath):
+                os.mkdir(outPath)
+            slicer.modules.MFSDAWidget.lineEdit_output.directory = os.path.join(destFolderPath,'out')
 
     @staticmethod
     def addSampleDataTab():

@@ -2,27 +2,18 @@
     "category": "Shape Regression",
     "sampleName": "Download sample data",
     "fileNames": [
-        "SphereToEllipsoid_02.vtk",
-        "regression_driver.xml",
-        "SphereToEllipsoid_04.vtk",
-        "SphereToEllipsoid_00.vtk",
-        "SphereToEllipsoid_01.vtk",
-        "SphereToEllipsoid_03.vtk"
+        "shape_00.vtk",
+        "shape_01.vtk",
+        "shape_02.vtk"
     ],
     "uris": [
-        "https://data.kitware.com/api/v1/file/hashsum/sha512/ec2eb13a1af83cc4968bea9dff2f5b3cdf54370a9e511ba7a9175ad1a31f164ad7ce2c9ead533f66ab445e80580cc0a92fe131e3212b864cbabe43e4bccacac0/download",
-        "https://data.kitware.com/api/v1/file/hashsum/sha512/44b6ba3d7eb369dc82a4b5d8bf99277ed08c817ffa837b3cb6ea0b4dd7af830a9c3b66b785fc2b9e8531559e2e2d22190cb5a1e24e49beb13bca55382782f9cb/download",
-        "https://data.kitware.com/api/v1/file/hashsum/sha512/69dbc96edaf998e7015934c4362743013da885c880299a7c92a10a2b6a6ca0231076f138bc6ef8aa04d604809e1a91f58411bc8745cdfb6c6cf29ad4c0df1a33/download",
-        "https://data.kitware.com/api/v1/file/hashsum/sha512/605e998b565e288af455be5c5f82bbddfd2b330e0c2272d848552165226499a67f9965bf144abd9c5cbed7ff2838a0bdd68964d837aa47ca371015756e29eed5/download",
-        "https://data.kitware.com/api/v1/file/hashsum/sha512/652050b8a8e128878c05ee47eb83a13798aca52ac220f6c9182a8c2e9464feb79f483985d929539f4c7b4bd71a17fed8b374cdf8c6406f145c01c08e5f14e6c8/download",
-        "https://data.kitware.com/api/v1/file/hashsum/sha512/90cc5b4e7dc4024a4e675ad08c32a8430f20f749e61149c31605d5d351daf45256ec3ee00277b5cb2b975bdd04e58b57df2445bd0bbca2c0cf870d4a31829ee3/download"
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/15258ba4b60d60713f06e552d33ed6259e3c54c25eccd97aff5452b5c328661fb59a6b40bdd4ea2e13b448507e35a4b658a273bf3ffee94a8d4aee6973e7de66/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/835b0ea3b52d9d904487015d616255b85d93128687d8582158dd8404e6695d7e6aa1d17455fd6c7acf7f782d09a631f64dda11b73f380d510a48ee11cd33f83f/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/3faa9575d1ab0df62b9f121a90a183d1703eb92c775e0d1e5d082a25b553ed9875ae4b84c3c6397588033503d03ce0cac3612098327fe1192fb30cce1189e49d/download"
     ],
     "checksums": [
-        "SHA512:ec2eb13a1af83cc4968bea9dff2f5b3cdf54370a9e511ba7a9175ad1a31f164ad7ce2c9ead533f66ab445e80580cc0a92fe131e3212b864cbabe43e4bccacac0",
-        "SHA512:44b6ba3d7eb369dc82a4b5d8bf99277ed08c817ffa837b3cb6ea0b4dd7af830a9c3b66b785fc2b9e8531559e2e2d22190cb5a1e24e49beb13bca55382782f9cb",
-        "SHA512:69dbc96edaf998e7015934c4362743013da885c880299a7c92a10a2b6a6ca0231076f138bc6ef8aa04d604809e1a91f58411bc8745cdfb6c6cf29ad4c0df1a33",
-        "SHA512:605e998b565e288af455be5c5f82bbddfd2b330e0c2272d848552165226499a67f9965bf144abd9c5cbed7ff2838a0bdd68964d837aa47ca371015756e29eed5",
-        "SHA512:652050b8a8e128878c05ee47eb83a13798aca52ac220f6c9182a8c2e9464feb79f483985d929539f4c7b4bd71a17fed8b374cdf8c6406f145c01c08e5f14e6c8",
-        "SHA512:90cc5b4e7dc4024a4e675ad08c32a8430f20f749e61149c31605d5d351daf45256ec3ee00277b5cb2b975bdd04e58b57df2445bd0bbca2c0cf870d4a31829ee3"
+        "SHA512:15258ba4b60d60713f06e552d33ed6259e3c54c25eccd97aff5452b5c328661fb59a6b40bdd4ea2e13b448507e35a4b658a273bf3ffee94a8d4aee6973e7de66",
+        "SHA512:835b0ea3b52d9d904487015d616255b85d93128687d8582158dd8404e6695d7e6aa1d17455fd6c7acf7f782d09a631f64dda11b73f380d510a48ee11cd33f83f",
+        "SHA512:3faa9575d1ab0df62b9f121a90a183d1703eb92c775e0d1e5d082a25b553ed9875ae4b84c3c6397588033503d03ce0cac3612098327fe1192fb30cce1189e49d"
     ]
 }
