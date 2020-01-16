@@ -216,7 +216,6 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
             slicer.modules.RegressionComputationWidget.outputDirectory.directory = outPath
         elif currModule == slicer.moduleNames.MFSDA:
             slicer.modules.MFSDAWidget.lineEdit_csv.currentPath = os.path.join(destFolderPath,'inputFiles.csv')
-            slicer.modules.MFSDAWidget.lineEdit_template.currentPath = os.path.join(destFolderPath,'g01','bump00.vtk')
             slicer.modules.MFSDAWidget.lineEdit_pshape.currentPath = os.path.join(destFolderPath,'g01','bump00.vtk')
             slicer.modules.MFSDAWidget.lineEdit_output.directory = os.path.join(destFolderPath,'out')
 
