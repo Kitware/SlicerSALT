@@ -387,7 +387,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        60d892b60b88f51fec4876c5413c02b5549c9f21 # slicersalt-2020-06-09-60d892b
+  GIT_TAG        727cb3ccbe340d01c289b55cbe0f45e27dd64497 # slicersalt-2020-06-11-727cb3c
   GIT_PROGRESS   1
   QUIET
   )
