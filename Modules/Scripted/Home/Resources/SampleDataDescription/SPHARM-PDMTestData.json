@@ -1,6 +1,6 @@
 {
     "category": "SPHARM-PDM",
-    "sampleName": "Download sample data",
+    "sampleName": "Basic sample data",
     "fileNames": [
         "InputImage.nrrd"
     ],

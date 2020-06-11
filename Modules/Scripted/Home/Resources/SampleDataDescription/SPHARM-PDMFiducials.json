@@ -1,0 +1,22 @@
+{
+    "category": "SPHARM-PDM",
+    "sampleName": "Correspondence Improvement",
+    "fileNames": [
+        "cilinder_seg_fid.fcsv",
+        "cilinder_seg.nrrd",
+        "hourglass_seg_fid.fcsv",
+        "hourglass_seg.nrrd"
+    ],
+    "uris": [
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/ac53abe3580d9c1e8fdfd834eb9a834ff6b278e7bd00736e35c928046612c0b507f541f38d40ade400010a8db2b54090d3816194fa40bfdd2a82b98d30359402/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/a2fc007967f0ced1db73dbe5b46eac2dbbef371cb3a5874d5df83ce6b6063912c34e2208acdbd0fd1adda5e2f98f229ce7487f616145160fcda67f1742a475d5/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/4246870056226bf224bee687c264f378f6b09a13c22b0f8e7e10fcc7f8590599cbf9308716fcd77edb9f08a99d639e3536c933a61c433d65aac36af15aff5ee4/download",
+        "https://data.kitware.com/api/v1/file/hashsum/sha512/42ec3bf37d1f87fa2c6ec0859af441cf9ed0da5d81e2c90c11a4b093e0a197afc81266e3e19331748627a3dbe0cc8bc6c2b9db31900be1d8bf50ff549ca683d9/download"
+    ],
+    "checksums": [
+        "SHA512:ac53abe3580d9c1e8fdfd834eb9a834ff6b278e7bd00736e35c928046612c0b507f541f38d40ade400010a8db2b54090d3816194fa40bfdd2a82b98d30359402",
+        "SHA512:a2fc007967f0ced1db73dbe5b46eac2dbbef371cb3a5874d5df83ce6b6063912c34e2208acdbd0fd1adda5e2f98f229ce7487f616145160fcda67f1742a475d5",
+        "SHA512:4246870056226bf224bee687c264f378f6b09a13c22b0f8e7e10fcc7f8590599cbf9308716fcd77edb9f08a99d639e3536c933a61c433d65aac36af15aff5ee4",
+        "SHA512:42ec3bf37d1f87fa2c6ec0859af441cf9ed0da5d81e2c90c11a4b093e0a197afc81266e3e19331748627a3dbe0cc8bc6c2b9db31900be1d8bf50ff549ca683d9"
+    ]
+}

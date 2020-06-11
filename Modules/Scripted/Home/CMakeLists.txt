@@ -6,6 +6,7 @@ set(MODULE_PYTHON_RESOURCES
   "Resources/SampleDataDescription/DataImporterInputData.json"
   "Resources/SampleDataDescription/MFSDAInputData.json"
   "Resources/SampleDataDescription/SPHARM-PDMTestData.json"
+  "Resources/SampleDataDescription/SPHARM-PDMFiducials.json"
   "Resources/SampleDataDescription/ShapeRegressionInputData.json"
   "Resources/SampleDataDescription/SRepInitializerData.json"
   "Resources/SampleDataDescription/SVAInputData.json"
