@@ -1,4 +1,5 @@
 import os
+import glob
 import vtk, qt, ctk, slicer
 from slicer.ScriptedLoadableModule import (ScriptedLoadableModule,
                                            ScriptedLoadableModuleWidget)
@@ -112,6 +113,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
             'MFSDAInputData.json',
             'ShapeRegressionInputData.json',
             'SPHARM-PDMTestData.json',
+            'SPHARM-PDMFiducials.json',
             'SRepInitializerData.json',
             'SVAInputData.json'
         ]:
@@ -206,7 +208,11 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
             slicer.modules.DataImporterWidget.inputShapeAnalysisPath = outPath
         elif currModule == slicer.moduleNames.ShapeAnalysisModule:
             slicer.modules.ShapeAnalysisModuleWidget.GroupProjectInputDirectory.directory = destFolderPath
+            slicer.modules.ShapeAnalysisModuleWidget.RigidAlignmentFiducialsDirectory.directory = destFolderPath
             slicer.modules.ShapeAnalysisModuleWidget.GroupProjectOutputDirectory.directory = outPath
+            if glob.glob(os.path.join(destFolderPath, '*_fid.fcsv')):
+                slicer.modules.ShapeAnalysisModuleWidget.RigidAlignmentEnabled.checked = True
+                slicer.modules.ShapeAnalysisModuleWidget.CollapsibleButton_RigidAlignment.checked = True
         elif currModule == slicer.moduleNames.ShapeVariationAnalyzer:
             slicer.modules.ShapeVariationAnalyzerWidget.collapsibleButton_PCA.collapsed = False
             slicer.modules.ShapeVariationAnalyzerWidget.pathLineEdit_CSVFilePCA.currentPath = os.path.join(destFolderPath,'inputFiles.csv')

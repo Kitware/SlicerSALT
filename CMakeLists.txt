@@ -231,7 +231,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        7368826c84ea46abf43266c2a007321484374750 # slicersalt-2019-10-03-15c897e
+  GIT_TAG        437c4ff6aea17c2139130ca1c7247ce8250f8863 # slicersalt-2018-11-16-15c897e
   GIT_PROGRESS   1
   QUIET
   )
@@ -387,7 +387,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        50ae545559a9a897de60832e29a8062364cae7cf # slicersalt-2018-11-29-4baa99c10
+  GIT_TAG        727cb3ccbe340d01c289b55cbe0f45e27dd64497 # slicersalt-2018-11-29-4baa99c10
   GIT_PROGRESS   1
   QUIET
   )
