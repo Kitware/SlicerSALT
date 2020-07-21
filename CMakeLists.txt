@@ -394,5 +394,22 @@ FetchContent_Populate(${extension_name}
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
 #-----------------------------------------------------------------------------
+# RegistrationBasedCorrespondence
+set(RegistrationBasedCorrespondence_BUILD_TESTING OFF)
+mark_as_superbuild(RegistrationBasedCorrespondence_BUILD_TESTING:BOOL)
+
+set(extension_name "RegistrationBasedCorrespondence")
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR	 ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
+  GIT_TAG	 a1550ebca0c0042e9a498054d306b574b15a8ffc
+  GIT_PROGRESS	 1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+
+#-----------------------------------------------------------------------------
 # Add Slicer sources
 add_subdirectory(${slicersources_SOURCE_DIR} ${slicersources_BINARY_DIR})
