@@ -13,7 +13,7 @@ if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
     GIT_REPOSITORY https://github.com/slicersalt/Slicer
-    GIT_TAG        556c641d20d7e910bb9e07fb8bfd42a50fa6500f # slicersalt-4.11-2019-09-04-933a0785f
+    GIT_TAG        fdcc0aa9326d4f02e32f4ce2e2c13cfdcb2770bc # slicersalt-4.11-2019-09-04-933a0785f
     GIT_PROGRESS   1
     )
 else()
@@ -270,15 +270,12 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        59dfda341c5a78f2511e6d0a66bdb09ed867604b # slicersalt-2020-01-15-d8c9fc0
+  GIT_TAG        9eb71073e4e782ab9a44f3ba708793735ac0c9c4 # slicersalt-2020-07-22-9eb7107
   GIT_PROGRESS   1
   QUIET
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
-list(APPEND Slicer_ADDITIONAL_DEPENDENCIES
-  python-ShapeVariationAnalyzer-requirements
-  )
 
 #-----------------------------------------------------------------------------
 # ModelToModelDistance
