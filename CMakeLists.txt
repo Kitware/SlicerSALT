@@ -270,15 +270,12 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        33cd9b51e6590a6cf58e79d8e334bf6d736b4149 # slicersalt-2020-07-21-f16236d
+  GIT_TAG        9eb71073e4e782ab9a44f3ba708793735ac0c9c4 # slicersalt-2020-07-22-9eb7107
   GIT_PROGRESS   1
   QUIET
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
-list(APPEND Slicer_ADDITIONAL_DEPENDENCIES
-  python-ShapeVariationAnalyzer-requirements
-  )
 
 #-----------------------------------------------------------------------------
 # ModelToModelDistance
