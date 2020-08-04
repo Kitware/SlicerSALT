@@ -13,7 +13,7 @@ if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
     GIT_REPOSITORY https://github.com/slicersalt/Slicer
-    GIT_TAG        fdcc0aa9326d4f02e32f4ce2e2c13cfdcb2770bc # slicersalt-4.11-2019-09-04-933a0785f
+    GIT_TAG        8a9b704362f35e182a22852409abd9c6a8aa0ae2 # slicersalt-4.11-2019-09-04-933a0785f
     GIT_PROGRESS   1
     )
 else()
@@ -50,7 +50,7 @@ set(EXTERNAL_PROJECT_ADDITIONAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/SuperBuild")
 include(ExternalProjectDependency)
 
 if(NOT CMAKE_CONFIGURATION_TYPES)
-  set(CMAKE_DEFAULT_BUILD_TYPE "Release")
+  set(Slicer_DEFAULT_BUILD_TYPE "Release")
 endif()
 include(SlicerInitializeBuildType)
 include(SlicerInitializeReleaseType)
