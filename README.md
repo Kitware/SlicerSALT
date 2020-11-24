@@ -19,7 +19,7 @@ Checkout
 * Add the SSH key to your Github account: [Steps to add SSH Key to Github].
 * Clone the repository and follow platform specific instructions below:
 
-        $ git clone git@github.com:Kitware/slicerSALT.git
+        $ git clone git://github.com/Kitware/slicerSALT.git
 
 Build
 -----
