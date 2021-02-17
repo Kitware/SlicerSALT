@@ -193,22 +193,6 @@ FetchContent_Populate(${extension_name}
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
-#-----------------------------------------------------------------------------
-# Sequences
-
-set(SEQUENCES_ENABLE_SAMPLEDATA_MODULE OFF)
-mark_as_superbuild(SEQUENCES_ENABLE_SAMPLEDATA_MODULE:BOOL)
-
-set(extension_name "Sequences")
-set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
-FetchContent_Populate(${extension_name}
-  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/SlicerRt/${extension_name}
-  GIT_TAG        c4656de3184cff8ea86c5ca8b4737040db49a980
-  GIT_PROGRESS   1
-  QUIET
-  )
-list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
 #-----------------------------------------------------------------------------
 # Srep
