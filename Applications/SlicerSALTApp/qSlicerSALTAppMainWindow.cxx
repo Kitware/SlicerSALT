@@ -97,10 +97,7 @@ void qSlicerSALTAppMainWindowPrivate::setupUi(QMainWindow * mainWindow)
 
   qSlicerModulesMenu* modulesMenu = this->ModuleSelectorToolBar->modulesMenu();
 
-  ctkMenuComboBox* modulesMenuComboBox = this->ModuleSelectorToolBar->modulesMenuComboBox();
-  modulesMenuComboBox->setCompleterMenu(modulesMenu->allModulesCategory());
-
-  modulesMenu->setAllModulesCategoryVisible(false);
+  
 
   modulesMenu->setTopLevelCategoryOrder(
         QStringList()
