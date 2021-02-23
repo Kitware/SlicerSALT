@@ -13,7 +13,7 @@ if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
     GIT_REPOSITORY https://github.com/slicersalt/Slicer
-    GIT_TAG        8a9b704362f35e182a22852409abd9c6a8aa0ae2 # slicersalt-4.11-2019-09-04-933a0785f
+    GIT_TAG        3a4b267b5c0367cc7f3f21848232d684a251d31c # slicersalt-4.11-2020-09-30-002be180
     GIT_PROGRESS   1
     )
 else()
@@ -193,22 +193,6 @@ FetchContent_Populate(${extension_name}
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
-#-----------------------------------------------------------------------------
-# Sequences
-
-set(SEQUENCES_ENABLE_SAMPLEDATA_MODULE OFF)
-mark_as_superbuild(SEQUENCES_ENABLE_SAMPLEDATA_MODULE:BOOL)
-
-set(extension_name "Sequences")
-set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
-FetchContent_Populate(${extension_name}
-  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/SlicerRt/${extension_name}
-  GIT_TAG        c4656de3184cff8ea86c5ca8b4737040db49a980
-  GIT_PROGRESS   1
-  QUIET
-  )
-list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
 #-----------------------------------------------------------------------------
 # Srep
@@ -384,7 +368,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        727cb3ccbe340d01c289b55cbe0f45e27dd64497 # slicersalt-2018-11-29-4baa99c10
+  GIT_TAG        d31cbec24be78151032119653321d8ab55fa538f # slicersalt-2020-04-27-47188484c
   GIT_PROGRESS   1
   QUIET
   )

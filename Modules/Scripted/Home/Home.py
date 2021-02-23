@@ -41,22 +41,7 @@ class Home(ScriptedLoadableModule):
         </center>
         """
 
-        slicer.app.connect("startupCompleted()", self.updateModulesMenu)
-
-    def updateModulesMenu(self):
-        moduleMenu = slicer.util.mainWindow().moduleSelector().modulesMenu()
-
-        moduleMenu.removeCategory("Developer Tools")
-        moduleMenu.removeCategory("Diffusion")
-        moduleMenu.removeCategory("Converters")
-        moduleMenu.removeCategory("Registration.Specialized")
-        moduleMenu.removeCategory("Segmentation")
-
-        removeFromAllModules = False
-        moduleMenu.removeModule("SegmentEditor", removeFromAllModules)
-        moduleMenu.removeModule("Segmentations", removeFromAllModules)
-        moduleMenu.removeModule("Terminologies", removeFromAllModules)
-
+        
 
 #
 # HomeWidget
