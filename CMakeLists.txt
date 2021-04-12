@@ -260,6 +260,20 @@ FetchContent_Populate(${extension_name}
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
+#-----------------------------------------------------------------------------
+# Procrustes
+set(extension_name "ProcrustesRegistrationModule")
+set(short_extension_name "Procrustes") # Use shorter extension name to avoid issues with too long paths on windows
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${short_extension_name}")
+FetchContent_Populate(${short_extension_name}
+  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/ProcrustesRegistrationModule.git
+  GIT_TAG        549e9d9f21758a0d8a864971cbb5c725ebbc95a3
+  GIT_PROGRESS   1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
 
 #-----------------------------------------------------------------------------
 # ModelToModelDistance
