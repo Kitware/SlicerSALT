@@ -268,7 +268,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${short_extension_name}")
 FetchContent_Populate(${short_extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/ProcrustesRegistrationModule.git
-  GIT_TAG        549e9d9f21758a0d8a864971cbb5c725ebbc95a3
+  GIT_TAG        2dad32e9761def182e8df89dec2fe30cc3b87d5d
   GIT_PROGRESS   1
   QUIET
   )
