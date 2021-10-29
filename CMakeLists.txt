@@ -298,7 +298,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/3DMetricTools
-  GIT_TAG        178e0d9bbb5408a04abce6b252822d080ed3719d # slicersalt-2019-11-20-56d288a
+  GIT_TAG        a54cb56b835b731ac3744ad6c80ece6f995f17cf # slicersalt-2021-10-29-4b4e478
   GIT_PROGRESS   1
   QUIET
   )
