@@ -187,7 +187,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/vicory/${extension_name}
-  GIT_TAG        8995dc3163ec4dbbf71948f4d2625badfe01abf2
+  GIT_TAG        8995dc3163ec4dbbf71948f4d2625badfe01abf2 # disable_testing
   GIT_PROGRESS   1
   QUIET
   )
@@ -202,7 +202,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${short_extension_name}")
 FetchContent_Populate(${short_extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/SlicerSkeletalRepresentation.git
-  GIT_TAG        002244d83c44444235909f73194d7b1f3f0c8635 
+  GIT_TAG        002244d83c44444235909f73194d7b1f3f0c8635 # master
   GIT_PROGRESS   1
   QUIET
   )
@@ -215,7 +215,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        437c4ff6aea17c2139130ca1c7247ce8250f8863 # slicersalt-2018-11-16-15c897e
+  GIT_TAG        bdd9129fee6dcff237347ce2f1a55d91e13bb537 # slicersalt-2021-05-26-b2bd6008
   GIT_PROGRESS   1
   QUIET
   )
@@ -268,7 +268,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${short_extension_name}")
 FetchContent_Populate(${short_extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/ProcrustesRegistrationModule.git
-  GIT_TAG        52ece6b958904ff2199d1f4981e8d64c74f4c4bb
+  GIT_TAG        52ece6b958904ff2199d1f4981e8d64c74f4c4bb # main
   GIT_PROGRESS   1
   QUIET
   )
@@ -298,7 +298,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/3DMetricTools
-  GIT_TAG        178e0d9bbb5408a04abce6b252822d080ed3719d # slicersalt-2019-11-20-56d288a
+  GIT_TAG        a54cb56b835b731ac3744ad6c80ece6f995f17cf # slicersalt-2021-10-29-4b4e478
   GIT_PROGRESS   1
   QUIET
   )
@@ -328,7 +328,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        c4d59da81db241b91c6b73885728e1281fa27821 # slicersalt-2018-09-27-e6c242627
+  GIT_TAG        0c53f0a0be7144806a16ddfc13e535a145d710e8 # slicersalt-2021-10-29-215f0b6
   GIT_PROGRESS   1
   QUIET
   )
@@ -346,7 +346,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        602046b946d790f9a0c7a11fa678130ee575e8d1q # slicersalt-2020-07-08-23d1746
+  GIT_TAG        7414e09ba4362df058d49bcb0f5e50b388340a5b # slicersalt-2021-10-29-0836416
   GIT_PROGRESS   1
   QUIET
   )
@@ -382,7 +382,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        d31cbec24be78151032119653321d8ab55fa538f # slicersalt-2020-04-27-47188484c
+  GIT_TAG        19252295f34be980f334c4d3b0a682b2dc597e89 # slicersalt-2021-10-29-cdc40bd
   GIT_PROGRESS   1
   QUIET
   )
@@ -398,7 +398,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR	 ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG	 eff0a42f999331a55448198c8f8058cb7360ebe6
+  GIT_TAG        2cafd3d0e17cae083a0b64c3a9473174793eeaf7 # master
   GIT_PROGRESS	 1
   QUIET
   )
