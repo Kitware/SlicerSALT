@@ -186,8 +186,8 @@ set(extension_name "MeshToLabelMap")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/vicory/${extension_name}
-  GIT_TAG        8995dc3163ec4dbbf71948f4d2625badfe01abf2 # disable_testing
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
+  GIT_TAG        91ab7128b72b14d0a954717c9064f6c359086f3c
   GIT_PROGRESS   1
   QUIET
   )
