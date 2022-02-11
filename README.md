@@ -24,3 +24,6 @@ To learn more about SlicerSALT and Slicer, check out the following resources.
  - https://slicer.readthedocs.io/
 
 
+## License
+
+This software is licensed under the terms of the [BSD 3-Clause](LICENSE).
