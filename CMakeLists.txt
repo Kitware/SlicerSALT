@@ -209,6 +209,20 @@ FetchContent_Populate(${short_extension_name}
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
 #-----------------------------------------------------------------------------
+# Srep2
+set(extension_name "SlicerSRep2")
+set(short_extension_name "SRep2") # Use shorter extension name to avoid issues with too long paths on windows
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${short_extension_name}")
+FetchContent_Populate(${short_extension_name}
+  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/SlicerSRep2.git
+  GIT_TAG        77a5fc7838f6581bfb1214a6a402dd5337d8508a # master
+  GIT_PROGRESS   1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+#-----------------------------------------------------------------------------
 # GROUPS
 set(extension_name "GROUPS")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
@@ -403,7 +417,6 @@ FetchContent_Populate(${extension_name}
   QUIET
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
-
 
 #-----------------------------------------------------------------------------
 # Add Slicer sources
