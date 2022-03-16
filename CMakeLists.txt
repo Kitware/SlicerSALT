@@ -166,6 +166,11 @@ mark_as_superbuild(EIGEN_ADD_BLAS_LAPACK_TARGETS)
 set(EIGEN_TEST_NOQT 1)
 mark_as_superbuild(EIGEN_TEST_NOQT)
 
+# this line affects this file where EP_GIT_PROTOCOL is used.
+set(EP_GIT_PROTOCOL "https")
+# this line affects the rest of the slicer superbuild
+set(Slicer_USE_GIT_PROTOCOL OFF)
+
 set(extension_name "Eigen3")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
