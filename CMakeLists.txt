@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.13.4)
 
-# Enable C++11
+# Enable C++14
 if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 11)
+  set(CMAKE_CXX_STANDARD 14)
 endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -12,8 +12,8 @@ include(FetchContent)
 if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
-    GIT_REPOSITORY https://github.com/slicersalt/Slicer
-    GIT_TAG        3a4b267b5c0367cc7f3f21848232d684a251d31c # slicersalt-4.11-2020-09-30-002be180
+    GIT_REPOSITORY https://github.com/Slicer/Slicer
+    GIT_TAG        1efef1b35da0f95835c4f56def90629782cd492e
     GIT_PROGRESS   1
     )
 else()
@@ -192,7 +192,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        91ab7128b72b14d0a954717c9064f6c359086f3c
+  GIT_TAG        abba97578cf86a21e89a21b81be8bcc142f0e897
   GIT_PROGRESS   1
   QUIET
   )
@@ -203,38 +203,37 @@ list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 # Srep
 set(extension_name "SlicerSkeletalRepresentation")
 set(short_extension_name "SRep") # Use shorter extension name to avoid issues with too long paths on windows
+set(SkeletalRepresentation_SUPERBUILD 0 CACHE INTERNAL "")
+mark_as_superbuild(SkeletalRepresentation_SUPERBUILD)
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${short_extension_name}")
 FetchContent_Populate(${short_extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/SlicerSkeletalRepresentation.git
-  GIT_TAG        002244d83c44444235909f73194d7b1f3f0c8635 # master
+  GIT_TAG        baa5290a9de6337240dab581a6d84feb0dc16efa # master
   GIT_PROGRESS   1
   QUIET
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
-#-----------------------------------------------------------------------------
-# Srep2
-set(extension_name "SlicerSRep2")
-set(short_extension_name "SRep2") # Use shorter extension name to avoid issues with too long paths on windows
-set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${short_extension_name}")
-FetchContent_Populate(${short_extension_name}
-  SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
-  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/SlicerSRep2.git
-  GIT_TAG        c2f861436eabf8b99830c926dca605666805f34f # master
-  GIT_PROGRESS   1
-  QUIET
-  )
-list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
 #-----------------------------------------------------------------------------
 # GROUPS
 set(extension_name "GROUPS")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+set(RigidAlignmentModule_TITLE "SPHARM-PDM Correspondence Improvement" CACHE INTERNAL "")
+mark_as_superbuild(RigidAlignmentModule_TITLE)
+set(RigidAlignmentModule_CATEGORY "Shape Creation" CACHE INTERNAL "")
+mark_as_superbuild(RigidAlignmentModule_CATEGORY)
+set(GROUPS_BUILD_CLI_MODULE_Groups 0 CACHE INTERNAL "")
+mark_as_superbuild(GROUPS_BUILD_CLI_MODULE_Groups)
+set(GROUPS_BUILD_SCRIPTED_MODULE_GroupWiseRegistrationModule 0 CACHE INTERNAL "")
+mark_as_superbuild(GROUPS_BUILD_SCRIPTED_MODULE_GroupWiseRegistrationModule)
+set(RigidAlignment_CATEGORY "Shape Creation.Advanced" CACHE INTERNAL "")
+mark_as_superbuild(VARS RigidAlignment_CATEGORY:STRING PROJECTS RigidAlignment)
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        bdd9129fee6dcff237347ce2f1a55d91e13bb537 # slicersalt-2021-05-26-b2bd6008
+  GIT_TAG        6f372beaea16a6c8284b866f672948005d231afe # slicersalt-2022-06-27-6f372beae
   GIT_PROGRESS   1
   QUIET
   )
@@ -273,7 +272,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        59410e79ea2e7ee369412f4d3da1ea4de627a867 # slicersalt-2020-07-22-9eb7107
+  GIT_TAG        9a48b6c5a51ba815e0f72baf732bd2b29ec6e96d # slicersalt-2022-04-04-102d832
   GIT_PROGRESS   1
   QUIET
   )
@@ -365,7 +364,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        7414e09ba4362df058d49bcb0f5e50b388340a5b # slicersalt-2021-10-29-0836416
+  GIT_TAG        529e6eb8e9df49c6ae0462d28d5ac6badae56b18 # slicersalt-2022-04-28-90fa962
   GIT_PROGRESS   1
   QUIET
   )
@@ -401,7 +400,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        19252295f34be980f334c4d3b0a682b2dc597e89 # slicersalt-2021-10-29-cdc40bd
+  GIT_TAG        775d5c6423d991c4a324aa601d6947ff6c576384 # slicersalt-2022-04-29-1572f79
   GIT_PROGRESS   1
   QUIET
   )
@@ -417,7 +416,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR	 ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        2cafd3d0e17cae083a0b64c3a9473174793eeaf7 # master
+  GIT_TAG        514ff33fa8ed6d679d1dc1be51e49084672a2b71 # master
   GIT_PROGRESS	 1
   QUIET
   )
