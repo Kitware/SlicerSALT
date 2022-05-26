@@ -58,9 +58,11 @@ class HomeWidget(ScriptedLoadableModuleWidget):
         self.tutorials = {
           "ShapeAnalysisModule": "https://bit.ly/2Fyn97v",  # SPHARM-PDM Generator
           "GroupWiseRegistrationModule": "https://bit.ly/2WsFiun",
-          "RegressionComputation": "http://bit.ly/2uVYche",
+          "RegressionComputation": "https://bit.ly/2uVYche",
           "ShapeVariationAnalyzer": "https://bit.ly/2HYbHVA",  # Population Analysis
-          "SkeletalRepresentationVisualizer": "http://bit.ly/2UKKgW2"
+          "SRep": "https://bit.ly/3sTEG3H",
+          "SRepCreator": "https://bit.ly/3sTEG3H",
+          "SRepRefinement": "https://bit.ly/3sTEG3H",
         }
 
         # The anchor associated with each link corresponds to the name of the module to select.
