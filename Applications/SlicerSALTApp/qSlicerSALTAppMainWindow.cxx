@@ -59,6 +59,9 @@ void qSlicerSALTAppMainWindowPrivate::setupUi(QMainWindow * mainWindow)
   // successfully connect each slot with its corresponding action.
   this->Superclass::setupUi(mainWindow);
 
+  // Add Help Menu Action
+    this->HelpMenu->addAction(helpAboutSlicerAppAction);
+
   //----------------------------------------------------------------------------
   // Configure
   //----------------------------------------------------------------------------
@@ -97,7 +100,7 @@ void qSlicerSALTAppMainWindowPrivate::setupUi(QMainWindow * mainWindow)
 
   qSlicerModulesMenu* modulesMenu = this->ModuleSelectorToolBar->modulesMenu();
 
-  
+
 
   modulesMenu->setTopLevelCategoryOrder(
         QStringList()
