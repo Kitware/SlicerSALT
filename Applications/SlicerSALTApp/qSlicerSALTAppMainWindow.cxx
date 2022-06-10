@@ -151,12 +151,16 @@ void qSlicerSALTAppMainWindow::on_HelpAboutSlicerSALTAppAction_triggered()
   QString acknowledgmentText(
       "Supported by: NIH and the Slicer Community.<br /><br />"
       "This work is part of the  National Institute of Health grant titled "
-      "<i>Shape Analysis Toolbox for Medical Image Computing Projects</i>.<br /><br />"
+      "<i>Shape Analysis Toolbox: From medical images to quantitative insights of anatomy</i>.<br /><br />"
       "SlicerSALT is a  software package for medical image segmentation's "
       "shape analysis. <br /><br />"
+
+      "The SlicerSALT developers gratefully acknowledge funding for this project "
+      "NIH NIBIB R01EB021391 as well as the Slicer community. <br /><br />"
+      
       "Ongoing development, maintenance, distribution, and training is managed by "
-      "Kitware Inc., University of North Carolina, Chapel Hill, M.D. Cancer Center "
-      "at The University of Texas and NYU Tandon School of Engineering. <br /><br />");
+      "Kitware Inc., University of North Carolina, Chapel Hill, and NYU Tandon School"
+      "of Engineering. <br /><br />");
 
 
   about.exec();
