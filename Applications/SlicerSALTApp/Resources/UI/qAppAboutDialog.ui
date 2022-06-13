@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>671</width>
-    <height>374</height>
+    <height>396</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -432,7 +432,7 @@
    </palette>
   </property>
   <property name="windowTitle">
-   <string>About the application</string>
+   <string>About 3D Slicer</string>
   </property>
   <layout class="QGridLayout" name="gridLayout" columnstretch="1,1,0">
    <property name="margin">
@@ -508,9 +508,6 @@
      <property name="textPosition">
       <set>Qt::AlignCenter</set>
      </property>
-     <property name="pixmap">
-      <pixmap resource="../App.qrc">:/Logo.png</pixmap>
-     </property>
      <property name="transformationMode">
       <enum>Qt::SmoothTransformation</enum>
      </property>
@@ -523,6 +520,25 @@
      </property>
     </widget>
    </item>
+   <item row="3" column="2">
+    <widget class="QWidget" name="ButtonBoxWidget" native="true">
+     <layout class="QHBoxLayout" name="ButtonBoxlLayout">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QDialogButtonBox" name="ButtonBox">
+        <property name="standardButtons">
+         <set>QDialogButtonBox::Close</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -532,9 +548,5 @@
    <header>ctkThumbnailLabel.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../App.qrc"/>
-  <include location="../../../../../../../.designer/App.qrc"/>
- </resources>
  <connections/>
 </ui>

@@ -9,7 +9,7 @@
 #include <ctkMenuComboBox.h>
 
 // Slicer includes
-#include "qSlicerAboutDialog.h"
+#include "Widgets/qAppAboutDialog.h"
 #include "qSlicerModuleSelectorToolBar.h"
 #include "qSlicerModulesMenu.h"
 #include "qSlicerModuleManager.h"
@@ -59,6 +59,9 @@ void qSlicerSALTAppMainWindowPrivate::setupUi(QMainWindow * mainWindow)
   // successfully connect each slot with its corresponding action.
   this->Superclass::setupUi(mainWindow);
 
+  // Add Help Menu Action
+    this->HelpMenu->addAction(helpAboutSlicerAppAction);
+
   //----------------------------------------------------------------------------
   // Configure
   //----------------------------------------------------------------------------
@@ -97,7 +100,7 @@ void qSlicerSALTAppMainWindowPrivate::setupUi(QMainWindow * mainWindow)
 
   qSlicerModulesMenu* modulesMenu = this->ModuleSelectorToolBar->modulesMenu();
 
-  
+
 
   modulesMenu->setTopLevelCategoryOrder(
         QStringList()
@@ -141,21 +144,9 @@ qSlicerSALTAppMainWindow::~qSlicerSALTAppMainWindow()
 //-----------------------------------------------------------------------------
 void qSlicerSALTAppMainWindow::on_HelpAboutSlicerSALTAppAction_triggered()
 {
-  qSlicerAboutDialog about(this);
-  about.setLogo(QPixmap(":/Logo.png"));
-
-  // XXX: unused, modify slicer to accept setAcknowledgmentText
-  QString acknowledgmentText(
-      "Supported by: NIH and the Slicer Community.<br /><br />"
-      "This work is part of the  National Institute of Health grant titled "
-      "<i>Shape Analysis Toolbox for Medical Image Computing Projects</i>.<br /><br />"
-      "SlicerSALT is a  software package for medical image segmentation's "
-      "shape analysis. <br /><br />"
-      "Ongoing development, maintenance, distribution, and training is managed by "
-      "Kitware Inc., University of North Carolina, Chapel Hill, M.D. Cancer Center "
-      "at The University of Texas and NYU Tandon School of Engineering. <br /><br />");
-
-
+  qAppAboutDialog about(this);
+  about.setLogo(QPixmap(QIcon(":/Logo.png").pixmap(256, 256)));
+  about.setWindowTitle("About SlicerSALT");
   about.exec();
 }
 
