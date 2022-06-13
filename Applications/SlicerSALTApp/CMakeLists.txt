@@ -40,14 +40,18 @@ set(APPLIB_SRCS
   qSlicerSALTAppMainWindow.h
   Widgets/qAppStyle.cxx
   Widgets/qAppStyle.h
+  Widgets/qAppAboutDialog.cxx
+  Widgets/qAppAboutDialog.h
   )
 
 set(APPLIB_MOC_SRCS
   qSlicerSALTAppMainWindow.h
   Widgets/qAppStyle.h
+  Widgets/qAppAboutDialog.h
   )
 
 set(APPLIB_UI_SRCS
+  Resources/UI/qAppAboutDialog.ui
   )
 
 set(APPLIB_RESOURCES
