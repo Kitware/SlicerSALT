@@ -1,5 +1,5 @@
 {
-  "category": "Skeletal Representation Initializer",
+  "category": "Skeletal Representation Creator",
   "sampleName": "Download sample data",
   "fileNames": [
       "sample.vtk"

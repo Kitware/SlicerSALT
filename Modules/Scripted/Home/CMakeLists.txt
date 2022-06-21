@@ -8,7 +8,7 @@ set(MODULE_PYTHON_RESOURCES
   "Resources/SampleDataDescription/SPHARM-PDMTestData.json"
   "Resources/SampleDataDescription/SPHARM-PDMFiducials.json"
   "Resources/SampleDataDescription/ShapeRegressionInputData.json"
-  "Resources/SampleDataDescription/SRepInitializerData.json"
+  "Resources/SampleDataDescription/SRepCreatorData.json"
   "Resources/SampleDataDescription/SVAInputData.json"
   )
 
