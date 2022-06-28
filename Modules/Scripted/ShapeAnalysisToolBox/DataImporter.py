@@ -147,7 +147,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     """
     directory, fileName = os.path.split(path)
 
-    labelMapNode = slicer.util.loadLabelVolume(path, returnNode=True)[1]
+    labelMapNode = slicer.util.loadLabelVolume(path)
     if labelMapNode is None:
       logging.error('Failed to load ' + fileName + 'as a labelmap')
       # make sure each one is a labelmap
@@ -260,7 +260,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     Populate segmentationDict and set labelRangeInCohort to (0,1)
     """
     directory, fileName = os.path.split(path)
-    modelNode = slicer.util.loadModel(path, returnNode=True)[1]
+    modelNode = slicer.util.loadModel(path)
 
     if modelNode is None:
       logging.error('Failed to load ' + fileName + 'as a model')
@@ -302,7 +302,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     """
     directory, fileName = os.path.split(path)
 
-    segmentationNode = slicer.util.loadSegmentation(path, returnNode=True)[1]
+    segmentationNode = slicer.util.loadSegmentation(path)
     if segmentationNode is None:
       logging.error('Failed to load ' + fileName + 'as a segmentation')
       return False
@@ -501,8 +501,9 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
         # 0 label is assumed to be the background. XXX Pablo: assumed where?
         if segmentName == "0":
           continue
-        polydata = segmentationNode.GetClosedSurfaceRepresentation(segmentId)
-        if polydata is None:
+        polydata = vtk.vtkPolyData()
+        success = segmentationNode.GetClosedSurfaceRepresentation(segmentId,polydata)
+        if not success:
           logging.warning('Ignoring segment id ' + segmentName + ' for case: ' + nodeName)
           continue
 
@@ -657,7 +658,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
     label_ids = []
 
     directory, fileName = os.path.split(template_path)
-    labelMapNode = slicer.util.loadLabelVolume(template_path, returnNode=True)[1]
+    labelMapNode = slicer.util.loadLabelVolume(template_path)
     labelMapNode.SetDisplayVisibility(False)
 
     if labelMapNode is None:
