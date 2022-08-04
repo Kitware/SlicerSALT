@@ -57,7 +57,7 @@ class HomeWidget(ScriptedLoadableModuleWidget):
 
         self.tutorials = {
           "ShapeAnalysisModule": "https://bit.ly/2Fyn97v",  # SPHARM-PDM Generator
-          "GroupWiseRegistrationModule": "https://bit.ly/2WsFiun",
+          "RigidAlignmentModule": "https://bit.ly/2WsFiun",
           "RegressionComputation": "https://bit.ly/2uVYche",
           "ShapeVariationAnalyzer": "https://bit.ly/2HYbHVA",  # Population Analysis
           "SRep": "https://bit.ly/3sTEG3H",
@@ -77,7 +77,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
 &nbsp; 1. Use the <a href="#DataImporter"><b>Data importer</b></a> module to load your segmentations from FreeSurf, FSL, Autoseg, or a bunch of vtp's<br><br>
 &nbsp; 2. Use <a href="#ShapePopulationViewer"><b>Shape Population Viewer</b></a> to do a quality check on the imported data<br><br>
 &nbsp; 3. Use <a href="#ShapeAnalysisModule"><b>SPHARM-PDM Generator</b></a> to do spherical harmonics based analysis<br><br>
-&nbsp; 4. Use the <a href="#GroupWiseRegistrationModule"><b>Study-specific Shape Analysis</b></a> module.<br><br>
+&nbsp; 4. Use the <a href="#RigidAlignmentModule"><b>Study-specific Shape Analysis</b></a> module.<br><br>
 &nbsp; 5. Use the <a href="#SkeletalRepresentationVisualizer"><b>S-Rep Shape Analysis</b></a> module to do shape analysis via skeletal representations.<br><br>
 &nbsp; 6. Use the <a href="#ShapeVariationAnalyzer"><b>Shape Evaluator</b></a> module to compute a mean shape and see how the population varies.<br><br>
 &nbsp; 7. Use <a href="#RegressionComputation"><b>Shape Regressions</b></a> module to do regression based analysis.<br><br>
