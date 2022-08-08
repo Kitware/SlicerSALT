@@ -76,7 +76,7 @@ To contribute your changes to slicerSALT, you will need to follow the forking wo
 
 2. **Style only rhymes with style**
 
-    Style changes can introduce a big number of diffs in your whole project (take a variable name change, tabulation in a whole file...). If commited as part of a commit for enhancement or bug fixes, it becomes very difficult for a reviewer to track down the changes specific to your work, and the ones specific to style changes. For that reason, prefer grouping style changes in a separate commit.
+    Style changes can introduce a big number of diffs in your whole project (take a variable name change, tabulation in a whole file...). If committed as part of a commit for enhancement or bug fixes, it becomes very difficult for a reviewer to track down the changes specific to your work, and the ones specific to style changes. For that reason, prefer grouping style changes in a separate commit.
 
 3. **Push often**
 
@@ -88,7 +88,7 @@ To contribute your changes to slicerSALT, you will need to follow the forking wo
 
 5. **... but never the other way around!**
 
-    If your branch and the master branch diverge and are in conflicts, never resolve those by merging master into your branch. Instead, rebase your branch against master. This will allow you to adress the conflicts where they were introduced instead of commiting a patch complicated to review, and will keep the commit history clean.
+    If your branch and the master branch diverge and are in conflicts, never resolve those by merging master into your branch. Instead, rebase your branch against master. This will allow you to address the conflicts where they were introduced instead of committing a patch complicated to review, and will keep the commit history clean.
 
 Some of the content above was directly or partially taken from Crealytics blog : [5 reasons for keeping your git commits small](https://crealytics.com/blog/2010/07/09/5-reasons-keeping-git-commits-small/).
 
@@ -119,7 +119,7 @@ Proper commit messages are important as they allow to speed up the review proces
 
 5. Be specific
 
-    When making changes to multiple classes or refering to other classes than the one being modified, be specific about class methods and members by properly specifying the namespace: `Class:method()` or `Class::m_member`.
+    When making changes to multiple classes or referring to other classes than the one being modified, be specific about class methods and members by properly specifying the namespace: `Class:method()` or `Class::m_member`.
 
 6. List changes
 
@@ -153,7 +153,7 @@ This process consists of rewriting the branch history, therefore re-syncing it w
     ```
     >TIP:
     >* You can also use `git gui` and click on the amend commit radio button, then unstage or remove changes from the previous commit.
-    >* To keep the changes staged, you can use the `--soft` flag. If you want to get rid of the commit changes alltogether, you can use the `--force`.
+    >* To keep the changes staged, you can use the `--soft` flag. If you want to get rid of the commit changes altogether, you can use the `--force`.
     >* To reset more than one commit, you can call `git reset HEAD~X` with X the number of commits to reset. Works with the flags referenced above.
 
 * **Editing older commits**
@@ -193,8 +193,8 @@ This process consists of rewriting the branch history, therefore re-syncing it w
     * ***How do I amend some code I already wrote to a previous comment?***
 
         You have two possibilities:
-        * If you have already commited that new code, you can place its line under the commit to amend in the interactive rebase, and change its command to `s` or `f` if you want to edit the initial commit message or not.
-        * If you haven't commited your changes, you can either commit them and follow the instructions above, or stash them:
+        * If you have already committed that new code, you can place its line under the commit to amend in the interactive rebase, and change its command to `s` or `f` if you want to edit the initial commit message or not.
+        * If you haven't committed your changes, you can either commit them and follow the instructions above, or stash them:
 
             ```
             git stash
