@@ -236,7 +236,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
       logging.warning('LabelMap in path: {} has not been loaded into segmentationDict.'.format(path))
       return False
 
-    # Add to the dicts only if succesful
+    # Add to the dicts only if successful
     if self.freesurfer_import == True:
       subject_name = os.path.split(os.path.split(directory)[0])[1]
       file_name = os.path.splitext(fileName)[0]
@@ -288,7 +288,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
       logging.warning('Model in path: {} has not been loaded into segmentationDict.'.format(path))
       return False
 
-    # Add to the dicts only if succesful
+    # Add to the dicts only if successful
     self.modelDict[fileName] = modelNode
     self.segmentationDict[fileName] = segmentationNode
     self.labelRangeInCohort = labelRange
@@ -314,7 +314,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
       logging.warning('Segmentation in path: {} has not been loaded into segmentationDict.'.format(path))
       return False
 
-    # Add to the dicts only if succesful
+    # Add to the dicts only if successful
     self.segmentationDict[fileName] = segmentationNode
     self.labelRangeInCohort = labelRange
     return True
@@ -346,7 +346,7 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
 
   def importFiles(self, filePaths):
     """
-    Call the appropiate import function from a heteregeneous list of file paths.
+    Call the appropriate import function from a heteregeneous list of file paths.
     Raises TypeError if not existent file or unhandled filetype by this module.
     Files with a different number of labels/segments than the first one loaded are ignored with a warning.
     Return true if success, raise error otherwise.
@@ -1094,7 +1094,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
     POST: Populate SubjectTable with the names of the files
     """
     if not self.logic.topologyDict:
-      logging.error("Trying to populateSubjectsTable with non existant topologyDict.")
+      logging.error("Trying to populateSubjectsTable with non existent topologyDict.")
       return
 
     self.TemplateButtonLookup = {}
@@ -1171,7 +1171,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
     POST: Populates SegmentsTable (appending) for given name.
     """
     if not self.logic.topologyDict:
-      logging.error("Trying to populateSegmentsTable with non existant topologyDict.")
+      logging.error("Trying to populateSegmentsTable with non existent topologyDict.")
       return
     if not nameKey in self.logic.topologyDict:
       logging.error("Input nameKey: {} does not exist in topologyDict.".format(nameKey))
@@ -1179,7 +1179,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
 
     # Required to safely populate table when sorting is enabled, restored later.
     self.SegmentsTableWidget.setSortingEnabled(False)
-    # Block signals while populating programatically
+    # Block signals while populating programmatically
     self.SegmentsTableWidget.blockSignals(True)
     self.SegmentsTableWidget.hide()
 
@@ -1228,7 +1228,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
     """
     ### TODO: Merge both populateSegmentsXTable to avoid repetition.
     if not self.logic.topologyDict:
-      logging.error("Trying to populateSegmentsMultiTable with non existant topologyDict.")
+      logging.error("Trying to populateSegmentsMultiTable with non existent topologyDict.")
       return
     if not nameKey in self.logic.topologyDict:
       logging.error("Input nameKey: {} does not exist in topologyDict.".format(nameKey))
@@ -1237,7 +1237,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
     # Required to safely populate table when sorting is enabled, restored later.
     self.SegmentsTableWidget.setSortingEnabled(False)
 
-    # Block signals while populating programatically
+    # Block signals while populating programmatically
     self.SegmentsTableWidget.blockSignals(True)
     self.SegmentsTableWidget.hide()
 
@@ -1424,7 +1424,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
     self.InputCSVFileNameLineEdit.text = ''
 
   def resetDirectoryTab(self):
-    # reset directroy tab
+    # reset directory tab
     self.inputPath = ''
     self.FolderDirectoryButton.blockSignals(True)
     self.FolderDirectoryButton.directory = '/'
@@ -1525,7 +1525,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
     self.freesurfer_home_path = freesurfer_home_path
     self.InputFreeSurferHomeFolderNameLineEdit.text = freesurfer_home_path
 
-    #init the correspondance labels->segment names dict
+    #init the correspondence labels->segment names dict
     self.logic.initFreeSurferLUT(LUT_path)
 
   def onFreeSurferSubjectsDirectoryChanged(self, freesurfer_subjects_path):
@@ -1535,7 +1535,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
     that can be used in this module.
     """
     logging.debug("onFreeSurferSubjectsDirectoryChanged: {}".format(freesurfer_subjects_path))
-    # Check directory existance
+    # Check directory existence
     directory = qt.QDir(freesurfer_subjects_path)
     if not directory.exists():
       logging.error("Directory {} does not exist.".format(directory))
@@ -1797,7 +1797,7 @@ class DataImporterWidget(ScriptedLoadableModuleWidget, VTKObservationMixin):
     threeDView.resetFocalPoint()
 
   def setVisibilitySegmentations(self, visibility):
-    """ visiblity boolean """
+    """ visibility boolean """
     nodes = [node for node in self.logic.segmentationDict.values()]
     for node in nodes:
       displayNode = node.GetDisplayNode()
@@ -1894,7 +1894,7 @@ class DataImporterTest(ScriptedLoadableModuleTest):
       'sample_model.vtk',
     )
 
-    # create dir if non-existant
+    # create dir if non-existent
     if not os.path.isdir(self.testDir):
       os.mkdir(self.testDir)
 

@@ -542,7 +542,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&amp;lt;html&amp;gt;&amp;lt;head/&amp;gt;&amp;lt;body&amp;gt;&amp;lt;p&amp;gt;Display the selection made on Subjects and Segment tables.&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;You can use the key shift for multi-selection.&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;&amp;lt;br/&amp;gt;&amp;lt;/p&amp;gt;&amp;lt;/body&amp;gt;&amp;lt;/html&amp;gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Generate Shape Analysis Stucture</string>
+      <string>Generate Shape Analysis Structure</string>
      </property>
     </widget>
    </item>

@@ -76,7 +76,7 @@ void qSlicerSALTAppMainWindowPrivate::setupUi(QMainWindow * mainWindow)
   // QPixmap from the QIcon (base.png, base@2x, ...).
   // To achieve this, we first determine the pixmap size in device independent units,
   // which is the size of the base image (icon.availableSizes().first(), because for that
-  // DevicePixelRatio=1.0), and then we retieve the pixmap for this size.
+  // DevicePixelRatio=1.0), and then we retrieve the pixmap for this size.
   QIcon icon = QIcon(":/LogoFull.png");
   QPixmap logo = icon.pixmap(icon.availableSizes().first());
   logoLabel->setPixmap(logo);
