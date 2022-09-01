@@ -63,6 +63,7 @@ class HomeWidget(ScriptedLoadableModuleWidget):
           "SRep": "https://bit.ly/3sTEG3H",
           "SRepCreator": "https://bit.ly/3sTEG3H",
           "SRepRefinement": "https://bit.ly/3sTEG3H",
+          "CrownSegmentation": "https://bit.ly/3pYgKKy",
         }
 
         # The anchor associated with each link corresponds to the name of the module to select.

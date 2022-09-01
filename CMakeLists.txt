@@ -423,5 +423,25 @@ FetchContent_Populate(${extension_name}
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
 #-----------------------------------------------------------------------------
+# SlicerDentalModelSeg
+#
+# Currently only Linux is supported
+if (UNIX AND NOT APPLE)
+  set(SlicerDentalModelSeg_BUILD_TESTING OFF)
+  mark_as_superbuild(SlicerDentalModelSeg_BUILD_TESTING:BOOL)
+
+  set(extension_name "SlicerDentalModelSeg")
+  set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+  FetchContent_Populate(${extension_name}
+    SOURCE_DIR	 ${${extension_name}_SOURCE_DIR}
+    GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
+    GIT_TAG        142ec756dd67d03019d5b5bec6a3fbf823011638 # slicersalt-2022-08-11-142ec756d
+    GIT_PROGRESS	 1
+    QUIET
+    )
+  list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+endif()
+
+#-----------------------------------------------------------------------------
 # Add Slicer sources
 add_subdirectory(${slicersources_SOURCE_DIR} ${slicersources_BINARY_DIR})
