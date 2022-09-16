@@ -233,7 +233,7 @@ mark_as_superbuild(VARS RigidAlignment_CATEGORY:STRING PROJECTS RigidAlignment)
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        883fbd991c47250dd21a283a219dd4ba315d9b36 # slicersalt-2022-06-29-883fbd991
+  GIT_TAG        1263afc128b4ebf4442695af569d1832432e3d18 # slicersalt-2022-09-16-1263afc12
   GIT_PROGRESS   1
   QUIET
   )
@@ -364,7 +364,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        529e6eb8e9df49c6ae0462d28d5ac6badae56b18 # slicersalt-2022-04-28-90fa962
+  GIT_TAG        5c2f1d60f14ec9fc867120bced5b78e3c40bad1a # slicersalt-2022-09-15-728cb201c
   GIT_PROGRESS   1
   QUIET
   )
