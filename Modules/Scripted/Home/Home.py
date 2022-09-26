@@ -64,6 +64,7 @@ class HomeWidget(ScriptedLoadableModuleWidget):
           "SRepCreator": "https://bit.ly/3sTEG3H",
           "SRepRefinement": "https://bit.ly/3sTEG3H",
           "CrownSegmentation": "https://bit.ly/3pYgKKy",
+          "SlicerDWD": "https://bit.ly/3CVx46d",
         }
 
         # The anchor associated with each link corresponds to the name of the module to select.
@@ -100,11 +101,12 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
             'DataImporterInputData.json',
             'CrownSegmentation.json',
             'MFSDAInputData.json',
-            'ShapeRegressionInputData.json',
-            'SPHARM-PDMTestData.json',
             'SPHARM-PDMFiducials.json',
+            'SPHARM-PDMTestData.json',
             'SRepCreatorData.json',
-            'SVAInputData.json'
+            'SVAInputData.json',
+            'ShapeRegressionInputData.json',
+            'SlicerDWDInputData.json',
         ]:
             with open(self.resourcePath('SampleDataDescription/%s' % json_file), 'r') as json_data:
                 source_data = json.load(json_data)
@@ -138,7 +140,8 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
             "ShapeAnalysisModule": "SPHARM-PDM",
             "RegressionComputation": "Shape Regression",
             "ShapeVariationAnalyzer": "Population Analysis",
-            "SRepCreator": "Skeletal Representation Creator"
+            "SRepCreator": "Skeletal Representation Creator",
+            "SlicerDWD": "DWD Shape Analysis",
         }
 
         self.sampleDataModuleTab = self.addSampleDataTab()
@@ -222,7 +225,10 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
                 os.mkdir(outDir)
             slicer.modules.CrownSegmentationWidget.ui.outputLineEdit.text = outDir
             slicer.modules.CrownSegmentationWidget.ui.outputFileLineEdit.text = 'output.vtk'
-
+        elif currModule == slicer.moduleNames.SlicerDWD:
+            slicer.modules.SlicerDWDWidget.ui.pathTrain.currentPath = os.path.join(destFolderPath, 'inputFiles.csv')
+            slicer.modules.SlicerDWDWidget.ui.pathMetrics.currentPath = os.path.join(destFolderPath, 'extraMetrics.csv')
+            slicer.modules.SlicerDWDWidget.ui.pathResults.currentPath = os.path.join(destFolderPath, 'testResults.csv')
 
     @staticmethod
     def addSampleDataTab():

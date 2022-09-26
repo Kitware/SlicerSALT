@@ -6,9 +6,10 @@ set(MODULE_PYTHON_RESOURCES
   "Resources/SampleDataDescription/CrownSegmentation.json"
   "Resources/SampleDataDescription/DataImporterInputData.json"
   "Resources/SampleDataDescription/MFSDAInputData.json"
-  "Resources/SampleDataDescription/SPHARM-PDMTestData.json"
-  "Resources/SampleDataDescription/SPHARM-PDMFiducials.json"
   "Resources/SampleDataDescription/ShapeRegressionInputData.json"
+  "Resources/SampleDataDescription/SlicerDWDInputData.json"
+  "Resources/SampleDataDescription/SPHARM-PDMFiducials.json"
+  "Resources/SampleDataDescription/SPHARM-PDMTestData.json"
   "Resources/SampleDataDescription/SRepCreatorData.json"
   "Resources/SampleDataDescription/SVAInputData.json"
   )
