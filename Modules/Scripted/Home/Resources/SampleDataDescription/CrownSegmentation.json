@@ -1,0 +1,16 @@
+{
+  "category": "Crown Segmentation - FiboSeg",
+  "sampleName": "Download sample data",
+  "fileNames": [
+    "07-21-22_val-loss0.169.pth",
+    "scan36.vtk"
+  ],
+  "uris": [
+    "https://data.kitware.com/api/v1/file/hashsum/sha512/4943f46bb122b18591e27986e79e458e3ce264d4b5191add0595d111cf3e90cc794afe5deb472fbce26c7e456197e9dcb44af3804c02a35403de6a40f7bc56c0/download",
+    "https://data.kitware.com/api/v1/file/hashsum/sha512/d4a2aa9da98bd2e29433ff40d7d5dfff273b7dc302fa954184d2a5e1d5e52413235f1143116555aec7b59200195ba8b7561b4719b4dea970dbed74885f07aabe/download"
+  ],
+  "checksums": [
+    "SHA512:4943f46bb122b18591e27986e79e458e3ce264d4b5191add0595d111cf3e90cc794afe5deb472fbce26c7e456197e9dcb44af3804c02a35403de6a40f7bc56c0",
+    "SHA512:d4a2aa9da98bd2e29433ff40d7d5dfff273b7dc302fa954184d2a5e1d5e52413235f1143116555aec7b59200195ba8b7561b4719b4dea970dbed74885f07aabe"
+  ]
+}

@@ -63,6 +63,7 @@ class HomeWidget(ScriptedLoadableModuleWidget):
           "SRep": "https://bit.ly/3sTEG3H",
           "SRepCreator": "https://bit.ly/3sTEG3H",
           "SRepRefinement": "https://bit.ly/3sTEG3H",
+          "CrownSegmentation": "https://bit.ly/3pYgKKy",
         }
 
         # The anchor associated with each link corresponds to the name of the module to select.
@@ -97,6 +98,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
         # SAMPLE DATA REGISTRATION
         for json_file in [
             'DataImporterInputData.json',
+            'CrownSegmentation.json',
             'MFSDAInputData.json',
             'ShapeRegressionInputData.json',
             'SPHARM-PDMTestData.json',
@@ -131,6 +133,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
 
         self.moduleNameToSampleDataCategory = {
             "DataImporter": "Data Importer",
+            "CrownSegmentation": "Crown Segmentation - FiboSeg",
             "MFSDA": "Covariate Significance Testing",
             "ShapeAnalysisModule": "SPHARM-PDM",
             "RegressionComputation": "Shape Regression",
@@ -211,6 +214,15 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
             slicer.modules.MFSDAWidget.lineEdit_csv.currentPath = os.path.join(destFolderPath,'inputFiles.csv')
             slicer.modules.MFSDAWidget.lineEdit_pshape.currentPath = os.path.join(destFolderPath,'g01','bump00.vtk')
             slicer.modules.MFSDAWidget.lineEdit_output.directory = os.path.join(destFolderPath,'out')
+        elif currModule == slicer.moduleNames.CrownSegmentation:
+            slicer.modules.CrownSegmentationWidget.ui.surfaceLineEdit.text = os.path.join(destFolderPath,'scan36.vtk')
+            slicer.modules.CrownSegmentationWidget.ui.modelLineEdit.text = os.path.join(destFolderPath, '07-21-22_val-loss0.169.pth')
+            outDir = os.path.join(destFolderPath,'out')
+            if not os.path.isdir(outDir):
+                os.mkdir(outDir)
+            slicer.modules.CrownSegmentationWidget.ui.outputLineEdit.text = outDir
+            slicer.modules.CrownSegmentationWidget.ui.outputFileLineEdit.text = 'output.vtk'
+
 
     @staticmethod
     def addSampleDataTab():
