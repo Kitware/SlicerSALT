@@ -1,0 +1,16 @@
+{
+  "category": "DWD Shape Analysis",
+  "sampleName": "Download sample data",
+  "fileNames": [
+    "DWDSampleData.zip",
+    "setup.py"
+  ],
+  "uris": [
+"https://data.kitware.com/api/v1/file/hashsum/sha512/0923fb91a20b2c1387a3ce838c84643152f59c38f50b11f718f37468f9ae7f3c93ecbab2b4ae434cc7f6957ec282ce5492afad740c4e929e80b6b5a92abe8fa7/download",
+"https://data.kitware.com/api/v1/file/hashsum/sha512/34952cb8d1d9101624260142b33e5d2a9b170ea8df1800609acc4cd02826133dd55405b0215b7d35aad728e0bbb83911030fc136fa5b1e311612f05cf8422871/download"
+  ],
+  "checksums": [
+      "SHA512:0923fb91a20b2c1387a3ce838c84643152f59c38f50b11f718f37468f9ae7f3c93ecbab2b4ae434cc7f6957ec282ce5492afad740c4e929e80b6b5a92abe8fa7",
+      "SHA512:34952cb8d1d9101624260142b33e5d2a9b170ea8df1800609acc4cd02826133dd55405b0215b7d35aad728e0bbb83911030fc136fa5b1e311612f05cf8422871"
+  ]
+}
