@@ -4,7 +4,7 @@ set(APPLICATION_NAME
   )
 
 set(VERSION_MAJOR
-  3
+  4
   )
 set(VERSION_MINOR
   0
