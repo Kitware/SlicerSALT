@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.13.4)
 
-# Enable C++14
+# Enable C++17
 if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 14)
+  set(CMAKE_CXX_STANDARD 17)
 endif()
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -13,7 +13,7 @@ if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
     GIT_REPOSITORY https://github.com/Slicer/Slicer
-    GIT_TAG        1efef1b35da0f95835c4f56def90629782cd492e
+    GIT_TAG        3c1b69de455183477ffd346f3b9710aa4b001ac8
     GIT_PROGRESS   1
     )
 else()
@@ -89,6 +89,7 @@ endif()
 option(Slicer_BUILD_DICOM_SUPPORT               "Build application with DICOM support"                OFF)
 option(Slicer_BUILD_DIFFUSION_SUPPORT           "Build application with Diffusion support"            OFF)
 option(Slicer_BUILD_EXTENSIONMANAGER_SUPPORT    "Build application with ExtensionManager support"     OFF)
+option(Slicer_BUILD_APPLICATIONUPDATE_SUPPORT   "Build Slicer with application update support"        OFF)
 option(Slicer_BUILD_MULTIVOLUME_SUPPORT         "Build application with MultiVolume support"          OFF)
 option(Slicer_BUILD_PARAMETERSERIALIZER_SUPPORT "Build application with parameter serializer support" OFF)
 option(Slicer_BUILD_WEBENGINE_SUPPORT           "Build application with Qt WebEngine support"         OFF)
