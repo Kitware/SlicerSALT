@@ -234,7 +234,7 @@ mark_as_superbuild(VARS RigidAlignment_CATEGORY:STRING PROJECTS RigidAlignment)
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        1263afc128b4ebf4442695af569d1832432e3d18 # slicersalt-2022-09-16-1263afc12
+  GIT_TAG        387bc83adf41415dd4faf489b7d8199e720c73f5 # slicersalt-2023-01-25-387bc83ad
   GIT_PROGRESS   1
   QUIET
   )
