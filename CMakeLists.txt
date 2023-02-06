@@ -159,10 +159,6 @@ if(NOT DEFINED EIGEN_BUILD_TESTING)
 endif()
 mark_as_superbuild(EIGEN_BUILD_TESTING)
 
-# Do not add convenience blas/lapack target to avoid conflict with "lapack" project
-set(EIGEN_ADD_BLAS_LAPACK_TARGETS 0)
-mark_as_superbuild(EIGEN_ADD_BLAS_LAPACK_TARGETS)
-
 # Disable Qt based test to avoid finding the wrong Qt version
 set(EIGEN_TEST_NOQT 1)
 mark_as_superbuild(EIGEN_TEST_NOQT)
@@ -234,7 +230,7 @@ mark_as_superbuild(VARS RigidAlignment_CATEGORY:STRING PROJECTS RigidAlignment)
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        387bc83adf41415dd4faf489b7d8199e720c73f5 # slicersalt-2023-01-25-387bc83ad
+  GIT_TAG        2f20e1728f06db8af4949e727c9b2adb5d232f27  # slicersalt-2023-02-08-2f20e1728
   GIT_PROGRESS   1
   QUIET
   )
@@ -396,12 +392,11 @@ set(SPHARM-PDM_BUILD_TESTING OFF)
 mark_as_superbuild(SPHARM-PDM_BUILD_TESTING:BOOL)
 
 set(extension_name "SPHARM-PDM")
-set(${extension_name}_EXTERNAL_PROJECT_DEPENDENCIES LAPACK)
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        6b05b63a823418311a810abc61f5165cdb48ba5d # slicersalt-2022-10-28-5b091e33f
+  GIT_TAG        d6c718c9ea7ed2d6deb14af836014cf3e30c5e35  # slicersalt-2023-02-08-5c6dc05bf
   GIT_PROGRESS   1
   QUIET
   )

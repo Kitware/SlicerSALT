@@ -11,12 +11,6 @@ The initial source files were created using [KitwareMedical/SlicerCustomAppTempl
 Prerequisites
 -------------
 
-* Install the Fortran compiler
-
-  * [GNU/Linux systems](https://www.slicer.org/wiki/Documentation/Nightly/Developers/Fortran#Linux)
-  * [macOS](https://www.slicer.org/wiki/Documentation/Nightly/Developers/Fortran#macOS)
-  * [Windows](https://www.slicer.org/wiki/Documentation/Nightly/Developers/Fortran#Windows)
-
 * Review and install the `3D Slicer` prerequisites
 
   * [GNU/Linux systems](https://slicer.readthedocs.io/en/latest/developer_guide/build_instructions/linux.html)
