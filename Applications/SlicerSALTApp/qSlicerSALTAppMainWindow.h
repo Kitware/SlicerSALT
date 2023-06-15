@@ -10,6 +10,7 @@ class qSlicerSALTAppMainWindowPrivate;
 
 // Slicer includes
 #include "qSlicerMainWindow.h"
+#include "vtkSlicerVersionConfigure.h"
 
 class Q_SLICERSALT_APP_EXPORT qSlicerSALTAppMainWindow : public qSlicerMainWindow
 {
