@@ -457,7 +457,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR	 ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/${extension_name}
-  GIT_TAG        ca8c37be8db9be236f01a287adba848d70972d68 # mk2 working branch 2023-jul-13 case iterator progress reporting
+  GIT_TAG        586c6f4062a0a4b2e6bb56a167aa91468dfe528b # main as of 2023-09-20
   GIT_PROGRESS	 1
   QUIET
   )
