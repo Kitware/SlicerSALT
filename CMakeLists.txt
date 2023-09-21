@@ -13,7 +13,7 @@ if(NOT DEFINED slicersources_SOURCE_DIR)
   # Download Slicer sources and set variables slicersources_SOURCE_DIR and slicersources_BINARY_DIR
   FetchContent_Populate(slicersources
     GIT_REPOSITORY https://github.com/Slicer/Slicer
-    GIT_TAG        3c1b69de455183477ffd346f3b9710aa4b001ac8
+    GIT_TAG        c3d74d68839078ec02b1053d4ba413643e84630c # master (2023-06-17)
     GIT_PROGRESS   1
     )
 else()
@@ -206,7 +206,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${short_extension_name}")
 FetchContent_Populate(${short_extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/SlicerSkeletalRepresentation.git
-  GIT_TAG        15935f3703743ec2e1f1a9d7216c505f50691404 # master 2023-may-05
+  GIT_TAG        bdcf0278acfee929c4a9f02ef037b3aa94f6b32b # srep-pipelines 2023-jul-13
   GIT_PROGRESS   1
   QUIET
   )
@@ -457,7 +457,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR	 ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/${extension_name}
-  GIT_TAG        e8ac90cf8ea87d26f7a9c66e6b70f78a86bb49df # main
+  GIT_TAG        586c6f4062a0a4b2e6bb56a167aa91468dfe528b # main as of 2023-09-20
   GIT_PROGRESS	 1
   QUIET
   )
