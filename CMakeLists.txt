@@ -474,6 +474,18 @@ FetchContent_Populate(${extension_name}
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
+set(extension_name "SRepHypothesisTesting")
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR	 ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
+  GIT_TAG        8c17682e6ada7b7f1128b4c5d4b9c29e49900341 # main as of 2024-10-01
+  GIT_PROGRESS	 1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+
 
 #-----------------------------------------------------------------------------
 # Add Slicer sources

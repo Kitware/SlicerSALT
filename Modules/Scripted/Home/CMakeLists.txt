@@ -11,6 +11,7 @@ set(MODULE_PYTHON_RESOURCES
   "Resources/SampleDataDescription/SPHARM-PDMFiducials.json"
   "Resources/SampleDataDescription/SPHARM-PDMTestData.json"
   "Resources/SampleDataDescription/SRepCreatorData.json"
+  "Resources/SampleDataDescription/SRepHypothesisTestingData.json"
   "Resources/SampleDataDescription/SVAInputData.json"
   )
 
