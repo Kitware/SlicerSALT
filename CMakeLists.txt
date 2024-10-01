@@ -361,7 +361,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        5c2f1d60f14ec9fc867120bced5b78e3c40bad1a # slicersalt-2022-09-15-728cb201c
+  GIT_TAG        520b6108660bd9f48e6713a7f1f793dbdfd20ae6 # slicersalt-2024-04-23-3b7c66d
   GIT_PROGRESS   1
   QUIET
   )
@@ -412,7 +412,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
   SOURCE_DIR	 ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
-  GIT_TAG        b7ec52cc0187547e59bb022c63bb19477f8a9d76  # master (2024-06-05)
+  GIT_TAG        c19d39d1f250a6cc11bcaf3e5d9de5e07bfb765d  # master (2024-06-05)
   GIT_PROGRESS	 1
   QUIET
   )
@@ -462,6 +462,40 @@ FetchContent_Populate(${extension_name}
   QUIET
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+set(extension_name "SlicerSurfaceLearner")
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR	 ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
+  GIT_TAG        49ee4e521beec8d74a5d0eed0d62044932ce23b2 # slicersalt-2024-06-28-49ee4e5
+  GIT_PROGRESS	 1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+set(extension_name "SRepHypothesisTesting")
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR	 ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
+  GIT_TAG        8c17682e6ada7b7f1128b4c5d4b9c29e49900341 # main as of 2024-10-01
+  GIT_PROGRESS	 1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+set(extension_name "HierarchicalGeodesicModeling")
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR	 ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/${extension_name}
+  GIT_TAG        2196d40126b851f17590b26daff19c15036577d3 # main as of 2024-10-01
+  GIT_PROGRESS	 1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
 
 #-----------------------------------------------------------------------------
 # Add Slicer sources

@@ -63,6 +63,7 @@ class HomeWidget(ScriptedLoadableModuleWidget):
           "SRep": "https://bit.ly/3sTEG3H",
           "SRepCreator": "https://bit.ly/3sTEG3H",
           "SRepRefinement": "https://bit.ly/3sTEG3H",
+          "SRepHypothesisTesting": "http://bit.ly/3Y94DLt",
           "CrownSegmentation": "https://bit.ly/3pYgKKy",
           "SlicerDWD": "https://bit.ly/3CVx46d",
         }
@@ -142,6 +143,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
             "ShapeVariationAnalyzer": "Population Analysis",
             "SRepCreator": "Skeletal Representation Creator",
             "SlicerDWD": "DWD Shape Analysis",
+            "SRepHypothesisTesting": "SRep Hypothesis Testing"
         }
 
         self.sampleDataModuleTab = self.addSampleDataTab()
@@ -230,6 +232,9 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
             slicer.modules.SlicerDWDWidget.ui.pathTrain.currentPath = os.path.join(destFolderPath, 'inputFiles.csv')
             slicer.modules.SlicerDWDWidget.ui.pathMetrics.currentPath = os.path.join(destFolderPath, 'extraMetrics.csv')
             slicer.modules.SlicerDWDWidget.ui.pathResults.currentPath = os.path.join(destFolderPath, 'testResults.csv')
+        elif currModule == slicer.moduleNames.SRepHypothesisTesting:
+            slicer.modules.SRepHypothesisTestingWidget.ui.inputCSV.currentPath = os.path.join(destFolderPath, 'input.csv')
+            slicer.modules.SRepHypothesisTestingWidget.ui.outputDirectory.directory = os.path.join(destFolderPath,'out')
 
     @staticmethod
     def addSampleDataTab():

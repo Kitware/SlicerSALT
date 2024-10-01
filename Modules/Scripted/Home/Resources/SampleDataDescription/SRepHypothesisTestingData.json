@@ -1,0 +1,46 @@
+{
+  "category": "SRep Hypothesis Testing",
+  "sampleName": "Download sample data",
+  "fileNames": [
+      "setup.py",
+      "input_absolute.csv",
+      "bent_srep_0.srep.json",
+      "bent_srep_1.srep.json",
+      "bent_srep_2.srep.json",
+      "bent_srep_3.srep.json",
+      "bent_srep_4.srep.json",
+      "unbent_srep_0.srep.json",
+      "unbent_srep_1.srep.json",
+      "unbent_srep_2.srep.json",
+      "unbent_srep_3.srep.json",
+      "unbent_srep_4.srep.json"
+  ],
+  "uris": [
+      "https://data.kitware.com/api/v1/file/hashsum/sha512/4ec8bd693f81723e616af76fa9e1a965d54ec78291c973e8be47fd0194140ed30630198e511cb18c037c29644c7ae1f149015c58a1e374f2ae3a24f0596f7529/download",
+      "https://data.kitware.com/api/v1/file/hashsum/sha512/6a5af91728942f3dad0e7dca25caa07b03f4050f98a13eac731fb730ea024ae6f533262b0d647a1a9e244c6637271e14477bd6244efe0e43759eb3c93d3226c9/download",
+      "https://data.kitware.com/api/v1/file/hashsum/sha512/e83daf54d432d110c6e7477078f232da0002dcb6edb18ae5fbc1dbadc14f9f50c9c62de7c34669bae29b324952372663660eeab50a500f0aa33c21e84d2ce67c/download",
+      "https://data.kitware.com/api/v1/file/hashsum/sha512/d9425354a1edbd106eb6fb23407b008869f00eceabac4b317c5006f4b646ab1a50f55b5406cb47577f2903ba7e3b4cced31a463d03f419590c29fb167fce42a7/download",
+      "https://data.kitware.com/api/v1/file/hashsum/sha512/209f1fbbc41072c69e976514107c28fd0c321a56ffcd07222d335b82c250d62759e1b20fdbbcc294aede80626fca0bd3a5ec02262b2b27effa88af0ed86732ac/download",
+      "https://data.kitware.com/api/v1/file/hashsum/sha512/8cbf2aebf78b28d825766d01f029eab3ad7f74dad75eff381a49479333b5ed80d2f252db0af9720f624e91fdf615d138c62d82fa88b2ad63e1ff5a203449de2b/download",
+      "https://data.kitware.com/api/v1/file/hashsum/sha512/23713bb1bb38818ec2a2a437315d05b933e0e572f360ebc6b1491a35774f19a271406aa65d2566611feb9067c78934e0c6a0f118f6b117309d5e0ad0c6b9f559/download",
+      "https://data.kitware.com/api/v1/file/hashsum/sha512/82aa261f94af1972deea275105b5c0d6dce1fe8cae144acf40752c3621b7423202c7f13edde0e4678b3e2f73a00265a1a4409d0378abc70fdf5bff9280ad2481/download",
+      "https://data.kitware.com/api/v1/file/hashsum/sha512/d1687cf218693ebfe1d6cae39b2b10c26d23c5b7115d457d1913e5ca9b8c21b8308619f38b877f205f0e9acd738b41948c95816c1ef2d419a96b7395affa45a2/download",
+      "https://data.kitware.com/api/v1/file/hashsum/sha512/3814395e1bb846f2603cb88e5fddf96b91e37fe25fd04dbda6b1d40d0430a2996dc7457b8c49cc70b9a327073bae722556d0bb8ed5f2a0546c13eb813d66b741/download",
+      "https://data.kitware.com/api/v1/file/hashsum/sha512/76536b470d6019cd2673f80fbdeefb41ee920fd1cd6b9ebcf92a655aba9e8e86b0b7f4e3c3f10d1f6444ea93b834cbda9412121eaedbd0228a3820b38bdf3640/download",
+      "https://data.kitware.com/api/v1/file/hashsum/sha512/80fe628473dd0d829ff03404c0464202e6e9db34b528f7be4cfff2404ba9e744c151dab22576fed72a4f9e1978601520a65f67fb76f120672ee237e57d790e65/download"
+  ],
+  "checksums": [
+      "SHA512:4ec8bd693f81723e616af76fa9e1a965d54ec78291c973e8be47fd0194140ed30630198e511cb18c037c29644c7ae1f149015c58a1e374f2ae3a24f0596f7529",
+      "SHA512:6a5af91728942f3dad0e7dca25caa07b03f4050f98a13eac731fb730ea024ae6f533262b0d647a1a9e244c6637271e14477bd6244efe0e43759eb3c93d3226c9",
+      "SHA512:e83daf54d432d110c6e7477078f232da0002dcb6edb18ae5fbc1dbadc14f9f50c9c62de7c34669bae29b324952372663660eeab50a500f0aa33c21e84d2ce67c",
+      "SHA512:d9425354a1edbd106eb6fb23407b008869f00eceabac4b317c5006f4b646ab1a50f55b5406cb47577f2903ba7e3b4cced31a463d03f419590c29fb167fce42a7",
+      "SHA512:209f1fbbc41072c69e976514107c28fd0c321a56ffcd07222d335b82c250d62759e1b20fdbbcc294aede80626fca0bd3a5ec02262b2b27effa88af0ed86732ac",
+      "SHA512:8cbf2aebf78b28d825766d01f029eab3ad7f74dad75eff381a49479333b5ed80d2f252db0af9720f624e91fdf615d138c62d82fa88b2ad63e1ff5a203449de2b",
+      "SHA512:23713bb1bb38818ec2a2a437315d05b933e0e572f360ebc6b1491a35774f19a271406aa65d2566611feb9067c78934e0c6a0f118f6b117309d5e0ad0c6b9f559",
+      "SHA512:82aa261f94af1972deea275105b5c0d6dce1fe8cae144acf40752c3621b7423202c7f13edde0e4678b3e2f73a00265a1a4409d0378abc70fdf5bff9280ad2481",
+      "SHA512:d1687cf218693ebfe1d6cae39b2b10c26d23c5b7115d457d1913e5ca9b8c21b8308619f38b877f205f0e9acd738b41948c95816c1ef2d419a96b7395affa45a2",
+      "SHA512:3814395e1bb846f2603cb88e5fddf96b91e37fe25fd04dbda6b1d40d0430a2996dc7457b8c49cc70b9a327073bae722556d0bb8ed5f2a0546c13eb813d66b741",
+      "SHA512:76536b470d6019cd2673f80fbdeefb41ee920fd1cd6b9ebcf92a655aba9e8e86b0b7f4e3c3f10d1f6444ea93b834cbda9412121eaedbd0228a3820b38bdf3640",
+      "SHA512:80fe628473dd0d829ff03404c0464202e6e9db34b528f7be4cfff2404ba9e744c151dab22576fed72a4f9e1978601520a65f67fb76f120672ee237e57d790e65"
+  ]
+}
