@@ -80,7 +80,7 @@ endif()
 
 
 # Slicer options
-option(BUILD_TESTING                            "Build application test suite"                        ON)
+option(BUILD_TESTING                            "Build application test suite"                        OFF)
 option(Slicer_BUILD_DOCUMENTATION               "Build documentation (Doxygen, sphinx, ...)"          OFF)
 if(WIN32)
   option(Slicer_BUILD_WIN32_CONSOLE             "Build application executable as a console app"       OFF)
