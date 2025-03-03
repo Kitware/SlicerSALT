@@ -12,6 +12,9 @@
 # ... and .circleci
 !.circleci
 
+# ... and .readthedocs.yaml
+!.readthedocs.yaml
+
 # Exclude Kdevelop4 files ...
 .kdev*
 
@@ -23,3 +26,6 @@ tags
 
 # Ignore pyc files ...
 *.pyc
+
+# Ignore built documentation
+Docs/_build/*
