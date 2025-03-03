@@ -2,3 +2,4 @@ mkdocs
 mkdocstrings[python]
 markdown-include
 myst-parser
+sphinx-rtd-theme
