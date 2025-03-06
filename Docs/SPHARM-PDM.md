@@ -563,19 +563,24 @@ Change the    _opacity_    of the mesh
 
 ## Acknowledgements \- Resources \- Questions
 
-
-
-* The SPHARM\-PDM developers gratefully acknowledge funding for this project provided by NIH NIBIB R01EB021391 \(Shape Analysis Toolbox for Medical Image Computing Projects\)\, as well as the Slicer community\.
-* Github repository:
-      * _[SPHARM\-PDM](https://github.com/NIRALUser/SPHARM-PDM)_  
-      * _[SlicerSALT](https://github.com/Kitware/SlicerSALT)_
-      * _[3D Slicer](https://github.com/Slicer/Slicer)_
-* Forums:
-      * _[SlicerSALT](https://discourse.slicer.org/t/about-the-slicersalt-category/47)_
-      * _[3D Slicer](https://discourse.slicer.org/)_
-* Papers:
-      * _[Lateral ventricle morphology analysis via mean latitude axis\.](https://www.ncbi.nlm.nih.gov/pubmed/23606800)_
-      * _[Framework for the Statistical Shape Analysis of Brain Structures using SPHARM\-PDM](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3062073/)_
-* For other remarks or questions\, please email:
-* beatriz\.paniagua@kitware\.com
+<ul>
+  <li> The SPHARM-PDM developers gratefully acknowledge funding for this project provided by NIH NIBIB R01EB021391 (Shape Analysis Toolbox for Medical Image Computing Projects), as well as the Slicer community.</li>
+  <li>Github repository:</li>
+      <ul>
+            <li><a href="https://github.com/NIRALUser/SPHARM-PDM">MFSDA</a></li>
+            <li><a href="https://salt.slicer.org">SlicerSALT</a></li>
+            <li><a href="https://github.com/Slicer/Slicer">3D Slicer</a></li>
+      </ul>
+  <li>Forums:</li>
+      <ul>
+            <li><a href="https://discourse.slicer.org/t/about-the-slicersalt-category/47">SlicerSALT</a></li>
+            <li><a href="https://discourse.slicer.org/">3D Slicer</a></li>
+      </ul>
+  <li>Papers:</li>
+      <ul>
+            <li><a href="https://www.ncbi.nlm.nih.gov/pubmed/23606800">Lateral ventricle morphology analysis via mean latitude axis.</a></li>
+            <li><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3062073/">Framework for the Statistical Shape Analysis of Brain Structures using SPHARM\-PDM</a></li>
+      </ul>  
+  <li>For other remarks or questions, please email: beatriz.paniagua@kitware.com</li>
+</ul>
 
