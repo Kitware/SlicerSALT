@@ -4,7 +4,9 @@ Authors: Mateo lopez\, Priscille de Dumast\, Juan C\. Prieto\, Martin Styner\, B
 
 Collaborators: 
 
-<img src="img/SlicerSALT-SPHARM-PDM-Tutorial_0.png" alt="drawing" width="100"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="img/SlicerSALT-SPHARM-PDM-Tutorial_1.png" alt="drawing" width="160"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="img/SlicerSALT-SPHARM-PDM-Tutorial_2.png" alt="drawing" width="150"/> 
+![](img/SlicerSALT-SPHARM-PDM-Tutorial_0.png)
+![](img/SlicerSALT-SPHARM-PDM-Tutorial_1.png)
+![](img/SlicerSALT-SPHARM-PDM-Tutorial_2.png)
 
 ## ShapeVariationAnalyzer Tool Description
 

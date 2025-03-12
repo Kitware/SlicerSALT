@@ -2,7 +2,8 @@
 
 Authors: Zhiyuan Liu\, Stephen M\. Pizer\, Beatriz Paniagua\, Jared Vicory\, Junpyo Hong\, Connor Bowley
 
-<img src="img/SlicerSALT-SPHARM-PDM-Tutorial_1.png" alt="drawing" width="160"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="img/SlicerSALT-SPHARM-PDM-Tutorial_2.png" alt="drawing" width="150"/> 
+![](img/SlicerSALT-SPHARM-PDM-Tutorial_1.png)
+![](img/SlicerSALT-SPHARM-PDM-Tutorial_2.png)
 
 ## Introduction to skeletal representations
 

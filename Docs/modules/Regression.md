@@ -4,7 +4,8 @@ Authors: James Fishbaugh\, Guido Gerig\, Laura Pascal\, Jared Vicory\, Beatriz P
 
 Collaborators: 
 
-<img src="img/SlicerSALT-ShapeRegression-Tutorial_0.png" alt="drawing" width="100"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="img/SlicerSALT-ShapeRegression-Tutorial_1.png" alt="drawing" width="160"/> 
+![](img/SlicerSALT-ShapeRegression-Tutorial_0.png)
+![](img/SlicerSALT-ShapeRegression-Tutorial_1.png)
 
 ## Outline
 

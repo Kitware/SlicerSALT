@@ -4,7 +4,9 @@ Authors: Mahmoud Mostapha\, Jared Vicory\, Chao Huang\, Martin Styner\, Beatriz 
 
 Collaborators: 
 
-<img src="img/SlicerSALT-SPHARM-PDM-Tutorial_0.png" alt="drawing" width="100"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="img/SlicerSALT-SPHARM-PDM-Tutorial_1.png" alt="drawing" width="160"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="img/SlicerSALT-SPHARM-PDM-Tutorial_2.png" alt="drawing" width="150"/> 
+![](img/SlicerSALT-SPHARM-PDM-Tutorial_0.png)
+![](img/SlicerSALT-SPHARM-PDM-Tutorial_1.png)
+![](img/SlicerSALT-SPHARM-PDM-Tutorial_2.png)
 
 ## Covariate Significance Testing Description
 
@@ -60,7 +62,7 @@ For    _Input CSV File_    _\,_       select the csv file which contains the loc
 
 In the CSV file the first column contains the location of input surface vtk files and each additional column represent a covariate to be tested\, which can be categorical or continuous. Below is an example of an input CSV file with one categorical covariate.
 
-<img src="img/SlicerSALT-CovarianceSignificanceTesting-Tutorial_11.png" alt="drawing" width="300"/>
+![](img/SlicerSALT-CovarianceSignificanceTesting-Tutorial_11.png)
 
 ### Input Surface Meshes Visualization
 

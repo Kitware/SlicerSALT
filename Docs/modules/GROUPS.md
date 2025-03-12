@@ -4,7 +4,9 @@ Authors: Mahmoud Mostapha\, Ilwoo Lyu\, Martin Styner\, Beatriz Paniagua
 
 Collaborators:
 
-<img src="img/SlicerSALT-GROUPS-Tutorial_0.png" alt="drawing" width="100"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="img/SlicerSALT-GROUPS-Tutorial_1.png" alt="drawing" width="160"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="img/SlicerSALT-GROUPS-Tutorial_2.png" alt="drawing" width="150"/> 
+![](img/SlicerSALT-SPHARM-PDM-Tutorial_0.png)
+![](img/SlicerSALT-SPHARM-PDM-Tutorial_1.png)
+![](img/SlicerSALT-SPHARM-PDM-Tutorial_2.png)
 
 ## GROUPS Tool Description
 

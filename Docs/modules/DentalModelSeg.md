@@ -4,7 +4,9 @@ Authors: Mathieu Leclercq\, Juan Carlos Prieto\, Martin Styner\, Connor Bowley\,
 
 Collaborators:
 
-<img src="img/SlicerSALT-SlicerDentalModelSeg-Tutorial_0.png" alt="drawing" width="100"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="img/SlicerSALT-SlicerDentalModelSeg-Tutorial_1.png" alt="drawing" width="160"/> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img src="img/SlicerSALT-SlicerDentalModelSeg-Tutorial_2.png" alt="drawing" width="150"/> 
+![](img/SlicerSALT-SPHARM-PDM-Tutorial_0.png)
+![](img/SlicerSALT-SPHARM-PDM-Tutorial_1.png)
+![](img/SlicerSALT-SPHARM-PDM-Tutorial_2.png)
 
 _Note:_ Intra\-Oral Scanners \(IOS - intra oral scanner\):    A device that projects light to produce a 3D model of a lower or upper jaw. Those 3D IOS scans are the inputs of our automated teeth segmentation method
 
