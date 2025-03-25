@@ -496,6 +496,17 @@ FetchContent_Populate(${extension_name}
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
+set(extension_name "DifferenceStatistics")
+set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
+FetchContent_Populate(${extension_name}
+  SOURCE_DIR	 ${${extension_name}_SOURCE_DIR}
+  GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/slicersalt/${extension_name}
+  GIT_TAG        b7a53ed5107cc5b0a34051acf4c33ead1b6037fc # main as of 2025-03-25
+  GIT_PROGRESS	 1
+  QUIET
+  )
+list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
 
 #-----------------------------------------------------------------------------
 # Add Slicer sources
