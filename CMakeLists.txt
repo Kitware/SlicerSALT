@@ -140,6 +140,7 @@ set(Slicer_QTSCRIPTEDMODULES_DISABLED
   LabelStatistics
   PerformanceTests
   VectorToScalarVolume
+  WebServer
   )
 
 # Enable/Disable Slicer custom modules: To create a new module, use the SlicerExtensionWizard.
