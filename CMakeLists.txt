@@ -410,6 +410,7 @@ list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
 #-----------------------------------------------------------------------------
 # RegistrationBasedCorrespondence
+
 set(RegistrationBasedCorrespondence_BUILD_TESTING OFF)
 mark_as_superbuild(RegistrationBasedCorrespondence_BUILD_TESTING:BOOL)
 
@@ -444,6 +445,9 @@ if (UNIX AND NOT APPLE)
   list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 endif()
 
+#-----------------------------------------------------------------------------
+# SlicerDWD
+
 set(SlicerDWD_BUILD_TESTING OFF)
 mark_as_superbuild(SlicerDWD_BUILD_TESTING:BOOL)
 
@@ -458,6 +462,9 @@ FetchContent_Populate(${extension_name}
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
+#-----------------------------------------------------------------------------
+# SlicerPipelines
+
 set(extension_name "SlicerPipelines")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
@@ -468,6 +475,9 @@ FetchContent_Populate(${extension_name}
   QUIET
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+#-----------------------------------------------------------------------------
+# SlicerSurfaceLearner
 
 set(extension_name "SlicerSurfaceLearner")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
@@ -480,6 +490,9 @@ FetchContent_Populate(${extension_name}
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
+#-----------------------------------------------------------------------------
+# SRepHypothesisTesting
+
 set(extension_name "SRepHypothesisTesting")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
@@ -491,6 +504,9 @@ FetchContent_Populate(${extension_name}
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
 
+#-----------------------------------------------------------------------------
+# HierarchicalGeodesicModeling
+
 set(extension_name "HierarchicalGeodesicModeling")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
 FetchContent_Populate(${extension_name}
@@ -501,6 +517,9 @@ FetchContent_Populate(${extension_name}
   QUIET
   )
 list(APPEND Slicer_EXTENSION_SOURCE_DIRS ${${extension_name}_SOURCE_DIR})
+
+#-----------------------------------------------------------------------------
+# DifferenceStatistics
 
 set(extension_name "DifferenceStatistics")
 set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${extension_name}")
