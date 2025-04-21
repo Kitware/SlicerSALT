@@ -4,9 +4,9 @@ Authors: Mathieu Leclercq\, Juan Carlos Prieto\, Martin Styner\, Connor Bowley\,
 
 Collaborators:
 
-![](img/SlicerSALT-SPHARM-PDM-Tutorial_0.png)
-![](img/SlicerSALT-SPHARM-PDM-Tutorial_1.png)
-![](img/SlicerSALT-SPHARM-PDM-Tutorial_2.png)
+![](img/SlicerSALT-Learner-Tutorial_0.png)
+![](img/SlicerSALT-Learner-Tutorial_1.png)
+![](img/SlicerSALT-Learner-Tutorial_2.png)
 
 
 
@@ -16,20 +16,20 @@ Collaborators:
 
 Download the SlicerSALT packages for your respective operating system from the   _[SlicerSALT website ](http://salt.slicer.org)_  and install it\.   The module   will be ready to use then\. 
 
-![](img/SlicerSALT-SPHARM-PDM-Tutorial_3.png)
+![](img/SlicerSALT-Learner-Tutorial_3.png)
 
 
 ### SlicerSurfaceLearner Installation on 3D Slicer
 
  Download 3D Slicer packages for your respective operating system on the   _[3D Slicer website ](http://www.slicer.org)_  and install it\.
 
-![](img/SlicerSALT-SPHARM-PDM-Tutorial_4.png)
+![](img/SlicerSALT-Learner-Tutorial_4.png)
 
  In 3D Slicer\, open the Extension Manager
 
-![](img/SlicerSALT-SlicerDentalModelSeg-Tutorial_6.png)
+![](img/SlicerSALT-Learner-Tutorial_5.png)
 
-![](img/SlicerSALT-SlicerDentalModelSeg-Tutorial_7.png)
+![](img/SlicerSALT-Learner-Tutorial_6.png)
 
 Search for    SlicerSurfaceLearner    in the    _Install Extensions_    tab\.
 
@@ -57,8 +57,8 @@ Advanced options are available for controlling different training aspects, inclu
 ### How To Use
 
 
-![](img/SlicerSALT-SlicerDentalModelSeg-Tutorial_7.png)
-![](img/SlicerSALT-SlicerDentalModelSeg-Tutorial_8.png)
+![](img/SlicerSALT-Learner-Tutorial_7.png)
+![](img/SlicerSALT-Learner-Tutorial_8.png)
 
 
 
