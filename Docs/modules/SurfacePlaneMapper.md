@@ -1,6 +1,6 @@
 # SurfacePlaneMapper User tutorial
 
-Authors: Martin Styner\, Beatriz Paniagua \,Tom Bigonneau
+Authors: Martin Styner\, Beatriz Paniagua 
 
 Collaborators:
 
@@ -60,24 +60,5 @@ output_directory
               | ---- modality
                      | ---- *.png
 
-- The results are saved in `.png` format with a normalization so you can visualise them. In the dimension you asked for.
-- The result are also saved in NIFTI format without normalization so you can use them for training. PNG can also be used.
-
-- ## Acknowledgements \- Resources \- Questions
-
-<ul>
-  <li>The DentalModelSeg developers gratefully acknowledge funding for this project provided by NIH NIBIB R01EB021391 (Shape Analysis Toolbox for Medical Image Computing Projects), as well as the Slicer community.</li>
-  <li>Github repository:</li>
-      <ul>
-            <li><a href="https://github.com/DCBIA-OrthoLab/SlicerDentalModelSeg.git">DentalModelSeg</a></li>
-            <li><a href="https://salt.slicer.org">SlicerSALT</a></li>
-            <li><a href="https://github.com/Slicer/Slicer">3D Slicer</a></li>
-      </ul>
-  <li>Forums:</li>
-      <ul>
-            <li><a href="https://discourse.slicer.org/t/about-the-slicersalt-category/47">SlicerSALT</a></li>
-            <li><a href="https://discourse.slicer.org/">3D Slicer</a></li>
-      </ul>
-  <li>For other remarks or questions, please email: beatriz.paniagua@kitware.com</li>
-</ul>
+- The results are saved in `.png` format. In the dimension you asked for.
 
