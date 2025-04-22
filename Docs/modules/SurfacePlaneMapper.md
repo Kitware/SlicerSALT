@@ -20,31 +20,9 @@ Both geometry and other signals are stored as 2D grids, with grid samples in imp
 ![](img/SlicerSALT-SPM-Tutorial_3.png)
 
 
-## SurfacePlaneMapper Installation on SlicerSALT
-Download the SlicerSALT packages for your respective operating system from the   _[SlicerSALT website ](http://salt.slicer.org)_  and install it\.   The module   will be ready to use then\.
-![](img/SlicerSALT-SPM-Tutorial_4.png)
-![](img/SlicerSALT-SPM-Tutorial_5.png)
-
-## SurfacePlaneMapper Installation on 3D Slicer
-
- Download 3D Slicer packages for your respective operating system on the   _[3D Slicer website ](http://www.slicer.org)_  and install it\.
-
-![](img/SlicerSALT-SPM-Tutorial_6.png)
-
- In 3D Slicer\, open the Extension Manager
-
-![](img/SlicerSALT-SPM-Tutorial_7.png)
-
-
-Search for    SurfacePlaneMapper    in the    _Install Extensions_    tab\.
-
-Click    _Install_   \.
-
-Slicer needs to    restart    after installation\.
-
 ## Input
 
-![](img/SlicerSALT-SPM-Tutorial_8.png)
+![](img/SlicerSALT-SPM-Tutorial_4.png)
 
 
 ### Input Directory Structure
