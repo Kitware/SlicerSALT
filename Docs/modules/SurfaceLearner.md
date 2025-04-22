@@ -248,7 +248,7 @@ The user can monitor **loss/accuracy/AUC** during training using the **TensorBoa
 This allows real-time monitoring of the training process.
 For both training and validation, you will have access to : accuracy, precision, recall, and the loss per epoch and per step.
 
-
+![](img/SlicerSALT-SPM-Tutorial_12.png)
 
 
 ## Acknowledgements \- Resources \- Questions
