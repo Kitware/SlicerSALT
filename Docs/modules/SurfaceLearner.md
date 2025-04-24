@@ -191,14 +191,6 @@ root_data_folder
 
 For each subject, there can be data for multiple timestamps and multiple feature sets. The user can choose to train the model for a particular timestamp and a particular feature set.  
 
-For example, in the following case, each subject has features at **two time points**:  
-- **6 months (V06)**  
-- **12 months (V12)**  
-
-For each of these time points, the subject has **three feature sets**:  
-- **Cortical thickness (thickness)**  
-- **Surface area (sa)**  
-- **Local ea-csf (eacsf)**  
 
 The `.jpeg` images are **2D representations**. The shape of the images must match across **hemisphere and population**.
 
