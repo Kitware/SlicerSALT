@@ -102,6 +102,9 @@ A `.vtk` or `.obj` file representing a spherical icosahedral mesh (e.g., subdivi
                      | ---- .png (normalized for visualization) 
 					 | ----.nii.gz (raw values for training)
 ```
+
+
+Output look like :
 ![](img/SlicerSALT-SPM-Tutorial_9.png)
 
 
