@@ -1,0 +1,16 @@
+{
+  "category": "Statistics on Object Differences",
+  "sampleName": "Download sample data",
+  "fileNames": [
+"DifferenceStatisticsSampleData.zip",
+"setup.py"
+  ],
+  "uris": [
+"https://data.kitware.com/api/v1/file/hashsum/sha512/884023c083fdc1a46e51e58cf3c66e5f70db43e22f75048fd7e7c746acda45f6718abbc1a96617cdd8f370086e31fd326c68610abea017f5e802cca9999d260b/download",
+"https://data.kitware.com/api/v1/file/hashsum/sha512/6e895489a8883b570cac735aa3ef6b9a749b312b1165bf0c82c3379d4a13d827e863436ce74f5266d67fb17b4ef28227c42df592620a0afa3c188fb6d1151b6b/download"
+  ],
+  "checksums": [
+      "SHA512:884023c083fdc1a46e51e58cf3c66e5f70db43e22f75048fd7e7c746acda45f6718abbc1a96617cdd8f370086e31fd326c68610abea017f5e802cca9999d260b",
+      "SHA512:6e895489a8883b570cac735aa3ef6b9a749b312b1165bf0c82c3379d4a13d827e863436ce74f5266d67fb17b4ef28227c42df592620a0afa3c188fb6d1151b6b"
+  ]
+}
