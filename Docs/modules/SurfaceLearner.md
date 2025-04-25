@@ -1,6 +1,7 @@
 
 # SlicerSALT - Surface Mapping & Deep Learning Tutorial
 
+
 ## Authors
 - Martin Styner, Beatriz Paniagua, Connor Bowley
 - Mathieu Leclercq, Juan Carlos Prieto, Tom Bigonneau
