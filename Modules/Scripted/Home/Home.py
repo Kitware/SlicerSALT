@@ -56,15 +56,15 @@ class HomeWidget(ScriptedLoadableModuleWidget):
         ScriptedLoadableModuleWidget.setup(self)
 
         self.tutorials = {
-          "ShapeAnalysisModule": "https://bit.ly/2Fyn97v",  # SPHARM-PDM Generator
-          "RigidAlignmentModule": "https://bit.ly/2WsFiun",
-          "RegressionComputation": "https://bit.ly/2uVYche",
-          "ShapeVariationAnalyzer": "https://bit.ly/2HYbHVA",  # Population Analysis
-          "SRep": "https://bit.ly/3sTEG3H",
-          "SRepCreator": "https://bit.ly/3sTEG3H",
-          "SRepRefinement": "https://bit.ly/3sTEG3H",
+          "ShapeAnalysisModule": "https://slicersalt.readthedocs.io/en/latest/modules/SPHARM-PDM.html",  # SPHARM-PDM Generator
+          "RigidAlignmentModule": "https://slicersalt.readthedocs.io/en/latest/modules/GROUPS.html",
+          "RegressionComputation": "https://slicersalt.readthedocs.io/en/latest/modules/Regression.html",
+          "ShapeVariationAnalyzer": "https://slicersalt.readthedocs.io/en/latest/modules/SVA.html",  # Population Analysis
+          "SRep": "https://slicersalt.readthedocs.io/en/latest/modules/Srep.html",
+          "SRepCreator": "https://slicersalt.readthedocs.io/en/latest/modules/Srep.html",
+          "SRepRefinement": "https://slicersalt.readthedocs.io/en/latest/modules/Srep.html",
           "SRepHypothesisTesting": "http://bit.ly/3Y94DLt",
-          "CrownSegmentation": "https://bit.ly/3pYgKKy",
+          "CrownSegmentation": "https://slicersalt.readthedocs.io/en/latest/modules/DentalModelSeg.html",
           "SlicerDWD": "https://bit.ly/3CVx46d",
         }
 
@@ -101,6 +101,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
         # SAMPLE DATA REGISTRATION
         for json_file in [
             'DataImporterInputData.json',
+            'DifferenceStatisticsInputData.json',
             'CrownSegmentation.json',
             'RegistrationBasedCorrespondence.json',
             'MFSDAInputData.json',
@@ -140,6 +141,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
             "DataImporter": "Data Importer",
             "CrownSegmentation": "Crown Segmentation - FiboSeg",
             "RegistrationBasedCorrespondence": "Registration Based Correspondence",
+            "DifferenceStatistics": "Statistics on Object Differences",
             "MFSDA": "Covariate Significance Testing",
             "ShapeAnalysisModule": "SPHARM-PDM",
             "RegressionComputation": "Shape Regression",
@@ -204,6 +206,10 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
         if currModule == slicer.moduleNames.DataImporter:
             slicer.modules.DataImporterWidget.FolderDirectoryButton.directory = destFolderPath
             slicer.modules.DataImporterWidget.inputShapeAnalysisPath = outPath
+        elif currModule == slicer.moduleNames.DifferenceStatistics:
+            slicer.modules.DifferenceStatisticsWidget.ui.InputCSV.currentPath = os.path.join(destFolderPath, 'inputFiles.csv')
+            slicer.modules.DifferenceStatisticsWidget.ui.TemplateMesh.currentPath = os.path.join(destFolderPath, 'template.vtk')
+            slicer.modules.DifferenceStatisticsWidget.ui.OutputDirectory.directory = outPath
         elif currModule == slicer.moduleNames.ShapeAnalysisModule:
             slicer.modules.ShapeAnalysisModuleWidget.GroupProjectInputDirectory.directory = destFolderPath
             slicer.modules.ShapeAnalysisModuleWidget.RigidAlignmentFiducialsDirectory.directory = destFolderPath
