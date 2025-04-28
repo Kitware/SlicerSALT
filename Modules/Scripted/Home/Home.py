@@ -56,15 +56,15 @@ class HomeWidget(ScriptedLoadableModuleWidget):
         ScriptedLoadableModuleWidget.setup(self)
 
         self.tutorials = {
-          "ShapeAnalysisModule": "https://bit.ly/2Fyn97v",  # SPHARM-PDM Generator
-          "RigidAlignmentModule": "https://bit.ly/2WsFiun",
-          "RegressionComputation": "https://bit.ly/2uVYche",
-          "ShapeVariationAnalyzer": "https://bit.ly/2HYbHVA",  # Population Analysis
-          "SRep": "https://bit.ly/3sTEG3H",
-          "SRepCreator": "https://bit.ly/3sTEG3H",
-          "SRepRefinement": "https://bit.ly/3sTEG3H",
+          "ShapeAnalysisModule": "https://slicersalt.readthedocs.io/en/latest/modules/SPHARM-PDM.html",  # SPHARM-PDM Generator
+          "RigidAlignmentModule": "https://slicersalt.readthedocs.io/en/latest/modules/GROUPS.html",
+          "RegressionComputation": "https://slicersalt.readthedocs.io/en/latest/modules/Regression.html",
+          "ShapeVariationAnalyzer": "https://slicersalt.readthedocs.io/en/latest/modules/SVA.html",  # Population Analysis
+          "SRep": "https://slicersalt.readthedocs.io/en/latest/modules/Srep.html",
+          "SRepCreator": "https://slicersalt.readthedocs.io/en/latest/modules/Srep.html",
+          "SRepRefinement": "https://slicersalt.readthedocs.io/en/latest/modules/Srep.html",
           "SRepHypothesisTesting": "http://bit.ly/3Y94DLt",
-          "CrownSegmentation": "https://bit.ly/3pYgKKy",
+          "CrownSegmentation": "https://slicersalt.readthedocs.io/en/latest/modules/DentalModelSeg.html",
           "SlicerDWD": "https://bit.ly/3CVx46d",
         }
 
