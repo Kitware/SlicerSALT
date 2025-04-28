@@ -25,7 +25,7 @@ You can install the module either via **SlicerSALT** or **3D Slicer**:
 
 - **Using SlicerSALT**:  
   Download the application from [http://salt.slicer.org](http://salt.slicer.org), launch it, and the module will be ready to use.
-  [](img/SlicerSALT-SPM-Tutorial_3.png)
+  ![](img/SlicerSALT-SPM-Tutorial_3.png)
   ![](img/SlicerSALT-SPM-Tutorial_4.png)
 
 - **Using 3D Slicer**:  
