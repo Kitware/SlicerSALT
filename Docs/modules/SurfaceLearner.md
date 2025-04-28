@@ -250,7 +250,7 @@ For both training and validation, you will have access to : accuracy, precision,
 ## Acknowledgements \- Resources \- Questions
 
 <ul>
-  <li> The SPHARM-PDM developers gratefully acknowledge funding for this project provided by NIH NIBIB R01EB021391 (Shape Analysis Toolbox for Medical Image Computing Projects), as well as the Slicer community.</li>
+  <li> The SurfaceLearner developers gratefully acknowledge funding for this project provided by NIH NIBIB R01EB021391 (Shape Analysis Toolbox for Medical Image Computing Projects), as well as the Slicer community.</li>
   <li>Github repository:</li>
       <ul>
             <li><a href="https://github.com/mturja-vf-ic-bd/SlicerSurfaceLearner">MFSDA</a></li>
