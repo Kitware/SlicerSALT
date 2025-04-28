@@ -1,5 +1,5 @@
 
-# SlicerSALT - Surface Mapping & Deep Learning Tutorial
+# Surface Mapping & Deep Learning Tutorial
 
 
 ## Authors
