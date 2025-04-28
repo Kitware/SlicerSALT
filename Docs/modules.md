@@ -10,4 +10,5 @@ modules/GROUPS
 modules/Regression
 modules/SPHARM-PDM
 modules/Srep
+modules/SurfaceLearner
 modules/SVA
