@@ -253,7 +253,7 @@ For both training and validation, you will have access to : accuracy, precision,
   <li> The SPHARM-PDM developers gratefully acknowledge funding for this project provided by NIH NIBIB R01EB021391 (Shape Analysis Toolbox for Medical Image Computing Projects), as well as the Slicer community.</li>
   <li>Github repository:</li>
       <ul>
-            <li><a href="https://github.com/NIRALUser/SPHARM-PDM">MFSDA</a></li>
+            <li><a href="https://github.com/mturja-vf-ic-bd/SlicerSurfaceLearner">MFSDA</a></li>
             <li><a href="https://salt.slicer.org">SlicerSALT</a></li>
             <li><a href="https://github.com/Slicer/Slicer">3D Slicer</a></li>
       </ul>
@@ -264,8 +264,7 @@ For both training and validation, you will have access to : accuracy, precision,
       </ul>
   <li>Papers:</li>
       <ul>
-            <li><a href="https://www.ncbi.nlm.nih.gov/pubmed/23606800">Lateral ventricle morphology analysis via mean latitude axis.</a></li>
-            <li><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3062073/">Framework for the Statistical Shape Analysis of Brain Structures using SPHARM\-PDM</a></li>
+            <li><a href="https://hhoppe.com/gim.pdf">Geometry Image Mapping</a></li>
       </ul>  
   <li>For other remarks or questions, please email: beatriz.paniagua@kitware.com</li>
 </ul>
