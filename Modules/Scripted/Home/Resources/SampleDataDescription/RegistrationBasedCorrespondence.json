@@ -1,0 +1,16 @@
+{
+    "category": "Registration Based Correspondence",
+    "sampleName": "Download sample data",
+    "fileNames": [
+  "RegistrationBasedCorrespondenceSampleData.zip",
+  "setup.py"
+    ],
+    "uris": [
+  "https://data.kitware.com/api/v1/file/hashsum/sha512/ab28247b92d0a598014c75bf7b44c627c20b06bb99f4d4a75a22b48aad22ec835e8a0f222fd6376a4de4d1345a6de033d260488845c19a22b0bf322e95a2e117/download",
+  "https://data.kitware.com/api/v1/file/hashsum/sha512/33ee352ab5d8395e726929ba601f01221189221bbdab4567cf280cb63c343f23f4039a5d4647d6817fce216e86b7af952eb9a4ce8b566d4fc6b7a66bd786ad50/download"
+    ],
+    "checksums": [
+        "SHA512:ab28247b92d0a598014c75bf7b44c627c20b06bb99f4d4a75a22b48aad22ec835e8a0f222fd6376a4de4d1345a6de033d260488845c19a22b0bf322e95a2e117",
+        "SHA512:33ee352ab5d8395e726929ba601f01221189221bbdab4567cf280cb63c343f23f4039a5d4647d6817fce216e86b7af952eb9a4ce8b566d4fc6b7a66bd786ad50"
+    ]
+  }

@@ -4,6 +4,7 @@ set(MODULE_NAME Home)
 #-----------------------------------------------------------------------------
 set(MODULE_PYTHON_RESOURCES
   "Resources/SampleDataDescription/CrownSegmentation.json"
+  "Resources/SampleDataDescription/RegistrationBasedCorrespondence.json"
   "Resources/SampleDataDescription/DataImporterInputData.json"
   "Resources/SampleDataDescription/DifferenceStatisticsInputData.json"
   "Resources/SampleDataDescription/MFSDAInputData.json"

@@ -81,10 +81,11 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
 &nbsp; 2. Use <a href="#ShapePopulationViewer"><b>Shape Population Viewer</b></a> to do a quality check on the imported data<br><br>
 &nbsp; 3. Use <a href="#ShapeAnalysisModule"><b>SPHARM-PDM Generator</b></a> to do spherical harmonics based analysis<br><br>
 &nbsp; 4. Use the <a href="#RigidAlignmentModule"><b>Study-specific Shape Analysis</b></a> module.<br><br>
-&nbsp; 5. Use the <a href="#SkeletalRepresentationVisualizer"><b>S-Rep Shape Analysis</b></a> module to do shape analysis via skeletal representations.<br><br>
-&nbsp; 6. Use the <a href="#ShapeVariationAnalyzer"><b>Shape Evaluator</b></a> module to compute a mean shape and see how the population varies.<br><br>
-&nbsp; 7. Use <a href="#RegressionComputation"><b>Shape Regressions</b></a> module to do regression based analysis.<br><br>
-&nbsp; 8. Use the <a href="#MFSDA"><b>Shape Statistics</b></a> module.<br><br>
+&nbsp; 5. Use the <a href="#RegistrationBasedCorrespondence"><b>Registration-based correspondence</b></a> module to compute correspondent shape representations based on a single template.<br><br>
+&nbsp; 6. Use the <a href="#SkeletalRepresentationVisualizer"><b>S-Rep Shape Analysis</b></a> module to do shape analysis via skeletal representations.<br><br>
+&nbsp; 7. Use the <a href="#ShapeVariationAnalyzer"><b>Shape Evaluator</b></a> module to compute a mean shape and see how the population varies.<br><br>
+&nbsp; 8. Use <a href="#RegressionComputation"><b>Shape Regressions</b></a> module to do regression based analysis.<br><br>
+&nbsp; 9. Use the <a href="#MFSDA"><b>Shape Statistics</b></a> module.<br><br>
 """
 
         # TEXTEDIT
@@ -102,6 +103,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
             'DataImporterInputData.json',
             'DifferenceStatisticsInputData.json',
             'CrownSegmentation.json',
+            'RegistrationBasedCorrespondence.json',
             'MFSDAInputData.json',
             'SPHARM-PDMFiducials.json',
             'SPHARM-PDMTestData.json',
@@ -138,6 +140,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
         self.moduleNameToSampleDataCategory = {
             "DataImporter": "Data Importer",
             "CrownSegmentation": "Crown Segmentation - FiboSeg",
+            "RegistrationBasedCorrespondence": "Registration Based Correspondence",
             "DifferenceStatistics": "Statistics on Object Differences",
             "MFSDA": "Covariate Significance Testing",
             "ShapeAnalysisModule": "SPHARM-PDM",
@@ -225,6 +228,10 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
             slicer.modules.MFSDAWidget.lineEdit_csv.currentPath = os.path.join(destFolderPath,'inputFiles.csv')
             slicer.modules.MFSDAWidget.lineEdit_pshape.currentPath = os.path.join(destFolderPath,'g01','bump00.vtk')
             slicer.modules.MFSDAWidget.lineEdit_output.directory = os.path.join(destFolderPath,'out')
+        elif currModule == slicer.moduleNames.RegistrationBasedCorrespondence:
+            slicer.modules.RegistrationBasedCorrespondenceWidget.ui.TemplateMesh.currentPath = os.path.join(destFolderPath,'template.vtk')
+            slicer.modules.RegistrationBasedCorrespondenceWidget.ui.InputDirectory.directory = os.path.join(destFolderPath,'in')
+            slicer.modules.RegistrationBasedCorrespondenceWidget.ui.OutputDirectory.directory = outPath
         # CrownSegmentation is only available on some platforms right now
         elif hasattr(slicer.moduleNames, "CrownSegmentation") and currModule == slicer.moduleNames.CrownSegmentation:
             slicer.modules.CrownSegmentationWidget.ui.surfaceLineEdit.text = os.path.join(destFolderPath,'scan36.vtk')

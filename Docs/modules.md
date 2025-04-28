@@ -8,6 +8,7 @@ modules/CovarianceTesting
 modules/DentalModelSeg
 modules/DifferenceStatistics
 modules/GROUPS
+modules/RegistrationBasedCorrespondence
 modules/Regression
 modules/SPHARM-PDM
 modules/Srep
