@@ -1,4 +1,4 @@
-# Shape analysis via skeletal models User Tutorial
+# Shape analysis via Skeletal Models User Tutorial
 
 Authors: Zhiyuan Liu\, Stephen M\. Pizer\, Beatriz Paniagua\, Jared Vicory\, Junpyo Hong\, Connor Bowley
 
@@ -99,21 +99,58 @@ Can interpolate skeletal grid and spoke points. Will increase number of spokes b
 
 Both original and interpolate s\-reps displayed\. The original s\-rep was given thicker lines for visualization purposes\.
 
-### SRepCreator Module
+## SRep Creation
 
-Create s\-reps from Models \(\.vtk\, \.stl\, \.ply\, etc\) in 2 steps
+There are now two methods available for fitting s-reps: 
 
-Forward Flow: creates an ellipsoid that best fits the input model and creates an SRep to fit that ellipsoid\. The model is "flowed" toward an ellipsoidal shape for a number of iterations\, then a best fit ellipsoid is made on the flowed shaped\.
+1. The newer, evolution-based method implemented in the `Evolutionary S-rep Fitting` module
+2. The older method, available in the `SRepCreator` module
+
+Both methods take the same basic approach and create s\-reps from Models \(\.vtk\, \.stl\, \.ply\, etc\) in 2 steps:
+
+Forward Flow: Uses curvature flow to create an ellipsoid that best fits the input model. The input model is gradually smoothed until it is almost an ellipsoid, at which point an actual ellipsoid is fit to it. From this ellipsoid, an SRep is created analytically to fit it.
 
 ![](img/SlicerSALT-SrepMRMLModule-Tutorial_21.png)
 
-Example forward flow to ellipsoid
-
-Backward Flow: adjusts the SRep created from the ellipsoid to fit the original model by reversing the flow transformations made during the forward flow\.
+Backward Flow: Using the intermediate stages computed in the forward flow, registrations are computed to warp the ellipsoid s-rep gradually back until it matches the input model.
 
 ![](img/SlicerSALT-SrepMRMLModule-Tutorial_22.png)
 
-Example backward flow to fit original model
+The two available methods differ in how they accomplish these two steps. 
+
+- For the older method, curvature flow is done using a straightforward approach and the backward flow is done using thin-plate splines.
+- For the newer method, a [conformalized curvature flow](https://arxiv.org/pdf/1203.6819) is used due to its improved properties. For the backward flow, LDDMM-based registrations via [Deformetrica](https://gitlab.com/icm-institute/aramislab/deformetrica) are used. The backward flow also incorporates more important geometric information, specifically the location of the crest curves and vertices, to ensure these locations are correctly mapped from the ellipsoid to target object. For more information, see the paper by [Pizer et al](https://arxiv.org/pdf/2407.14357).
+
+### Evolutionary S-rep Fitting Module
+
+**IMPORTANT: The current evolutionary s-rep module relies on Deformetrica, which is distributed under the INRIA Non-Commercial License Agreement and is available for educational, research, or evaluation purposes only.**
+
+**Deformetrica is not packaged with SlicerSALT. The first time you run the Evolutionary S-rep module, you will be shown a license warning and, if you agree with the terms of this license, you will be prompted to install Deformetrica. If you do not agree with the terms of this license, you can use the older SRepCreator instead.**
+
+The `Evolutionary S-rep Fitting` module is available in the SlicerSALT module list under the `Shape Analysis` category:
+
+![](img/SlicerSALT-ESRep-Tutorial_0.png)
+
+The only input data required is a mesh loaded into SlicerSALT. Additionally, you must specify a directory where the output files will be stored:
+
+**Note: Deformetrica can be sensitive to the resolution of the input mesh, and in particular large meshes can cause it to run very slowly or crash. If you experience problems, try downsampling the mesh such as with the vtkDecimatePro filter.
+
+![](img/SlicerSALT-ESRep-Tutorial_1.png)
+
+After clicking apply, the module will progress through several stages until the final output is displayed:
+
+![](img/SlicerSALT-ESRep-Tutorial_2.png)
+
+There will be several intermediate files stored in the output folder along with the final s-rep. The most interesting of these are:
+
+- The final s-rep will be stored as `final_srep.srep.json`
+- The `meshes` folder contains the intermediate steps from the forward curvature flow stages
+- The `registrations` folder contains the outputs from Deformetrica for each of the backward flow stages
+- The `shooting` folder contains the outputs from Deformetrica from applying the computed registration transforms to the s-reps
+
+### SRepCreator Module
+
+**NOTE: This describes the use of the older `SRepCreator` module. For the newer method, see the `Evolutionary S-rep Fitting` module described above.**
 
 **SRepCreator Parameters**
 
