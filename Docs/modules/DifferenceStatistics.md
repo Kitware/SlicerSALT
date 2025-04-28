@@ -1,4 +1,4 @@
-# SlicerDentalModelSeg User tutorial
+# Statistics on Object Differences User Tutorial
 
 Authors: Kedar Madi, Beatriz Paniagua, Jared Vicory
 
