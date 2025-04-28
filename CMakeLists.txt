@@ -212,7 +212,7 @@ set(${extension_name}_SOURCE_DIR "${CMAKE_BINARY_DIR}/${short_extension_name}")
 FetchContent_Populate(${short_extension_name}
   SOURCE_DIR     ${${extension_name}_SOURCE_DIR}
   GIT_REPOSITORY ${EP_GIT_PROTOCOL}://github.com/KitwareMedical/SlicerSkeletalRepresentation.git
-  GIT_TAG        bdcf0278acfee929c4a9f02ef037b3aa94f6b32b # srep-pipelines 2023-jul-13
+  GIT_TAG        e89c83523428300545a65adf077439dc560e7f33 # master as of 2025-04-28
   GIT_PROGRESS   1
   QUIET
   )
