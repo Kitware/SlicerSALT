@@ -224,7 +224,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
             slicer.modules.MFSDAWidget.lineEdit_output.directory = os.path.join(destFolderPath,'out')
         elif currModule == slicer.moduleNames.RegistrationBasedCorrespondence:
             slicer.modules.RegistrationBasedCorrespondenceWidget.ui.TemplateMesh.currentPath = os.path.join(destFolderPath,'template.vtk')
-            slicer.modules.RegistrationBasedCorrespondenceWidget.ui.InputDirectory.directory = destFolderPath + '/in'
+            slicer.modules.RegistrationBasedCorrespondenceWidget.ui.InputDirectory.directory = os.path.join(destFolderPath,'in')
             slicer.modules.RegistrationBasedCorrespondenceWidget.ui.OutputDirectory.directory = outPath
         # CrownSegmentation is only available on some platforms right now
         elif hasattr(slicer.moduleNames, "CrownSegmentation") and currModule == slicer.moduleNames.CrownSegmentation:
