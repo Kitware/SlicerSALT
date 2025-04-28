@@ -100,6 +100,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
         # SAMPLE DATA REGISTRATION
         for json_file in [
             'DataImporterInputData.json',
+            'DifferenceStatisticsInputData.json',
             'CrownSegmentation.json',
             'MFSDAInputData.json',
             'SPHARM-PDMFiducials.json',
@@ -137,6 +138,7 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
         self.moduleNameToSampleDataCategory = {
             "DataImporter": "Data Importer",
             "CrownSegmentation": "Crown Segmentation - FiboSeg",
+            "DifferenceStatistics": "Statistics on Object Differences",
             "MFSDA": "Covariate Significance Testing",
             "ShapeAnalysisModule": "SPHARM-PDM",
             "RegressionComputation": "Shape Regression",
@@ -201,6 +203,10 @@ The drop-down Modules are ordered to follow the basic workflow for choosing and 
         if currModule == slicer.moduleNames.DataImporter:
             slicer.modules.DataImporterWidget.FolderDirectoryButton.directory = destFolderPath
             slicer.modules.DataImporterWidget.inputShapeAnalysisPath = outPath
+        elif currModule == slicer.moduleNames.DifferenceStatistics:
+            slicer.modules.DifferenceStatisticsWidget.ui.InputCSV.currentPath = os.path.join(destFolderPath, 'inputFiles.csv')
+            slicer.modules.DifferenceStatisticsWidget.ui.TemplateMesh.currentPath = os.path.join(destFolderPath, 'template.vtk')
+            slicer.modules.DifferenceStatisticsWidget.ui.OutputDirectory.directory = outPath
         elif currModule == slicer.moduleNames.ShapeAnalysisModule:
             slicer.modules.ShapeAnalysisModuleWidget.GroupProjectInputDirectory.directory = destFolderPath
             slicer.modules.ShapeAnalysisModuleWidget.RigidAlignmentFiducialsDirectory.directory = destFolderPath

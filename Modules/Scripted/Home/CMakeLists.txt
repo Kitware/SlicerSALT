@@ -5,6 +5,7 @@ set(MODULE_NAME Home)
 set(MODULE_PYTHON_RESOURCES
   "Resources/SampleDataDescription/CrownSegmentation.json"
   "Resources/SampleDataDescription/DataImporterInputData.json"
+  "Resources/SampleDataDescription/DifferenceStatisticsInputData.json"
   "Resources/SampleDataDescription/MFSDAInputData.json"
   "Resources/SampleDataDescription/ShapeRegressionInputData.json"
   "Resources/SampleDataDescription/SlicerDWDInputData.json"

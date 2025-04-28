@@ -6,6 +6,7 @@ SlicerSALT is a collection of 3D Slicer modules focused on various shape analysi
 
 modules/CovarianceTesting
 modules/DentalModelSeg
+modules/DifferenceStatistics
 modules/GROUPS
 modules/Regression
 modules/SPHARM-PDM
