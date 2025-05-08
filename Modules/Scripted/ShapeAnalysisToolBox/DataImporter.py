@@ -731,17 +731,23 @@ class DataImporterLogic(ScriptedLoadableModuleLogic):
           segmentationLogic.ExportSegmentsToLabelmapNode(segmentation_node, segmentIdList, exported_labelmap)
 
         slicer.util.saveNode(exported_labelmap, labelMap_filepath)
-        slicer.mrmlScene.RemoveNode(slicer.util.getNode(pattern=full_segmentName+' LabelMap_ColorTable'))
+        try:
+          color_node = slicer.util.getNode(pattern=full_segmentName+' LabelMap_ColorTable')
+        except:
+          color_node = None
+        if color_node:
+          slicer.mrmlScene.RemoveNode(color_node)
         slicer.mrmlScene.RemoveNode(exported_labelmap)
 
         # save Polydata
-        exported_hierarchy = slicer.mrmlScene.AddNewNodeByClass("vtkMRMLModelHierarchyNode", full_segmentName+' Model')
-        segmentationLogic.ExportSegmentsToModelHierarchy(segmentation_node, segmentIdList, exported_hierarchy)
+        shNode = slicer.mrmlScene.GetSubjectHierarchyNode()
+        export_folder = shNode.CreateFolderItem(shNode.GetSceneItemID(), "Segments")
+        segmentationLogic.ExportSegmentsToModels(segmentation_node, segmentIdList, export_folder)
         collec = vtk.vtkCollection()
-        exported_hierarchy.GetChildrenModelNodes(collec)
+        shNode.GetDataNodesInBranch(export_folder,collec)
         exported_model = collec.GetItemAsObject(0)
         slicer.util.saveNode(exported_model, polydata_filepath)
-        slicer.mrmlScene.RemoveNode(exported_hierarchy)
+        shNode.RemoveItem(export_folder)
         slicer.mrmlScene.RemoveNode(exported_model)
 
         # create output directory
